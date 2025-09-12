@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 // Updated ProductGridView without Scaffold (since it's already inside HomeScreen's Scaffold)
 class ProductGridView extends StatelessWidget {
+  const ProductGridView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -110,13 +112,13 @@ class ProductCard extends StatelessWidget {
   final Color color;
 
   const ProductCard({
-    Key? key,
+    super.key,
     required this.productName,
     required this.rating,
     required this.price,
     required this.originalPrice,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
