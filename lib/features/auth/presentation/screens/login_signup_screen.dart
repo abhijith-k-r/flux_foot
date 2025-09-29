@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/presentaion/screens/login_screen.dart';
-import 'package:fluxfoot_user/presentaion/screens/signup_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginSignUpScreen extends StatelessWidget {
@@ -113,7 +113,7 @@ dividerOr() {
 }
 
 class CustomButton extends StatelessWidget {
-  final VoidCallback ontap;
+  final VoidCallback? ontap;
   final double width;
   final double heith;
   final double borderRadius;
@@ -122,6 +122,7 @@ class CustomButton extends StatelessWidget {
   final Color textColor;
   final double fontSize;
   final FontWeight fontWeight;
+  final Widget? widget;
   const CustomButton({
     super.key,
     required this.ontap,
@@ -133,6 +134,7 @@ class CustomButton extends StatelessWidget {
     this.textColor = Colors.white,
     this.fontSize = 25,
     this.fontWeight = FontWeight.w600,
+    this.widget,
   });
 
   @override
@@ -147,14 +149,17 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Center(
-          child: Text(
-            text,
-            style: GoogleFonts.openSans(
-              color: textColor,
-              fontSize: fontSize,
-              fontWeight: fontWeight,
-            ),
-          ),
+          child:
+              // widget
+              // ??
+              Text(
+                text,
+                style: GoogleFonts.openSans(
+                  color: textColor,
+                  fontSize: fontSize,
+                  fontWeight: fontWeight,
+                ),
+              ),
         ),
       ),
     );

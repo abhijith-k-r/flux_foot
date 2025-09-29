@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/presentaion/screens/login_signup_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {

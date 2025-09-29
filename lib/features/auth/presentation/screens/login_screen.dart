@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/presentaion/screens/login_signup_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/widgets/form_validators.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -50,6 +51,7 @@ class LoginScreen extends StatelessWidget {
                   CustomTextFormField(
                     label: 'E-mail Address',
                     hintText: 'Enter Email...',
+                    validator: FormValidators.validateEmail,
                     prefIcon: Padding(
                       padding: const EdgeInsets.fromLTRB(15, 13, 0, 0),
                       child: FaIcon(FontAwesomeIcons.envelope, size: 20),
@@ -60,6 +62,7 @@ class LoginScreen extends StatelessWidget {
                     label: 'Password',
                     prefIcon: Icon(Icons.lock_outline_rounded),
                     hintText: 'Enter Password...',
+                    validator: FormValidators.validatePassword,
                     sufIcon: IconButton(
                       onPressed: () {},
                       icon: Icon(Icons.remove_red_eye_rounded),
@@ -108,6 +111,7 @@ class AuthCheckBox extends StatelessWidget {
   final String prefText;
   final TextButton? sufWidget;
   final TextStyle? style;
+
   const AuthCheckBox({
     super.key,
     required this.mainAxis,
@@ -124,11 +128,11 @@ class AuthCheckBox extends StatelessWidget {
       children: [
         Row(
           children: [
-            ?checkBox,
+            if (checkBox != null) checkBox!,
             Text(prefText, style: style),
           ],
         ),
-        ?sufWidget,
+        sufWidget!,
       ],
     );
   }
@@ -144,6 +148,7 @@ class CustomTextFormField extends StatelessWidget {
   final double borderRadius;
   final TextEditingController? controller;
   final bool obscureText;
+  final Function validator;
 
   const CustomTextFormField({
     super.key,
@@ -154,6 +159,7 @@ class CustomTextFormField extends StatelessWidget {
     this.borderRadius = 15,
     this.controller,
     this.obscureText = false,
+    required this.validator,
   });
 
   @override
@@ -166,10 +172,12 @@ class CustomTextFormField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
+
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
             ),
+
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),
               borderSide: const BorderSide(color: Colors.black),

@@ -2,8 +2,8 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/presentaion/screens/login_screen.dart';
-import 'package:fluxfoot_user/presentaion/widgets/homescreen_widgets.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/widgets/homescreen_widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
