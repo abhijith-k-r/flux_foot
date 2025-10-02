@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:animate_do/animate_do.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,8 +10,6 @@ import 'package:fluxfoot_user/features/account/presentation/screens/account_scre
 import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_event.dart';
 import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_state.dart';
 import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/bloc/user_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/bloc/user_state.dart';
 import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
 import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,23 +35,20 @@ class ProfileScreen extends StatelessWidget {
         action: [SizedBox(width: size * 0.2)],
       ),
       body: SingleChildScrollView(
-        child: BlocBuilder<UserBloc, UserState>(
-          builder: (context, userState) {
-            String name = 'Loading...';
-            String email = 'Loading...';
-            String phone = 'Loading...';
-            String dob = '03-05-2004';
-
-            if (userState is UserLoading) {
-              name = 'Fetching profile...';
-            } else if (userState is UseerLoaded) {
-              name = userState.user.name;
-              email = userState.user.email;
-              phone = userState.user.phone;
-            } else if (userState is UserError) {
-              name = 'Error loading profile';
-              email = userState.message;
-            }
+        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading");
+                }
+                Map<String, dynamic> data =
+                    snapshot.data!.data()! as Map<String, dynamic>;
             return Column(
               spacing: size * 0.05,
               children: [
@@ -59,31 +56,31 @@ class ProfileScreen extends StatelessWidget {
                 // ! Circle Avatar For User Profile
                 UserProfileImage(size: size, radius: size * 0.15).fadeInDown(),
                 // ! User name
-                ProfileName(size: size, name: name).fadeInDownBig(),
+                ProfileName(size: size, name: data['name']).fadeInDownBig(),
                 // ! Details
                 ProfileDetails(
                   size: size,
                   title: 'NAME',
                   icon: Icon(Icons.person_2_rounded),
-                  subtitle: name,
+                  subtitle: data['name'],
                 ).fadeInLeft(),
                 ProfileDetails(
                   size: size,
                   title: 'ACCOUNT INFORMATION',
                   icon: Icon(CupertinoIcons.person_alt_circle),
-                  subtitle: email,
+                  subtitle: data['email'],
                 ).fadeInRight(),
                 ProfileDetails(
                   size: size,
                   title: 'PHONE NUMBER',
                   icon: Icon(CupertinoIcons.phone),
-                  subtitle: phone,
+                  subtitle: data['phone'],
                 ).fadeInLeft(),
                 ProfileDetails(
                   size: size,
                   title: 'D O B',
                   icon: Icon(Icons.cake),
-                  subtitle: '03/05/2004',
+                  subtitle: 'dob',
                 ).fadeInRight(),
 
                 CustomButton(
