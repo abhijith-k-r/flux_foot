@@ -1,109 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
-import 'package:fluxfoot_user/features/auth/presentation/widgets/form_validators.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
-    final height = size.height;
-    return Scaffold(
-      appBar: CustomAppBar(leading: customBackButton(context)),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: width * 0.04,
-          vertical: height * 0.02,
-        ),
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minHeight:
-                  height - kToolbarHeight - MediaQuery.of(context).padding.top,
-            ),
-            child: IntrinsicHeight(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-                  SizedBox(height: height * 0.03),
-                  Text(
-                    'Login',
-                    style: GoogleFonts.openSans(
-                      fontSize: width * 0.09,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: height * 0.01),
-                  Text(
-                    'Please login to your account',
-                    style: GoogleFonts.openSans(
-                      fontSize: width * 0.048,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: height * 0.04),
-                  CustomTextFormField(
-                    label: 'E-mail Address',
-                    hintText: 'Enter Email...',
-                    validator: FormValidators.validateEmail,
-                    prefIcon: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 13, 0, 0),
-                      child: FaIcon(FontAwesomeIcons.envelope, size: 20),
-                    ),
-                  ),
-                  SizedBox(height: height * 0.02),
-                  CustomTextFormField(
-                    label: 'Password',
-                    prefIcon: Icon(Icons.lock_outline_rounded),
-                    hintText: 'Enter Password...',
-                    validator: FormValidators.validatePassword,
-                    sufIcon: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.remove_red_eye_rounded),
-                    ),
-                  ),
-                  SizedBox(height: height * 0.01),
-                  AuthCheckBox(
-                    mainAxis: MainAxisAlignment.spaceBetween,
-                    checkBox: Checkbox(
-                      activeColor: Color(0xFFFF8C00),
-                      value: true,
-                      onChanged: (value) {},
-                    ),
-                    prefText: 'Remember me',
-                    sufWidget: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Forgot password?',
-                        style: GoogleFonts.openSans(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: height * 0.03),
-                  CustomButton(ontap: () {}, text: 'Login'),
-                  SizedBox(height: height * 0.02),
-                  dividerOr(),
-                  SizedBox(height: height * 0.02),
-                  GoogleAuth(ontap: () {}),
-                  SizedBox(height: height * 0.03),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class AuthCheckBox extends StatelessWidget {
   final MainAxisAlignment mainAxis;
@@ -149,7 +46,9 @@ class CustomTextFormField extends StatelessWidget {
   final TextEditingController? controller;
   final bool obscureText;
   final Function validator;
-
+  final String? initialValue;
+  final Function(String)? onchanged;
+  final AutovalidateMode? autovalidateMode;
   const CustomTextFormField({
     super.key,
     required this.label,
@@ -160,6 +59,9 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     required this.validator,
+    this.initialValue,
+    this.onchanged,
+    this.autovalidateMode,
   });
 
   @override
@@ -172,7 +74,8 @@ class CustomTextFormField extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
-
+          initialValue: initialValue,
+          onChanged: onchanged,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(borderRadius),

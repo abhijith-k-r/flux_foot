@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/signup_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/sign_in_screen.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class LoginSignUpScreen extends StatelessWidget {
@@ -32,14 +32,14 @@ class LoginSignUpScreen extends StatelessWidget {
                 children: [
                   CustomButton(
                     ontap: () {
-                      fadePush(context, LoginScreen());
+                      fadePush(context, SignInScreen());
                     },
                     text: 'Login',
                   ),
                   SizedBox(height: 20),
                   CustomButton(
                     ontap: () {
-                      fadePush(context, SignupScreen());
+                      fadePush(context, SignUpScreen());
                     },
                     text: 'Sign up',
                   ),
@@ -58,7 +58,7 @@ class LoginSignUpScreen extends StatelessWidget {
 }
 
 class GoogleAuth extends StatelessWidget {
-  final VoidCallback ontap;
+  final VoidCallback? ontap;
   const GoogleAuth({super.key, required this.ontap});
 
   @override
@@ -123,6 +123,8 @@ class CustomButton extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final Widget? widget;
+  final bool showTextAndWidget;
+  final double spacing;
   const CustomButton({
     super.key,
     required this.ontap,
@@ -135,6 +137,8 @@ class CustomButton extends StatelessWidget {
     this.fontSize = 25,
     this.fontWeight = FontWeight.w600,
     this.widget,
+    this.showTextAndWidget = false,
+    this.spacing = 10,
   });
 
   @override
@@ -149,23 +153,38 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Center(
-          child:
-              // widget
-              // ??
-              Text(
-                text,
-                style: GoogleFonts.openSans(
-                  color: textColor,
-                  fontSize: fontSize,
-                  fontWeight: fontWeight,
-                ),
-              ),
+          child: showTextAndWidget
+              ? Row(
+                  spacing: spacing,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget != null) ?widget,
+                    Text(
+                      text,
+                      style: GoogleFonts.openSans(
+                        color: textColor,
+                        fontSize: fontSize,
+                        fontWeight: fontWeight,
+                      ),
+                    ),
+                  ],
+                )
+              : widget ??
+                    Text(
+                      text,
+                      style: GoogleFonts.openSans(
+                        color: textColor,
+                        fontSize: fontSize,
+                        fontWeight: fontWeight,
+                      ),
+                    ),
         ),
       ),
     );
   }
 }
 
+// ! Fade Push
 void fadePush(BuildContext context, Widget page) {
   Navigator.push(
     context,
@@ -175,5 +194,32 @@ void fadePush(BuildContext context, Widget page) {
         return FadeTransition(opacity: animation, child: child);
       },
     ),
+  );
+}
+
+// ! Fade Push ReplaceMent
+void fadePUshReplaceMent(BuildContext context, Widget page) {
+  Navigator.pushReplacement(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    ),
+  );
+}
+
+// ! Fade push And RemoveUntil
+void fadePushAndRemoveUntil(BuildContext context, Widget page) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(opacity: animation, child: child);
+      },
+    ),
+    (Route<dynamic> route) => false,
   );
 }

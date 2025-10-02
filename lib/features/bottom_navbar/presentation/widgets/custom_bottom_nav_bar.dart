@@ -4,7 +4,7 @@ import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import '../bloc/navigation_bloc.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-  const CustomBottomNavBar({Key? key}) : super(key: key);
+   const CustomBottomNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,22 +22,27 @@ class CustomBottomNavBar extends StatelessWidget {
           items: [
             BottomBarItem(
               icon: const Icon(Icons.home_filled),
-              title: const Text('Abc'),
-              backgroundColor: Colors.red,
+              title: const Text('Home'),
+              backgroundColor: Colors.redAccent,
               selectedIcon: const Icon(Icons.read_more),
             ),
             BottomBarItem(
-              icon: const Icon(Icons.safety_divider),
-              title: const Text('Safety'),
+              icon: const Icon(Icons.shopping_cart_outlined),
+              title: const Text('Carts'),
               backgroundColor: Colors.orange,
             ),
             BottomBarItem(
-              icon: const Icon(Icons.cabin),
-              title: const Text('Cabin'),
+              icon: const Icon(Icons.favorite_border),
+              title: const Text('Favorites'),
               backgroundColor: Colors.purple,
             ),
+
+            BottomBarItem(
+              icon: const Icon(Icons.person_outline_rounded),
+              title: const Text('Account'),
+              backgroundColor: Colors.deepOrangeAccent,
+            ),
           ],
-          fabLocation: StylishBarFabLocation.end,
           hasNotch: true,
           currentIndex: state.selectedIndex,
           onTap: (index) {

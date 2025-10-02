@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         leading: Padding(
-          padding: EdgeInsets.only(left: width * 0.01), // small left space
+          padding: EdgeInsets.only(left: width * 0.01),
           child: SizedBox(
             width: 70,
             height: 60,

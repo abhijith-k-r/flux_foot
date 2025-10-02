@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 // Updated ProductGridView without Scaffold (since it's already inside HomeScreen's Scaffold)

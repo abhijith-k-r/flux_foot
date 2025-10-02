@@ -1,16 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/auth/authwrapper.dart';
-import 'package:fluxfoot_user/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:fluxfoot_user/core/firebase/auth/auth_repository.dart';
+import 'package:fluxfoot_user/core/firebase/auth/firebase_auth_service.dart';
+import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_bloc.dart';
+import 'package:fluxfoot_user/features/auth/presentation/bloc/user_bloc.dart';
+import 'package:fluxfoot_user/features/auth/presentation/signin_bloc/signin_bloc.dart';
+import 'package:fluxfoot_user/features/auth/presentation/signup_bloc/signup_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
-import 'package:fluxfoot_user/injectiontion_container.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  await di.init();
 
   runApp(MyAPP());
 }
@@ -20,9 +23,29 @@ class MyAPP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FirebaseAuth firebaseAuthInstance = FirebaseAuth.instance;
+    final BaseAuthRepository authRepository = FirebaseAuthService(
+      firebaseAuthInstance,
+    );
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AuthBloc>(create: (context) => di.sl<AuthBloc>()),
+        RepositoryProvider<BaseAuthRepository>.value(value: authRepository),
+
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(authRepository: authRepository),
+        ),
+        BlocProvider<SignupBloc>(
+          create: (context) => SignupBloc(authRepository: authRepository),
+        ),
+
+        BlocProvider<SigninBloc>(
+          create: (context) => SigninBloc(authRepository: authRepository),
+        ),
+
+        BlocProvider<UserBloc>(
+          create: (context) => UserBloc(authRepository: authRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',
