@@ -46,7 +46,8 @@ class LoginSignUpScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   dividerOr(),
                   SizedBox(height: 20),
-                  GoogleAuth(ontap: () {}),
+                  // ! Google Sign 
+                  GoogleUserSignin(),
                 ],
               ),
             ),

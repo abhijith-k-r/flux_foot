@@ -12,7 +12,12 @@
           "package_name": "com.example.flux_foot_admin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAXcfTOxa1m8w3ZfyfBWnQslRWxJIzhawU"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "207851949341-6fsmt0upavcg5e817jcao4npmp5mp3ca.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fluxfootSeller"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.example.fluxfoot_seller"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "207851949341-kqerr21cclagtcgr3ig84vddtigmkp8o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fluxfoot_seller",
+            "certificate_hash": "61a624c6fc19b90835dd5d3c1a229de46fa82909"
+          }
+        },
+        {
+          "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAXcfTOxa1m8w3ZfyfBWnQslRWxJIzhawU"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "207851949341-6fsmt0upavcg5e817jcao4npmp5mp3ca.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fluxfootSeller"
+              }
+            }
+          ]
         }
       }
     },
@@ -50,7 +92,20 @@
           "package_name": "com.example.fluxfoot_user"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "207851949341-q7slo29v8e934bqf0p99p9vcmrhlltbh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fluxfoot_user",
+            "certificate_hash": "61a624c6fc19b90835dd5d3c1a229de46fa82909"
+          }
+        },
+        {
+          "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAXcfTOxa1m8w3ZfyfBWnQslRWxJIzhawU"
@@ -58,7 +113,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "207851949341-v3c0of4infl3i9lsckjptddbf9g4uadu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "207851949341-6fsmt0upavcg5e817jcao4npmp5mp3ca.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fluxfootSeller"
+              }
+            }
+          ]
         }
       }
     }

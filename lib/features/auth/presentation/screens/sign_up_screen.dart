@@ -23,10 +23,13 @@ class SignUpScreen extends StatelessWidget {
     final height = size.height;
 
     return BlocListener<SignupBloc, SignupState>(
+      listenWhen: (previous, current) =>
+          !previous.isSuccess && current.isSuccess,
       listener: (context, state) {
         if (state.errorMessage != null &&
             state.errorMessage!.isNotEmpty &&
-            !state.isLoading) {
+            !state.isLoading &&
+            !state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
@@ -35,7 +38,7 @@ class SignUpScreen extends StatelessWidget {
           );
         }
 
-        if (state.isSuccess) {
+        if (state.isSuccess && !state.isLoading) {
           fadePUshReplaceMent(context, MainScreen());
         }
       },
@@ -249,45 +252,54 @@ class PhoneInputField extends StatelessWidget with Validator {
   }
 }
 
-typedef PasswordSelector = ({
-  String password,
-  bool isVisible,
-  AutovalidateMode autovalidateMode,
-});
+// typedef PasswordSelector = ({
+//   String password,
+//   bool isVisible,
+//   AutovalidateMode autovalidateMode,
+// });
 
-class PasswordInputField extends StatelessWidget with Validator {
+class PasswordInputField extends StatefulWidget with Validator {
   const PasswordInputField({super.key});
 
   @override
+  State<PasswordInputField> createState() => _PasswordInputFieldState();
+}
+
+class _PasswordInputFieldState extends State<PasswordInputField> {
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocSelector<SignupBloc, SignupState, PasswordSelector>(
-      selector: (state) => (
-        autovalidateMode: state.autovalidateMode,
-        isVisible: state.isPasswordVisible,
-        password: state.password,
-      ),
+    return BlocSelector<SignupBloc, SignupState, (AutovalidateMode, bool)>(
+      selector: (state) => (state.autovalidateMode, state.isPasswordVisible),
 
       builder: (context, selection) {
+        final autovalidateMode = selection.$1;
+        final isVisible = selection.$2;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 5,
           children: [
             Text('Password'),
             TextFormField(
-              autovalidateMode: selection.autovalidateMode,
-              initialValue: selection.password,
+              controller: _passwordController,
+              autovalidateMode: autovalidateMode,
               onChanged: (value) =>
                   context.read<SignupBloc>().add(PasswordChanged(value)),
-              obscureText: !selection.isVisible,
-              validator: validatePassword,
+              obscureText: !isVisible,
+              validator: widget.validatePassword,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_outline_rounded),
                 hintText: 'create Password...',
                 suffixIcon: IconButton(
                   icon: Icon(
-                    selection.isVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+                    isVisible ? Icons.visibility : Icons.visibility_off,
                   ),
                   onPressed: () => context.read<SignupBloc>().add(
                     TogglePasswordVisibility(),
@@ -305,45 +317,53 @@ class PasswordInputField extends StatelessWidget with Validator {
   }
 }
 
-typedef ConfirmPasswordSelector = ({
-  String confirmPassword,
-  bool isVisible,
-  String password,
-  AutovalidateMode autovalidateMode,
-});
 
-class ConfirmPasswordInputField extends StatelessWidget with Validator {
+class ConfirmPasswordInputField extends StatefulWidget with Validator {
   const ConfirmPasswordInputField({super.key});
 
   @override
+  State<ConfirmPasswordInputField> createState() =>
+      _ConfirmPasswordInputFieldState();
+}
+
+class _ConfirmPasswordInputFieldState extends State<ConfirmPasswordInputField> {
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocSelector<SignupBloc, SignupState, ConfirmPasswordSelector>(
-      selector: (state) => (
-        autovalidateMode: state.autovalidateMode,
-        password: state.password,
-        confirmPassword: state.confirmPassword,
-        isVisible: state.isConfirmPasswordVisible,
-      ),
+    return BlocSelector<SignupBloc, SignupState, (AutovalidateMode, bool, String)>(
+      selector: (state) =>
+          (state.autovalidateMode, state.isConfirmPasswordVisible,state.password ),
       builder: (context, selection) {
+            final autovalidateMode = selection.$1;
+        final isVisible = selection.$2;
+        final password = selection.$3;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 5,
           children: [
             Text('Password'),
             TextFormField(
-              autovalidateMode: selection.autovalidateMode,
-              initialValue: selection.confirmPassword,
+              controller: _confirmPasswordController,
+              autovalidateMode: autovalidateMode,
               onChanged: (value) =>
                   context.read<SignupBloc>().add(ConfirmPasswordChanged(value)),
-              obscureText: !selection.isVisible,
-              validator: (value) =>
-                  validateConfirmPassword(value, selection.password),
+              obscureText: isVisible,
+              validator: (value) => widget.
+                  validateConfirmPassword(value, password),
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.lock_outline_rounded),
                 hintText: 'confirm Password...',
                 suffixIcon: IconButton(
                   icon: Icon(
-                    selection.isVisible
+                    isVisible
                         ? Icons.visibility
                         : Icons.visibility_off,
                   ),

@@ -28,9 +28,7 @@ class PasswordChanged extends SigninEvent {
 class TogglePasswordVisibility extends SigninEvent {}
 
 class SigninSubmitted extends SigninEvent {
-
   const SigninSubmitted();
-
 }
 
 class AutoValidateModeChanged extends SigninEvent {
@@ -38,3 +36,10 @@ class AutoValidateModeChanged extends SigninEvent {
 
   const AutoValidateModeChanged(this.autovalidateMode);
 }
+
+class SigninReset extends SigninEvent {}
+
+class ToggleRememberMe extends SigninEvent {}
+
+// ! for google auth
+class GoogleSigninSubmitted extends SigninEvent {}

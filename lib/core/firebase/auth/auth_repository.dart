@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluxfoot_user/features/auth/model/usermodel.dart';
 
 abstract class BaseAuthRepository {
@@ -14,4 +15,6 @@ abstract class BaseAuthRepository {
   Future<void> signOut();
 
   Future<UserModel> fetchUserDetails(String uid);
+
+  Future<User?> googleHandleSignIn();
 }

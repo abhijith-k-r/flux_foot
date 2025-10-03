@@ -8,6 +8,7 @@ class SigninState extends Equatable {
   final bool isPasswordVisible;
   final bool isLoading;
   final bool isSuccess;
+  final bool isRemember;
 
   const SigninState({
     this.autovalidateMode = AutovalidateMode.disabled,
@@ -17,6 +18,7 @@ class SigninState extends Equatable {
     this.isPasswordVisible = false,
     this.isLoading = false,
     this.isSuccess = false,
+    this.isRemember = false,
   });
 
   SigninState copyWith({
@@ -27,7 +29,7 @@ class SigninState extends Equatable {
     bool? isPasswordVisible,
     bool? isLoading,
     bool? isSuccess,
-
+    bool? isRemember,
   }) {
     return SigninState(
       autovalidateMode: autovalidateMode ?? this.autovalidateMode,
@@ -37,9 +39,18 @@ class SigninState extends Equatable {
       isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
       isLoading: isLoading ?? this.isLoading,
       isSuccess: isSuccess ?? this.isSuccess,
+      isRemember: isRemember ?? this.isRemember,
     );
   }
 
   @override
-  List<Object> get props => [autovalidateMode, email, password,?errorMessage,isPasswordVisible,isLoading,isSuccess];
+  List<Object> get props => [
+    autovalidateMode,
+    email,
+    password,
+    ?errorMessage,
+    isPasswordVisible,
+    isLoading,
+    isSuccess,
+  ];
 }

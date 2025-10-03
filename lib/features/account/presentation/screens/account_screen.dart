@@ -33,7 +33,9 @@ class AccountScreen extends StatelessWidget {
             icon: Icons.person_outline_rounded,
             title: 'Personal Information',
             subtitle: 'Updat your details',
-            ontap: () => fadePush(context, ProfileScreen()),
+            ontap: () {
+              fadePush(context, ProfileScreen());
+            },
           ).fadeInRight(from: 50),
           AccountContent(
             size: size,
@@ -68,7 +70,6 @@ class UserProfileImage extends StatelessWidget {
 
   final double size;
   final double? radius;
-  
 
   @override
   Widget build(BuildContext context) {

@@ -53,6 +53,8 @@ class PhoneChanged extends SignupEvent {
   List<Object> get props => [phone];
 }
 
+
+
 // Events for UI actions
 
 class TogglePasswordVisibility extends SignupEvent {}

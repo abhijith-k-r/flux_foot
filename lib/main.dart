@@ -6,7 +6,6 @@ import 'package:fluxfoot_user/core/auth/authwrapper.dart';
 import 'package:fluxfoot_user/core/firebase/auth/auth_repository.dart';
 import 'package:fluxfoot_user/core/firebase/auth/firebase_auth_service.dart';
 import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/bloc/user_bloc.dart';
 import 'package:fluxfoot_user/features/auth/presentation/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/auth/presentation/signup_bloc/signup_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
@@ -43,9 +42,9 @@ class MyAPP extends StatelessWidget {
           create: (context) => SigninBloc(authRepository: authRepository),
         ),
 
-        BlocProvider<UserBloc>(
-          create: (context) => UserBloc(authRepository: authRepository),
-        ),
+        // BlocProvider<UserBloc>(
+        //   create: (context) => UserBloc(authRepository: authRepository),
+        // ),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',

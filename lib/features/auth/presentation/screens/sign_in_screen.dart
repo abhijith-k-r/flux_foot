@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/features/auth/domain/usecases/form_validator.dart';
+import 'package:fluxfoot_user/features/auth/presentation/screens/forgot_password.dart';
 import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
 import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:fluxfoot_user/features/auth/presentation/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/bottom_navbar/presentation/screen/main_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -20,10 +20,13 @@ class SignInScreen extends StatelessWidget {
     final width = size.width;
     final height = size.height;
     return BlocListener<SigninBloc, SigninState>(
+      listenWhen: (previous, current) =>
+          !previous.isSuccess && current.isSuccess,
       listener: (context, state) {
         if (state.errorMessage != null &&
             state.errorMessage!.isNotEmpty &&
-            !state.isLoading) {
+            !state.isLoading &&
+            !state.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
@@ -32,7 +35,7 @@ class SignInScreen extends StatelessWidget {
           );
         }
 
-        if (state.isSuccess) {
+        if (state.isSuccess && !state.isLoading) {
           fadePUshReplaceMent(context, MainScreen());
         }
       },
@@ -82,26 +85,34 @@ class SignInScreen extends StatelessWidget {
                       // ! Password Text Form Fiel
                       SigninPasswordTexform(),
                       SizedBox(height: height * 0.01),
-                      AuthCheckBox(
-                        mainAxis: MainAxisAlignment.spaceBetween,
-                        checkBox: Checkbox(
-                          activeColor: Color(0xFFFF8C00),
-                          value: false,
-                          onChanged: (value) {},
-                        ),
-                        prefText: 'Remember me',
-                        sufWidget: TextButton(
-                          onPressed: () {
-                            // showForgotPasswordDialog(context);
-                          },
-                          child: Text(
-                            'Forgot password?',
-                            style: GoogleFonts.openSans(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      BlocBuilder<SigninBloc, SigninState>(
+                        builder: (context, state) {
+                          return AuthCheckBox(
+                            mainAxis: MainAxisAlignment.spaceBetween,
+                            checkBox: Checkbox(
+                              activeColor: Color(0xFFFF8C00),
+                              value: state.isRemember,
+                              onChanged: (_) {
+                                context.read<SigninBloc>().add(
+                                  ToggleRememberMe(),
+                                );
+                              },
                             ),
-                          ),
-                        ),
+                            prefText: 'Remember me',
+                            sufWidget: TextButton(
+                              onPressed: () {
+                                fadePush(context, ResetPasswordScreen());
+                              },
+                              child: Text(
+                                'Forgot password?',
+                                style: GoogleFonts.openSans(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       SizedBox(height: height * 0.03),
                       BlocBuilder<SigninBloc, SigninState>(
@@ -114,10 +125,6 @@ class SignInScreen extends StatelessWidget {
                                       context.read<SigninBloc>().add(
                                         SigninSubmitted(),
                                       );
-                                      fadePUshReplaceMent(
-                                        context,
-                                        MainScreen(),
-                                      );
                                     }
                                   },
                             text: 'Sign In',
@@ -127,8 +134,8 @@ class SignInScreen extends StatelessWidget {
                       SizedBox(height: height * 0.02),
                       dividerOr(),
                       SizedBox(height: height * 0.02),
-
-                      GoogleAuth(ontap: () {}),
+                      // ! Google Sign In
+                      GoogleUserSignin(),
 
                       SizedBox(height: height * 0.03),
                     ],
@@ -139,6 +146,26 @@ class SignInScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class GoogleUserSignin extends StatelessWidget {
+  const GoogleUserSignin({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SigninBloc, SigninState>(
+      buildWhen: (previous, current) => previous.isLoading != current.isLoading,
+      builder: (context, state) {
+        return GoogleAuth(
+          ontap: state.isLoading
+              ? () {}
+              : () {
+                  context.read<SigninBloc>().add(GoogleSigninSubmitted());
+                },
+        );
+      },
     );
   }
 }
@@ -179,39 +206,48 @@ class SignInEmailTextform extends StatelessWidget with Validator {
 
 // ! For Sign In Password
 
-class SigninPasswordTexform extends StatelessWidget with Validator {
+class SigninPasswordTexform extends StatefulWidget with Validator {
   const SigninPasswordTexform({super.key});
 
   @override
+  State<SigninPasswordTexform> createState() => _SigninPasswordTexformState();
+}
+
+class _SigninPasswordTexformState extends State<SigninPasswordTexform> {
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocSelector<SigninBloc, SigninState, PasswordSelector>(
-      selector: (state) => (
-        autovalidateMode: state.autovalidateMode,
-        isVisible: state.isPasswordVisible,
-        password: state.password,
-      ),
+    return BlocSelector<SigninBloc, SigninState, (AutovalidateMode, bool)>(
+      selector: (state) => (state.autovalidateMode, state.isPasswordVisible),
 
       builder: (context, selection) {
+        final autovalidateMode = selection.$1;
+        final isVisible = selection.$2;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           spacing: 5,
           children: [
             Text('Password'),
             TextFormField(
-              autovalidateMode: selection.autovalidateMode,
-              initialValue: selection.password,
+              controller: _passwordController,
+              autovalidateMode: autovalidateMode,
               onChanged: (value) =>
                   context.read<SigninBloc>().add(PasswordChanged(value)),
-              obscureText: !selection.isVisible,
-              validator: validatePassword,
+              obscureText: !isVisible,
+              validator: widget.validatePassword,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock_outline_rounded),
                 hintText: 'Enter Password...',
                 suffixIcon: IconButton(
                   icon: Icon(
-                    selection.isVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off,
+                    isVisible ? Icons.visibility : Icons.visibility_off,
                   ),
                   onPressed: () => context.read<SigninBloc>().add(
                     TogglePasswordVisibility(),

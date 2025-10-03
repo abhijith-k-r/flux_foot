@@ -20,6 +20,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: CustomAppBar(
         leading: customBackButton(context),
@@ -35,121 +36,135 @@ class ProfileScreen extends StatelessWidget {
         action: [SizedBox(width: size * 0.2)],
       ),
       body: SingleChildScrollView(
-        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        child: StreamBuilder<DocumentSnapshot>(
           stream: FirebaseFirestore.instance
               .collection('users')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .doc(FirebaseAuth.instance.currentUser?.uid)
               .snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasError) {
-                  return const Text('Something went wrong');
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("Loading");
+                  return const Center(child: Text("Loading..."));
                 }
-                Map<String, dynamic> data =
-                    snapshot.data!.data()! as Map<String, dynamic>;
-            return Column(
-              spacing: size * 0.05,
-              children: [
-                SizedBox(height: size * 0.01),
-                // ! Circle Avatar For User Profile
-                UserProfileImage(size: size, radius: size * 0.15).fadeInDown(),
-                // ! User name
-                ProfileName(size: size, name: data['name']).fadeInDownBig(),
-                // ! Details
-                ProfileDetails(
-                  size: size,
-                  title: 'NAME',
-                  icon: Icon(Icons.person_2_rounded),
-                  subtitle: data['name'],
-                ).fadeInLeft(),
-                ProfileDetails(
-                  size: size,
-                  title: 'ACCOUNT INFORMATION',
-                  icon: Icon(CupertinoIcons.person_alt_circle),
-                  subtitle: data['email'],
-                ).fadeInRight(),
-                ProfileDetails(
-                  size: size,
-                  title: 'PHONE NUMBER',
-                  icon: Icon(CupertinoIcons.phone),
-                  subtitle: data['phone'],
-                ).fadeInLeft(),
-                ProfileDetails(
-                  size: size,
-                  title: 'D O B',
-                  icon: Icon(Icons.cake),
-                  subtitle: 'dob',
-                ).fadeInRight(),
+                final docData = snapshot.data?.data();
 
-                CustomButton(
-                  backColor: Colors.orange,
-                  widget: Icon(Icons.edit, color: Colors.white),
-                  text: 'Edit Profile',
-                  fontSize: size * 0.05,
+                if (docData == null || docData is! Map<String, dynamic>) {
+                  return const Center(
+                    child: Text("Profile data not found or empty."),
+                  );
+                }
+                final Map<String, dynamic> data = docData;
+                return Column(
                   spacing: size * 0.05,
-                  fontWeight: FontWeight.bold,
-                  showTextAndWidget: true,
-                  ontap: () {},
-                ).fadeInUpBig(),
-                BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthUnauthenticated) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Account deleted successfully! Redirecting...',
-                              ),
-                              backgroundColor: Colors.red,
-                              duration: Duration(
-                                seconds: 2,
-                              ), // Keep SnackBar visible briefly
-                            ),
-                          )
-                          .closed
-                          .then((reason) {
-                            Future.delayed(Duration(milliseconds: 500), () {
-                              fadePUshReplaceMent(context, LoginSignUpScreen());
-                            });
-                          });
-                    } else if (state is AuthError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: Colors.orange,
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    final bool isLoading = state is AuthLoading;
-                    return CustomButton(
-                      widget: isLoading
-                          ? CircularProgressIndicator()
-                          : Icon(
-                              CupertinoIcons.person_crop_circle_badge_exclam,
-                              color: Colors.red,
-                            ),
-                      text: 'Delete Account',
+                  children: [
+                    SizedBox(height: size * 0.01),
+                    // ! Circle Avatar For User Profile
+                    UserProfileImage(
+                      size: size,
+                      radius: size * 0.15,
+                    ).fadeInDown(),
+                    // ! User name
+                    ProfileName(size: size, name: data['name']).fadeInDownBig(),
+                    // ! Details
+                    ProfileDetails(
+                      size: size,
+                      title: 'NAME',
+                      icon: Icon(Icons.person_2_rounded),
+                      subtitle: data['name'],
+                    ).fadeInLeft(),
+                    ProfileDetails(
+                      size: size,
+                      title: 'ACCOUNT INFORMATION',
+                      icon: Icon(CupertinoIcons.person_alt_circle),
+                      subtitle: data['email'],
+                    ).fadeInRight(),
+                    ProfileDetails(
+                      size: size,
+                      title: 'PHONE NUMBER',
+                      icon: Icon(CupertinoIcons.phone),
+                      subtitle: data['phone'] ?? '+91 (000-0000-000)',
+                    ).fadeInLeft(),
+                    ProfileDetails(
+                      size: size,
+                      title: 'D O B',
+                      icon: Icon(Icons.cake),
+                      subtitle: data['dob'] ?? '00/00/0000',
+                    ).fadeInRight(),
+
+                    CustomButton(
+                      backColor: Colors.orange,
+                      widget: Icon(Icons.edit, color: Colors.white),
+                      text: 'Edit Profile',
                       fontSize: size * 0.05,
                       spacing: size * 0.05,
                       fontWeight: FontWeight.bold,
                       showTextAndWidget: true,
-                      ontap: isLoading
-                          ? null
-                          : () {
-                              context.read<AuthBloc>().add(
-                                AuthLogoutRequested(),
-                              );
-                            },
-                    );
-                  },
-                ).fadeInUp(),
-              ],
-            );
-          },
+                      ontap: () {},
+                    ).fadeInUpBig(),
+                    BlocConsumer<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is AuthUnauthenticated) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Account Log Out successfully! Redirecting...',
+                                  ),
+                                  backgroundColor: Colors.red,
+                                  duration: Duration(
+                                    seconds: 2,
+                                  ), 
+                                ),
+                              )
+                              .closed
+                              .then((reason) {
+                                Future.delayed(Duration(milliseconds: 500), () {
+                                  fadePUshReplaceMent(
+                                    context,
+                                    LoginSignUpScreen(),
+                                  );
+                                });
+                              });
+                        } else if (state is AuthError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(state.message),
+                              backgroundColor: Colors.orange,
+                            ),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        final bool isLoading = state is AuthLoading;
+                        return CustomButton(
+                          widget: isLoading
+                              ? CircularProgressIndicator()
+                              : Icon(
+                                  CupertinoIcons
+                                      .person_crop_circle_badge_exclam,
+                                  color: Colors.red,
+                                ),
+                          text: 'LogOut Account',
+                          fontSize: size * 0.05,
+                          spacing: size * 0.05,
+                          fontWeight: FontWeight.bold,
+                          showTextAndWidget: true,
+                          ontap: isLoading
+                              ? null
+                              : () {
+                                  context.read<AuthBloc>().add(
+                                    AuthLogoutRequested(),
+                                  );
+                                },
+                        );
+                      },
+                    ).fadeInUp(),
+                  ],
+                );
+              },
         ),
       ),
     );
