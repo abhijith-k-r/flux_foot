@@ -1,0 +1,89 @@
+import 'dart:async';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
+import 'package:fluxfoot_user/features/home/models/brands_model.dart';
+import 'package:fluxfoot_user/features/home/models/product_model.dart';
+
+part 'home_event.dart';
+part 'home_state.dart';
+
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  final UserProductRepository _productRepository;
+  StreamSubscription? _productSubscription;
+  StreamSubscription? _brandsSubscription;
+
+  HomeBloc(this._productRepository) : super(HomeInitial()) {
+    on<LoadFeaturedProducts>(_onLoadFeaturedProducts);
+    on<UpdateFeaturedProducts>(_onUpdateFeaturedProducts);
+
+    on<LoadBrands>(_onLoadBrands);
+    on<UpdateBrands>(_onUpdateBrands);
+  }
+
+  void _onLoadFeaturedProducts(
+    LoadFeaturedProducts event,
+    Emitter<HomeState> emit,
+  ) {
+    if (state is HomeInitial) {
+      emit(HomeLoading());
+    }
+
+    _productSubscription?.cancel();
+
+    _productSubscription = _productRepository.streamActivePoducts().listen(
+      (productList) {
+        add(UpdateFeaturedProducts(productList));
+      },
+      onError: (e) {
+        emit(HomeError('Failed to load products: $e'));
+      },
+    );
+  }
+
+  void _onUpdateFeaturedProducts(
+    UpdateFeaturedProducts event,
+    Emitter<HomeState> emit,
+  ) {
+    final currentState = state;
+    final List<BrandModel> currentBrands = currentState is HomeDataLoaded
+        ? currentState.brands
+        : [];
+
+    emit(HomeDataLoaded(products: event.products, brands: currentBrands));
+  }
+
+  // ! For BRANDS
+  void _onLoadBrands(LoadBrands event, Emitter<HomeState> emit) {
+    if (state is HomeInitial) {
+      emit(HomeLoading());
+    }
+
+    _brandsSubscription?.cancel();
+
+    _brandsSubscription = _productRepository.streamActiveBrands().listen(
+      (brandList) {
+        add(UpdateBrands(brandList));
+      },
+      onError: (e) {
+        emit(HomeError('Failed to load brands: $e'));
+      },
+    );
+  }
+
+  void _onUpdateBrands(UpdateBrands event, Emitter<HomeState> emit) {
+    final currentState = state;
+    final List<ProductModel> currentProducts = currentState is HomeDataLoaded
+        ? currentState.products
+        : [];
+
+    emit(HomeDataLoaded(products: currentProducts, brands: event.brands));
+  }
+
+  @override
+  Future<void> close() {
+    _productSubscription?.cancel();
+    _brandsSubscription?.cancel();
+    return super.close();
+  }
+}

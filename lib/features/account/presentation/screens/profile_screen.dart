@@ -6,12 +6,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluxfoot_user/features/account/presentation/screens/account_screen.dart';
-import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_event.dart';
-import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_state.dart';
-import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/login_screen.dart';
-import 'package:fluxfoot_user/features/auth/presentation/screens/login_signup_screen.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/routing/navigator.dart';
+import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
+import 'package:fluxfoot_user/core/widgets/custom_button.dart';
+import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
+import 'package:fluxfoot_user/features/account/presentation/widgets/account_widgets.dart';
+import 'package:fluxfoot_user/features/account/presentation/widgets/logout_dialog.dart';
+import 'package:fluxfoot_user/features/account/presentation/widgets/profile_widgets.dart';
+import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
+import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_event.dart';
+import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_state.dart';
+import 'package:fluxfoot_user/features/auth/views/screens/sign_in_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -65,178 +72,120 @@ class ProfileScreen extends StatelessWidget {
                     UserProfileImage(
                       size: size,
                       radius: size * 0.15,
+                      data: data['imageUrl'],
                     ).fadeInDown(),
                     // ! User name
                     ProfileName(size: size, name: data['name']).fadeInDownBig(),
-                    // ! Details
+                    // !User Name Details
                     ProfileDetails(
                       size: size,
                       title: 'NAME',
                       icon: Icon(Icons.person_2_rounded),
                       subtitle: data['name'],
                     ).fadeInLeft(),
+                    // ! User Email Details
                     ProfileDetails(
                       size: size,
                       title: 'ACCOUNT INFORMATION',
                       icon: Icon(CupertinoIcons.person_alt_circle),
                       subtitle: data['email'],
                     ).fadeInRight(),
+                    // ! User Phone Details
                     ProfileDetails(
                       size: size,
                       title: 'PHONE NUMBER',
                       icon: Icon(CupertinoIcons.phone),
                       subtitle: data['phone'] ?? '+91 (000-0000-000)',
                     ).fadeInLeft(),
+                    // ! User D/O/D Details
                     ProfileDetails(
                       size: size,
                       title: 'D O B',
                       icon: Icon(Icons.cake),
                       subtitle: data['dob'] ?? '00/00/0000',
                     ).fadeInRight(),
-
+                    // ! User Edit Button
                     CustomButton(
-                      backColor: Colors.orange,
-                      widget: Icon(Icons.edit, color: Colors.white),
+                      backColor: AppColors.bgOrange,
+                      widget: Icon(Icons.edit, color: AppColors.iconWhite),
                       text: 'Edit Profile',
                       fontSize: size * 0.05,
                       spacing: size * 0.05,
                       fontWeight: FontWeight.bold,
                       showTextAndWidget: true,
-                      ontap: () {},
+                      ontap: () {
+                        customSnackBar(
+                          context,
+                          'Suii evadey',
+                          Icons.sms_failed,
+                          Colors.lightGreen,
+                        );
+                      },
                     ).fadeInUpBig(),
-                    BlocConsumer<AuthBloc, AuthState>(
+                    // ! User Log Out Button
+                    BlocListener<AuthBloc, AuthState>(
                       listener: (context, state) {
                         if (state is AuthUnauthenticated) {
                           ScaffoldMessenger.of(context)
                               .showSnackBar(
-                                const SnackBar(
-                                  content: Text(
+                                SnackBar(
+                                  content: const Text(
                                     'Account Log Out successfully! Redirecting...',
                                   ),
-                                  backgroundColor: Colors.red,
-                                  duration: Duration(
-                                    seconds: 2,
-                                  ), 
+                                  backgroundColor: AppColors.sucessGreen,
+                                  duration: const Duration(seconds: 2),
+                                  behavior: SnackBarBehavior.floating,
                                 ),
                               )
                               .closed
                               .then((reason) {
-                                Future.delayed(Duration(milliseconds: 500), () {
-                                  fadePUshReplaceMent(
-                                    context,
-                                    LoginSignUpScreen(),
-                                  );
-                                });
+                                Future.delayed(
+                                  const Duration(milliseconds: 500),
+                                  () {
+                                    fadePushAndRemoveUntil(
+                                      context,
+                                      SignInScreen(),
+                                    );
+                                  },
+                                );
                               });
                         } else if (state is AuthError) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(state.message),
-                              backgroundColor: Colors.orange,
+                              backgroundColor: AppColors.bgRed,
                             ),
                           );
                         }
                       },
-                      builder: (context, state) {
-                        final bool isLoading = state is AuthLoading;
-                        return CustomButton(
-                          widget: isLoading
-                              ? CircularProgressIndicator()
-                              : Icon(
-                                  CupertinoIcons
-                                      .person_crop_circle_badge_exclam,
-                                  color: Colors.red,
-                                ),
-                          text: 'LogOut Account',
-                          fontSize: size * 0.05,
-                          spacing: size * 0.05,
-                          fontWeight: FontWeight.bold,
-                          showTextAndWidget: true,
-                          ontap: isLoading
-                              ? null
-                              : () {
-                                  context.read<AuthBloc>().add(
-                                    AuthLogoutRequested(),
-                                  );
-                                },
-                        );
-                      },
-                    ).fadeInUp(),
+                      child: BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          return CustomButton(
+                            widget: Icon(
+                              CupertinoIcons.person_crop_circle_badge_exclam,
+                              color: AppColors.iconRed,
+                            ),
+                            text: 'LogOut Account',
+                            fontSize: size * 0.05,
+                            spacing: size * 0.05,
+                            fontWeight: FontWeight.bold,
+                            showTextAndWidget: true,
+                            ontap: () async {
+                              // Add async and await
+                              final confirmed = await showLogoutDialog(context);
+                              if (confirmed == true) {
+                                context.read<AuthBloc>().add(
+                                  const AuthLogoutRequested(),
+                                );
+                              }
+                            },
+                          ).fadeInUp();
+                        },
+                      ),
+                    ),
                   ],
                 );
               },
-        ),
-      ),
-    );
-  }
-}
-
-class ProfileName extends StatelessWidget {
-  const ProfileName({super.key, required this.size, required this.name});
-
-  final double size;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Hey, $name',
-      style: GoogleFonts.openSans(
-        fontWeight: FontWeight.bold,
-        fontSize: size * 0.055,
-      ),
-    );
-  }
-}
-
-class ProfileDetails extends StatelessWidget {
-  const ProfileDetails({
-    super.key,
-    required this.size,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-  });
-
-  final double size;
-  final String title;
-  final String subtitle;
-  final Widget icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: size * 0.03, right: size * 0.03),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.white,
-        ),
-        child: ListTile(
-          title: Row(
-            spacing: size * 0.02,
-            children: [
-              Text(
-                title,
-
-                style: GoogleFonts.rozhaOne(
-                  fontSize: size * 0.045,
-                  color: const Color.fromARGB(221, 46, 46, 46),
-                  letterSpacing: 3,
-                  wordSpacing: 10,
-                ),
-              ),
-              icon,
-            ],
-          ),
-          subtitle: Text(
-            subtitle,
-            style: GoogleFonts.openSans(
-              fontSize: size * 0.05,
-              color: Colors.black,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
         ),
       ),
     );

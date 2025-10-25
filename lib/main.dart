@@ -2,12 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluxfoot_user/core/auth/authwrapper.dart';
-import 'package:fluxfoot_user/core/firebase/auth/auth_repository.dart';
-import 'package:fluxfoot_user/core/firebase/auth/firebase_auth_service.dart';
-import 'package:fluxfoot_user/features/auth/presentation/auth_bloc/auth_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/signin_bloc/signin_bloc.dart';
-import 'package:fluxfoot_user/features/auth/presentation/signup_bloc/signup_bloc.dart';
+import 'package:fluxfoot_user/core/services/auth/authwrapper.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
+import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
+import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_service.dart';
+import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
+import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
+import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/bloc/home_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
 
 void main() async {
@@ -26,6 +29,7 @@ class MyAPP extends StatelessWidget {
     final BaseAuthRepository authRepository = FirebaseAuthService(
       firebaseAuthInstance,
     );
+    final productRepository = UserProductRepository();
 
     return MultiBlocProvider(
       providers: [
@@ -42,14 +46,19 @@ class MyAPP extends StatelessWidget {
           create: (context) => SigninBloc(authRepository: authRepository),
         ),
 
-        // BlocProvider<UserBloc>(
-        //   create: (context) => UserBloc(authRepository: authRepository),
-        // ),
+        BlocProvider<HomeBloc>(
+          create: (context) {
+            final bloc = HomeBloc(productRepository);
+            bloc.add(LoadFeaturedProducts());
+            bloc.add(LoadBrands());
+            return bloc;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(scaffoldBackgroundColor: Color(0xFFE0E0E0)),
+        theme: ThemeData(scaffoldBackgroundColor: AppColors.scaffBg),
         home: AuthWrapper(),
       ),
     );
