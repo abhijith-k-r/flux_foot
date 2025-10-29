@@ -8,8 +8,9 @@ Widget customText(
   FontWeight? fontWeight,
   Color? appColor,
   TextDecoration? textDecoration,
+  TextOverflow? overflow,
+  int? maxLines,
 }) {
-
   return Text(
     text,
     style: GoogleFonts.openSans(
@@ -18,6 +19,6 @@ Widget customText(
       fontWeight: fontWeight,
       decoration: textDecoration,
     ),
-    overflow: TextOverflow.ellipsis,
+    overflow: overflow ?? TextOverflow.ellipsis,
   );
 }

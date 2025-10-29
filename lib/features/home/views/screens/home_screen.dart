@@ -83,10 +83,9 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
 
-              // ! Search By Brands - ✅ FIXED: Removed Builder wrapper
+              // ! Search By Brands
               BlocBuilder<HomeBloc, HomeState>(
                 buildWhen: (previous, current) {
-                  // Only rebuild when state actually changes
                   return previous != current;
                 },
                 builder: (context, state) {
@@ -125,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(35),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.3),
+                                      color: AppColors.bgGrey.withOpacity(0.3),
                                       spreadRadius: 2,
                                       blurRadius: 10,
                                       offset: Offset(0, 5),
@@ -185,7 +184,7 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
 
-              // ! Featured Products - ✅ FIXED: Removed Builder wrapper
+              // ! Featured Products
               BlocBuilder<HomeBloc, HomeState>(
                 buildWhen: (previous, current) {
                   return previous != current;
@@ -223,11 +222,12 @@ class HomeScreen extends StatelessWidget {
                         final product = state.products[index];
                         return ProductCard(
                           imageUrl:
-                              product.imageUrl ??
-                              'https://via.placeholder.com/150',
+                              product.images,
+                             
                           productName: product.name,
                           regularPrice: product.regularPrice,
                           salePrice: product.salePrice,
+                          description: product.description ?? '',
                         );
                       },
                     );

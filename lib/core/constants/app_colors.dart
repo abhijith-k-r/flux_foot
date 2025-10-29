@@ -23,4 +23,5 @@ class AppColors {
   static Color btnDeepPurple = Colors.deepPurple;
   static Color btnPink = Colors.pink;
   static Color sucessGreen = Colors.green;
+  static Color bgGrey = Colors.grey;
 }

@@ -44,37 +44,29 @@ class CustomButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Center(
-          child: showTextAndWidget
-              ? Row(
-                  spacing: spacing,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (widget != null) ?widget,
-                    Text(
-                      text,
-                      style: GoogleFonts.openSans(
-                        color: textColor,
-                        fontSize: fontSize,
-                        fontWeight: fontWeight,
-                      ),
-                    ),
-                  ],
-                )
-              : widget ??
-                    Text(
-                      text,
-                      style: GoogleFonts.openSans(
-                        color: textColor,
-                        fontSize: fontSize,
-                        fontWeight: fontWeight,
-                      ),
-                    ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
+              if (widget != null) ...[
+                widget!,
+                SizedBox(width: spacing), 
+              ],
+              Text(
+                text,
+                style: GoogleFonts.openSans(
+                  color: textColor,
+                  fontSize: fontSize,
+                  fontWeight: fontWeight,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-
 
 // ! Google User Sign In Button
 class GoogleAuth extends StatelessWidget {
