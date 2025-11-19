@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
-import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
-import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 
 class ProductCard extends StatelessWidget {
   final String productName;
@@ -27,166 +25,154 @@ class ProductCard extends StatelessWidget {
     final String displayImageUrl = imageUrl.isNotEmpty
         ? imageUrl[0]
         : 'https://example.com/placeholder.png';
-    return GestureDetector(
-      onTap: () => fadePush(
-        context,
-        ProductView(
-          productName: productName,
-          images: imageUrl,
-          regularPrice: regularPrice,
-          salePrice: salePrice,
-          description: description,
-        ),
-      ),
-      child: Card(
-        color: AppColors.bgWhite,
-        clipBehavior: Clip.hardEdge,
-        child: Stack(
-          children: [
-            Positioned(
-              top: 7,
-              left: 25,
-              right: 25,
-              child: SizedBox(
-                width: 140,
-                height: 90,
-                child: Image.network(
-                  displayImageUrl,
-                  fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Center(child: Icon(Icons.broken_image, size: 40)),
-                ),
+    return Card(
+      color: AppColors.bgWhite,
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
+        children: [
+          Positioned(
+            top: 7,
+            left: 25,
+            right: 25,
+            child: SizedBox(
+              width: 140,
+              height: 90,
+              child: Image.network(
+                displayImageUrl,
+                fit: BoxFit.contain,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(child: CircularProgressIndicator());
+                },
+                errorBuilder: (context, error, stackTrace) =>
+                    const Center(child: Icon(Icons.broken_image, size: 40)),
               ),
             ),
-
-            Positioned(
-              top: 103,
-              left: 5,
-              right: 5,
-              child: Container(
-                width: 160,
-                height: 95,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFFD4D4D4), Color(0xFFF9F9F9)],
-                  ),
+          ),
+    
+          Positioned(
+            top: 103,
+            left: 5,
+            right: 5,
+            child: Container(
+              width: 160,
+              height: 95,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFD4D4D4), Color(0xFFF9F9F9)],
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(size * 0.02),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: size * 0.005,
-                    children: [
-                      customText(
-                        size * 0.033,
-                        productName,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      // ! For RATING
-                      Row(
-                        spacing: 5,
-                        children: [
-                          customText(size * 0.03, 'rating'),
-                          customText(
-                            size * 0.03,
-                            '4.9',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ],
-                      ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              customText(
-                                size * 0.04,
-                                '₹ $salePrice/-',
-                                fontWeight: FontWeight.bold,
-                              ),
-                              SizedBox(width: 5),
-                              customText(
-                                size * 0.025,
-                                '₹ $regularPrice/-',
-                                textDecoration: TextDecoration.lineThrough,
-                              ),
-                            ],
-                          ),
-
-                          // ! Container Icon For Cart
-                          Container(
-                            width: size * 0.08,
-                            height: size * 0.08,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.bgOrangeAccent,
-                                  Color(0xFFF9F9F9),
-                                ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              ),
-
-                              borderRadius: BorderRadius.circular(7),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(size * 0.02),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: size * 0.005,
+                  children: [
+                    customText(
+                      size * 0.033,
+                      productName,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    // ! For RATING
+                    Row(
+                      spacing: 5,
+                      children: [
+                        customText(size * 0.03, 'rating'),
+                        customText(
+                          size * 0.03,
+                          '4.9',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
+                    ),
+    
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            customText(
+                              size * 0.04,
+                              '₹ $salePrice/-',
+                              fontWeight: FontWeight.bold,
                             ),
-                            child: Padding(
-                              padding: EdgeInsets.all(1),
-                              child: InkWell(
-                                onTap: () {},
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.bgWhite,
-                                    borderRadius: BorderRadius.circular(7),
-                                  ),
-                                  child: Icon(
-                                    CupertinoIcons.cart,
-                                    color: AppColors.iconOrangeAccent,
-                                    size: size * 0.045,
-                                  ),
+                            SizedBox(width: 5),
+                            customText(
+                              size * 0.025,
+                              '₹ $regularPrice/-',
+                              textDecoration: TextDecoration.lineThrough,
+                            ),
+                          ],
+                        ),
+    
+                        // ! Container Icon For Cart
+                        Container(
+                          width: size * 0.08,
+                          height: size * 0.08,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.bgOrangeAccent,
+                                Color(0xFFF9F9F9),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+    
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(1),
+                            child: InkWell(
+                              onTap: () {},
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.bgWhite,
+                                  borderRadius: BorderRadius.circular(7),
+                                ),
+                                child: Icon(
+                                  CupertinoIcons.cart,
+                                  color: AppColors.iconOrangeAccent,
+                                  size: size * 0.045,
                                 ),
                               ),
                             ),
                           ),
-
-                          // ! After Filled Cart
-                          // Container(
-                          //   width: size * 0.08,
-                          //   height: size * 0.08,
-
-                          //   decoration: BoxDecoration(
-                          //     color: AppColors.bgOrange,
-                          //     borderRadius: BorderRadius.circular(7),
-                          //   ),
-                          //   child: Icon(
-                          //     CupertinoIcons.cart_fill,
-                          //     color: AppColors.iconWhite,
-                          //     size: size * 0.045,
-                          //   ),
-                          // ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+    
+                        // ! After Filled Cart
+                        // Container(
+                        //   width: size * 0.08,
+                        //   height: size * 0.08,
+    
+                        //   decoration: BoxDecoration(
+                        //     color: AppColors.bgOrange,
+                        //     borderRadius: BorderRadius.circular(7),
+                        //   ),
+                        //   child: Icon(
+                        //     CupertinoIcons.cart_fill,
+                        //     color: AppColors.iconWhite,
+                        //     size: size * 0.045,
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            Positioned(
-              right: 0,
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(CupertinoIcons.heart),
-              ),
+          ),
+          Positioned(
+            right: 0,
+            child: IconButton(
+              onPressed: () {},
+              icon: Icon(CupertinoIcons.heart),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

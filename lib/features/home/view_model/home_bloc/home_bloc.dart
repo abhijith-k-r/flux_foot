@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
 import 'package:fluxfoot_user/features/home/models/brands_model.dart';
+import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
+import 'package:fluxfoot_user/features/home/models/size_quantity_model.dart';
 
 part 'home_event.dart';
 part 'home_state.dart';

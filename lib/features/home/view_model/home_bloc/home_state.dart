@@ -13,6 +13,7 @@ final class HomeDataLoaded extends HomeState {
 
   HomeDataLoaded({required this.products, required this.brands});
 }
+
 final class HomeError extends HomeState {
   final String message;
   HomeError(this.message);

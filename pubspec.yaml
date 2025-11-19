@@ -47,6 +47,9 @@ dependencies:
   stylish_bottom_bar: ^1.1.1
   shared_preferences: ^2.5.3
   readmore: ^3.0.0
+  liquid_glass_renderer: ^0.2.0-dev.4
+  flutter_glass_morphism: ^1.0.2
+  liquid_glass: ^0.0.2
 
 
 

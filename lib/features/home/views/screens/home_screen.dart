@@ -4,10 +4,13 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
-import 'package:fluxfoot_user/features/home/view_model/bloc/home_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -48,7 +51,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomSearchBar(width: size, height: size),
+              CustomSearchBarAdvanced(width: size, height: size),
               SizedBox(height: size * 0.04),
               Container(
                 width: size * 0.99,
@@ -220,14 +223,22 @@ class HomeScreen extends StatelessWidget {
                       itemCount: state.products.length,
                       itemBuilder: (context, index) {
                         final product = state.products[index];
-                        return ProductCard(
-                          imageUrl:
-                              product.images,
-                             
-                          productName: product.name,
-                          regularPrice: product.regularPrice,
-                          salePrice: product.salePrice,
-                          description: product.description ?? '',
+                        return InkWell(
+                          onTap: () => fadePush(
+                            context,
+                            BlocProvider(
+                              create: (context) => ProductVariantBloc(product),
+                              child: ProductView(product: product),
+                            ),
+                          ),
+                          child: ProductCard(
+                            imageUrl: product.images,
+
+                            productName: product.name,
+                            regularPrice: product.regularPrice,
+                            salePrice: product.salePrice,
+                            description: product.description ?? '',
+                          ),
                         );
                       },
                     );

@@ -11,7 +11,6 @@ final class UpdateFeaturedProducts extends HomeEvent {
   UpdateFeaturedProducts(this.products);
 }
 
-
 final class LoadBrands extends HomeEvent {}
 
 final class UpdateBrands extends HomeEvent {
@@ -19,3 +18,6 @@ final class UpdateBrands extends HomeEvent {
 
   UpdateBrands(this.brands);
 }
+
+
+
