@@ -10,8 +10,6 @@ import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_se
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_bloc.dart';
-import 'package:fluxfoot_user/features/home/models/product_model.dart';
-import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
 

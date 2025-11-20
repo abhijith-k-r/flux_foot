@@ -222,7 +222,11 @@ class HomeScreen extends StatelessWidget {
                       ),
                       itemCount: state.products.length,
                       itemBuilder: (context, index) {
+                        state.products.sort(
+                          (a, b) => b.createdAt.compareTo(a.createdAt),
+                        );
                         final product = state.products[index];
+
                         return InkWell(
                           onTap: () => fadePush(
                             context,
@@ -232,12 +236,12 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           child: ProductCard(
-                            imageUrl: product.images,
-
                             productName: product.name,
                             regularPrice: product.regularPrice,
                             salePrice: product.salePrice,
                             description: product.description ?? '',
+                            product: product,
+                            productVariants: product.variants.first,
                           ),
                         );
                       },

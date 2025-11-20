@@ -2,29 +2,48 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
+import 'package:fluxfoot_user/features/home/models/product_model.dart';
 
 class ProductCard extends StatelessWidget {
   final String productName;
-  final List<String> imageUrl;
+  // final List<String> imageUrl;
   final String regularPrice;
   final String salePrice;
   final String description;
+  final ProductModel product;
+  final ColorvariantModel productVariants;
   const ProductCard({
     super.key,
     required this.productName,
-    required this.imageUrl,
+    // required this.imageUrl,
     required this.regularPrice,
     required this.salePrice,
     required this.description,
+    required this.product,
+    required this.productVariants,
   });
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
 
-    final String displayImageUrl = imageUrl.isNotEmpty
-        ? imageUrl[0]
-        : 'https://example.com/placeholder.png';
+    String? firstVariantImage;
+    if ((product.variants.isNotEmpty)) {
+      for (final v in product.variants) {
+        if (v.imageUrls.isNotEmpty) {
+          firstVariantImage = v.imageUrls.first;
+          break;
+        }
+      }
+    }
+
+    final imageUrl =
+        firstVariantImage ??
+        (product.images.isNotEmpty ? product.images.first : null);
+
+    final String displayImageUrl =
+        imageUrl ?? 'https://example.com/placeholder.png';
     return Card(
       color: AppColors.bgWhite,
       clipBehavior: Clip.hardEdge,
@@ -49,7 +68,7 @@ class ProductCard extends StatelessWidget {
               ),
             ),
           ),
-    
+
           Positioned(
             top: 103,
             left: 5,
@@ -88,7 +107,7 @@ class ProductCard extends StatelessWidget {
                         ),
                       ],
                     ),
-    
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -107,7 +126,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ],
                         ),
-    
+
                         // ! Container Icon For Cart
                         Container(
                           width: size * 0.08,
@@ -121,7 +140,7 @@ class ProductCard extends StatelessWidget {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),
-    
+
                             borderRadius: BorderRadius.circular(7),
                           ),
                           child: Padding(
@@ -142,12 +161,12 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                         ),
-    
+
                         // ! After Filled Cart
                         // Container(
                         //   width: size * 0.08,
                         //   height: size * 0.08,
-    
+
                         //   decoration: BoxDecoration(
                         //     color: AppColors.bgOrange,
                         //     borderRadius: BorderRadius.circular(7),
