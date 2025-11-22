@@ -11,6 +11,7 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
+import 'package:fluxfoot_user/features/home/views/screens/all_brands.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -80,7 +81,9 @@ class HomeScreen extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      fadePush(context, AllBrands());
+                    },
                     child: customText(15, 'View All'),
                   ),
                 ],

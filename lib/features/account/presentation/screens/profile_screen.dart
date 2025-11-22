@@ -12,6 +12,7 @@ import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:fluxfoot_user/core/widgets/custom_button.dart';
 import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/account/presentation/widgets/account_widgets.dart';
 import 'package:fluxfoot_user/features/account/presentation/widgets/logout_dialog.dart';
 import 'package:fluxfoot_user/features/account/presentation/widgets/profile_widgets.dart';
@@ -32,13 +33,12 @@ class ProfileScreen extends StatelessWidget {
       appBar: CustomAppBar(
         leading: customBackButton(context),
         title: Center(
-          child: Text(
+          child: customText(
+            size * 0.065,
             'Profile',
-            style: GoogleFonts.openSans(
-              fontWeight: FontWeight.w600,
-              fontSize: size * 0.065,
-            ),
+            fontWeight: FontWeight.w600,
           ),
+         
         ),
         action: [SizedBox(width: size * 0.2)],
       ),
