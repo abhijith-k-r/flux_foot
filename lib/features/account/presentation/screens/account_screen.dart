@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/account/presentation/screens/profile_screen.dart';
 import 'package:fluxfoot_user/features/account/presentation/widgets/account_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,12 +15,10 @@ class AccountScreen extends StatelessWidget {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text(
+        title: customText(
+          size,
           'Account',
-          style: GoogleFonts.rozhaOne(
-            fontWeight: FontWeight.w500,
-            fontSize: size * 0.08,
-          ),
+          style: GoogleFonts.rozhaOne(fontSize: size * 0.08),
         ),
       ),
       body: Column(
@@ -67,5 +66,3 @@ class AccountScreen extends StatelessWidget {
     );
   }
 }
-
-

@@ -20,7 +20,6 @@ import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart'
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_event.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_state.dart';
 import 'package:fluxfoot_user/features/auth/views/screens/sign_in_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

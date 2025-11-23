@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/services/auth/authwrapper.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/firebase/favorites_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_service.dart';
@@ -11,6 +12,7 @@ import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart'
 import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
 
 void main() async {
@@ -30,6 +32,7 @@ class MyAPP extends StatelessWidget {
       firebaseAuthInstance,
     );
     final productRepository = UserProductRepository();
+    final favoritesRepository = FavoritesRepository();
     return MultiBlocProvider(
       providers: [
         RepositoryProvider<BaseAuthRepository>.value(value: authRepository),
@@ -54,8 +57,10 @@ class MyAPP extends StatelessWidget {
           },
         ),
 
-       
-       
+        BlocProvider<FavoritesBloc>(
+          create: (context) =>
+              FavoritesBloc(repo: favoritesRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',

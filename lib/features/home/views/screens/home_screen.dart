@@ -173,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
 
-              SizedBox(height: size * 0.02),
+              SizedBox(height: size * 0.03),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,12 +183,9 @@ class HomeScreen extends StatelessWidget {
                     'Featured Product',
                     fontWeight: FontWeight.w600,
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: customText(15, 'View All'),
-                  ),
                 ],
               ),
+              SizedBox(height: size * 0.02),
 
               // ! Featured Products
               BlocBuilder<HomeBloc, HomeState>(
@@ -244,7 +241,9 @@ class HomeScreen extends StatelessWidget {
                             salePrice: product.salePrice,
                             description: product.description ?? '',
                             product: product,
-                            productVariants: product.variants.first,
+                            productVariants: product.variants.isNotEmpty
+                                ? product.variants.first
+                                : null,
                           ),
                         );
                       },
