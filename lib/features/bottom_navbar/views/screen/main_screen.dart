@@ -4,7 +4,7 @@ import 'package:fluxfoot_user/features/account/presentation/screens/account_scre
 import 'package:fluxfoot_user/features/bottom_navbar/view_model/bloc/navigation_bloc.dart';
 import 'package:fluxfoot_user/features/bottom_navbar/views/widgets/custom_bottom_nav_bar.dart';
 import 'package:fluxfoot_user/features/home/views/screens/home_screen.dart';
-import 'package:fluxfoot_user/features/wishlists/views/favorite_view.dart';
+import 'package:fluxfoot_user/features/wishlists/views/screens/favorite_view.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

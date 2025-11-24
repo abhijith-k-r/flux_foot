@@ -12,6 +12,7 @@ import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/screens/all_brands.dart';
+import 'package:fluxfoot_user/features/home/views/screens/view_all_products.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -52,7 +53,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomSearchBarAdvanced(width: size, height: size),
+              CustomSearchBar(width: size, height: size),
               SizedBox(height: size * 0.04),
               Container(
                 width: size * 0.99,
@@ -182,6 +183,12 @@ class HomeScreen extends StatelessWidget {
                     16,
                     'Featured Product',
                     fontWeight: FontWeight.w600,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      fadePush(context, ViewAllProducts());
+                    },
+                    child: customText(15, 'View All'),
                   ),
                 ],
               ),

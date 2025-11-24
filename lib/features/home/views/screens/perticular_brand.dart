@@ -5,7 +5,7 @@ import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
@@ -105,7 +105,7 @@ class PerticularBrand extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     // ! Custom SearchBar
-                    CustomSearchBarAdvanced(width: size, height: size * 1.2),
+                    CustomSearchBarWithFilter(width: size, height: size * 1.2),
                     SizedBox(height: 10),
                     Expanded(
                       child: TabBarView(

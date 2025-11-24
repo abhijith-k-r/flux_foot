@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
@@ -52,7 +52,7 @@ class FavoriteView extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomSearchBarAdvanced(width: size, height: size * 1.3),
+                  CustomSearchBarWithFilter(width: size, height: size * 1.3),
                   customText(15, '${favoriteProducts.length} Products Found'),
                   SizedBox(height: size * 0.05),
                   // ! Favorites Products as Gridview

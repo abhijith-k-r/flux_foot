@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/perticular_brand.dart';
@@ -75,7 +75,7 @@ class AllBrands extends StatelessWidget {
                   spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomSearchBarAdvanced(width: size, height: size * 1.3),
+                    CustomSearchBarWithFilter(width: size, height: size * 1.3),
 
                     customText(15, '${sortedBrands.length} products Found'),
 
