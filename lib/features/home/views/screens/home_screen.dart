@@ -53,7 +53,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CustomSearchBar(width: size, height: size),
+              CustomSearchBar(width: size, height: size * 1.2),
               SizedBox(height: size * 0.04),
               Container(
                 width: size * 0.99,
@@ -217,6 +217,9 @@ class HomeScreen extends StatelessWidget {
                         ),
                       );
                     }
+                    int count = state.products.length < 4
+                        ? state.products.length
+                        : 4;
 
                     return GridView.builder(
                       shrinkWrap: true,
@@ -227,7 +230,7 @@ class HomeScreen extends StatelessWidget {
                         mainAxisSpacing: 5,
                         childAspectRatio: 0.85,
                       ),
-                      itemCount: state.products.length,
+                      itemCount: count,
                       itemBuilder: (context, index) {
                         state.products.sort(
                           (a, b) => b.createdAt.compareTo(a.createdAt),

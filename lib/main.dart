@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/services/auth/authwrapper.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/firebase/cart_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/favorites_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
@@ -11,6 +12,7 @@ import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_se
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_bloc.dart';
+import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
@@ -34,6 +36,7 @@ class MyAPP extends StatelessWidget {
     );
     final productRepository = UserProductRepository();
     final favoritesRepository = FavoritesRepository();
+    final cartRepository = CartRepository();
     return MultiBlocProvider(
       providers: [
         RepositoryProvider<BaseAuthRepository>.value(value: authRepository),
@@ -63,6 +66,8 @@ class MyAPP extends StatelessWidget {
         ),
 
         BlocProvider<FilterBloc>(create: (context) => FilterBloc()),
+
+        BlocProvider<CartBloc>(create: (context) => CartBloc(repo: cartRepository)),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',

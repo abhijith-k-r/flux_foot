@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/features/account/presentation/screens/account_screen.dart';
 import 'package:fluxfoot_user/features/bottom_navbar/view_model/bloc/navigation_bloc.dart';
 import 'package:fluxfoot_user/features/bottom_navbar/views/widgets/custom_bottom_nav_bar.dart';
+import 'package:fluxfoot_user/features/cart/views/screen/carts_views.dart';
 import 'package:fluxfoot_user/features/home/views/screens/home_screen.dart';
 import 'package:fluxfoot_user/features/wishlists/views/screens/favorite_view.dart';
 
@@ -25,7 +26,7 @@ class MainScreen extends StatelessWidget {
               },
               children: const [
                 HomeScreen(),
-                Center(child: Text('cart Screen')),
+                CartsViews(),
                 FavoriteView(),
                 AccountScreen(),
               ],

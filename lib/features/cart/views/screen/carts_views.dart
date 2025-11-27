@@ -4,16 +4,16 @@ import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
-import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class FavoriteView extends StatelessWidget {
-  const FavoriteView({super.key});
+class CartsViews extends StatelessWidget {
+  const CartsViews({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class FavoriteView extends StatelessWidget {
       appBar: CustomAppBar(
         title: customText(
           size,
-          'Favarites',
+          'Carts',
           style: GoogleFonts.rozhaOne(fontSize: size * 0.08),
         ),
       ),
@@ -32,7 +32,7 @@ class FavoriteView extends StatelessWidget {
           vertical: size * 0.02,
         ),
         child: SingleChildScrollView(
-          child: BlocBuilder<FavoritesBloc, FavoritesState>(
+          child: BlocBuilder<CartBloc, CartState>(
             builder: (context, state) {
               if (state.isLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -41,19 +41,17 @@ class FavoriteView extends StatelessWidget {
                 return Center(child: Text('Error: ${state.error}'));
               }
 
-              final favoriteProducts = state.favoriteProducts;
+              final cartProducts = state.cartProducts;
 
-              if (favoriteProducts.isEmpty) {
-                return customText(size * 0.04, 'No favorites added yet!');
+              if (cartProducts.isEmpty) {
+                return customText(size * 0.04, 'No Carts added yet!');
               }
 
-              favoriteProducts.sort(
-                (a, b) => b.createdAt.compareTo(a.createdAt),
-              );
+              cartProducts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
               return BlocBuilder<FilterBloc, FilterState>(
                 builder: (context, filterState) {
-                  List<ProductModel> filteredProducts = state.favoriteProducts;
+                  List<ProductModel> filteredProducts = state.cartProducts;
 
                   filteredProducts.sort(
                     (a, b) => b.createdAt.compareTo(a.createdAt),
@@ -81,7 +79,6 @@ class FavoriteView extends StatelessWidget {
                         15,
                         '${filteredProducts.length} products Found',
                       ),
-                      // ! Favorite Products As Gridview
                       GridView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),

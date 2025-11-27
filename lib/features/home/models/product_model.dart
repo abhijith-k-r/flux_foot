@@ -72,21 +72,4 @@ class ProductModel {
       variants: variantsList,
     );
   }
-
-  // Map<String, dynamic> toFireStore() {
-  //   return {
-  //     'name': name,
-  //     'description': description,
-  //     'regularPrice': regularPrice,
-  //     'salePrice': salePrice,
-  //     'quantity': quantity,
-  //     'category': category,
-  //     'color': color,
-  //     'brand': brand,
-  //     'imageUrl': imageUrl,
-  //     'status': status,
-  //     'sellerId': sellerId,
-  //     'createdAt': createdAt,
-  //   };
-  // }
 }

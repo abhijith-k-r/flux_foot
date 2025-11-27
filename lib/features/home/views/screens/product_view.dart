@@ -323,10 +323,9 @@ customReadmoreText(String description) {
 
 //! Helper function to convert Hex String to Color
 Color hexToColor(String code) {
-  // Assuming code is a hex string like '#RRGGBB'
   String hex = code.replaceAll('#', '');
   if (hex.length == 6) {
-    hex = 'FF' + hex; // Add alpha value if missing
+    hex = 'FF$hex'; 
   }
   return Color(int.parse(hex, radix: 16));
 }

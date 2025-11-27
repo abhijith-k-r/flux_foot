@@ -1,5 +1,4 @@
 // ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
@@ -40,9 +39,7 @@ class ViewAllProducts extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           child: BlocBuilder<HomeBloc, HomeState>(
-            // buildWhen: (previous, current) {
-            //   return previous != current;
-            // },
+            
             builder: (context, state) {
               if (state is HomeLoading || state is HomeInitial) {
                 return Center(child: CircularProgressIndicator());

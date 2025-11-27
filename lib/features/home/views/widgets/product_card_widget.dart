@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
@@ -130,55 +131,72 @@ class ProductCard extends StatelessWidget {
                         ),
 
                         // ! Container Icon For Cart
-                        Container(
-                          width: size * 0.08,
-                          height: size * 0.08,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.bgOrangeAccent,
-                                Color(0xFFF9F9F9),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(1),
-                            child: InkWell(
-                              onTap: () {},
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.bgWhite,
-                                  borderRadius: BorderRadius.circular(7),
+                        BlocBuilder<CartBloc, CartState>(
+                          builder: (context, state) {
+                            final isCart = state.cartIds.contains(product.id);
+                            return Container(
+                              width: size * 0.08,
+                              height: size * 0.08,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.bgOrangeAccent,
+                                    Color(0xFFF9F9F9),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
-                                child: Icon(
-                                  CupertinoIcons.cart,
-                                  color: AppColors.iconOrangeAccent,
-                                  size: size * 0.045,
+
+                                borderRadius: BorderRadius.circular(7),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(1),
+                                child: InkWell(
+                                  onTap: () {
+                                    context.read<CartBloc>().add(
+                                      ToggleCart(
+                                        productModel: product,
+                                        isCart: isCart,
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: isCart
+                                          ? AppColors.bgOrange
+                                          : AppColors.bgWhite,
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                    child: Icon(
+                                      isCart
+                                          ? CupertinoIcons.cart_fill
+                                          : CupertinoIcons.cart,
+                                      color: isCart
+                                          ? AppColors.iconWhite
+                                          : AppColors.iconOrangeAccent,
+                                      size: size * 0.045,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                            // ! After Filled Cart
+                            // Container(
+                            //   width: size * 0.08,
+                            //   height: size * 0.08,
+
+                            //   decoration: BoxDecoration(
+                            //     color: AppColors.bgOrange,
+                            //     borderRadius: BorderRadius.circular(7),
+                            //   ),
+                            //   child: Icon(
+                            //     CupertinoIcons.cart_fill,
+                            //     color: AppColors.iconWhite,
+                            //     size: size * 0.045,
+                            //   ),
+                            // );
+                          },
                         ),
-
-                        // ! After Filled Cart
-                        // Container(
-                        //   width: size * 0.08,
-                        //   height: size * 0.08,
-
-                        //   decoration: BoxDecoration(
-                        //     color: AppColors.bgOrange,
-                        //     borderRadius: BorderRadius.circular(7),
-                        //   ),
-                        //   child: Icon(
-                        //     CupertinoIcons.cart_fill,
-                        //     color: AppColors.iconWhite,
-                        //     size: size * 0.045,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
