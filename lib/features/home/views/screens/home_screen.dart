@@ -8,6 +8,7 @@ import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
@@ -83,7 +84,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      fadePush(context, AllBrands());
+                      fadePush(
+                        context,
+                        BlocProvider(
+                          create: (_) => FilterBloc(),
+                          child: AllBrands(),
+                        ),
+                      );
                     },
                     child: customText(15, 'View All'),
                   ),
@@ -186,7 +193,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      fadePush(context, ViewAllProducts());
+                      fadePush(
+                        context,
+                        BlocProvider(
+                          create: (_) => FilterBloc(),
+                          child: ViewAllProducts(),
+                        ),
+                      );
                     },
                     child: customText(15, 'View All'),
                   ),

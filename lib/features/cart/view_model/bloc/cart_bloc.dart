@@ -33,7 +33,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     final currentUser = _auth.currentUser;
     if (currentUser != null) {
-      add(LoadCartItems(currentUser.uid));
+      add(LoadCartItems(currentUser.uid)); 
     }
   }
 

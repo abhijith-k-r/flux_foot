@@ -1,5 +1,8 @@
 part of 'filter_bloc.dart';
 
+//! filter_state.dart
+enum SortOption { newestFirst, priceLowToHigh, priceHighToLow, popularity }
+
 abstract class FilterEvent {}
 
 class ChangeSortOption extends FilterEvent {
@@ -27,5 +30,14 @@ class UpdateSearchQuery extends FilterEvent {
   UpdateSearchQuery(this.query);
 }
 
-//! filter_state.dart
-enum SortOption { newestFirst, priceLowToHigh, priceHighToLow, popularity }
+class StartListening extends FilterEvent {}
+
+class StopListening extends FilterEvent {
+  final String finalQuery;
+  StopListening(this.finalQuery);
+}
+
+class SetListeningStatus extends FilterEvent {
+  final bool isListening;
+  SetListeningStatus(this.isListening);
+}

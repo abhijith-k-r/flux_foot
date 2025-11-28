@@ -49,74 +49,76 @@ class CartsViews extends StatelessWidget {
 
               cartProducts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-              return BlocBuilder<FilterBloc, FilterState>(
-                builder: (context, filterState) {
-                  List<ProductModel> filteredProducts = state.cartProducts;
+              return Column(
+                children: [
+                  // ! Custom SearchBar
+                  CustomSearchBarWithFilter(width: size, height: size * 1.3),
+                  BlocBuilder<FilterBloc, FilterState>(
+                    builder: (context, filterState) {
+                      List<ProductModel> filteredProducts = state.cartProducts;
 
-                  filteredProducts.sort(
-                    (a, b) => b.createdAt.compareTo(a.createdAt),
-                  );
-
-                  final query = filterState.searchQuery.toLowerCase();
-                  if (query.isNotEmpty) {
-                    filteredProducts = filteredProducts.where((product) {
-                      return product.name.toLowerCase().trim().contains(
-                        query.toLowerCase().trim(),
+                      filteredProducts.sort(
+                        (a, b) => b.createdAt.compareTo(a.createdAt),
                       );
-                    }).toList();
-                  }
 
-                  return Column(
-                    spacing: 10,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomSearchBarWithFilter(
-                        width: size,
-                        height: size * 1.3,
-                      ),
-
-                      customText(
-                        15,
-                        '${filteredProducts.length} products Found',
-                      ),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 5,
-                          childAspectRatio: 0.85,
-                        ),
-                        itemCount: filteredProducts.length,
-                        itemBuilder: (context, index) {
-                          final product = filteredProducts[index];
-
-                          return InkWell(
-                            onTap: () => fadePush(
-                              context,
-                              BlocProvider(
-                                create: (context) =>
-                                    ProductVariantBloc(product),
-                                child: ProductView(product: product),
-                              ),
-                            ),
-                            child: ProductCard(
-                              productName: product.name,
-                              regularPrice: product.regularPrice,
-                              salePrice: product.salePrice,
-                              description: product.description ?? '',
-                              product: product,
-                              productVariants: product.variants.isNotEmpty
-                                  ? product.variants.first
-                                  : null,
-                            ),
+                      final query = filterState.searchQuery.toLowerCase();
+                      if (query.isNotEmpty) {
+                        filteredProducts = filteredProducts.where((product) {
+                          return product.name.toLowerCase().trim().contains(
+                            query.toLowerCase().trim(),
                           );
-                        },
-                      ),
-                    ],
-                  );
-                },
+                        }).toList();
+                      }
+
+                      return Column(
+                        spacing: 10,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customText(
+                            15,
+                            '${filteredProducts.length} products Found',
+                          ),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5,
+                                  childAspectRatio: 0.85,
+                                ),
+                            itemCount: filteredProducts.length,
+                            itemBuilder: (context, index) {
+                              final product = filteredProducts[index];
+
+                              return InkWell(
+                                onTap: () => fadePush(
+                                  context,
+                                  BlocProvider(
+                                    create: (context) =>
+                                        ProductVariantBloc(product),
+                                    child: ProductView(product: product),
+                                  ),
+                                ),
+                                child: ProductCard(
+                                  productName: product.name,
+                                  regularPrice: product.regularPrice,
+                                  salePrice: product.salePrice,
+                                  description: product.description ?? '',
+                                  product: product,
+                                  productVariants: product.variants.isNotEmpty
+                                      ? product.variants.first
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               );
             },
           ),

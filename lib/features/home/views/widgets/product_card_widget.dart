@@ -180,21 +180,6 @@ class ProductCard extends StatelessWidget {
                                 ),
                               ),
                             );
-                            // ! After Filled Cart
-                            // Container(
-                            //   width: size * 0.08,
-                            //   height: size * 0.08,
-
-                            //   decoration: BoxDecoration(
-                            //     color: AppColors.bgOrange,
-                            //     borderRadius: BorderRadius.circular(7),
-                            //   ),
-                            //   child: Icon(
-                            //     CupertinoIcons.cart_fill,
-                            //     color: AppColors.iconWhite,
-                            //     size: size * 0.045,
-                            //   ),
-                            // );
                           },
                         ),
                       ],

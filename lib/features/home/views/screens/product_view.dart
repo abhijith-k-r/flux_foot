@@ -6,8 +6,10 @@ import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:fluxfoot_user/core/widgets/custom_button.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
+import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:readmore/readmore.dart';
 
@@ -20,18 +22,31 @@ class ProductView extends StatelessWidget {
     final size = MediaQuery.of(context).size.width;
     final variantBloc = context.read<ProductVariantBloc>();
 
-    // final List<String> productImages = product.images;
-    // final String productName = product.name;
-    // final String regularPrice = product.regularPrice;
-    // final String salePrice = product.salePrice;
-    // final String description = product.description ?? '';
-    // late ColorvariantModel _selctedVariant;
-
     return Scaffold(
       appBar: CustomAppBar(
         leading: customBackButton(context),
         action: [
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.heart)),
+          BlocBuilder<FavoritesBloc, FavoritesState>(
+            builder: (context, state) {
+              final isFavorite = state.favoriteIds.contains(product.id);
+              return IconButton(
+                onPressed: () {
+                  context.read<FavoritesBloc>().add(
+                    ToggleFavoriteEvent(
+                      productModel: product,
+                      isFavorites: isFavorite,
+                    ),
+                  );
+                },
+                icon: Icon(
+                  isFavorite ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                  color: isFavorite
+                      ? AppColors.iconOrangeAccent
+                      : AppColors.outLineOrang,
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: BlocBuilder<ProductVariantBloc, ProductVariantState>(
@@ -258,7 +273,7 @@ class ProductView extends StatelessWidget {
                   ),
 
                   customText(16, 'Description', fontWeight: FontWeight.w600),
-                  // ! Custom Ream More Text
+                  // ! Custom Read More Text
                   customReadmoreText(description),
                   SizedBox(height: size * 1),
                 ],
@@ -271,15 +286,27 @@ class ProductView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         spacing: size * 0.02,
         children: [
-          CustomButton(
-            width: 180,
-            backColor: AppColors.bgWhite,
-            textColor: AppColors.textBlack,
-            widget: Icon(CupertinoIcons.cart),
-            text: 'Add to Cart',
-            fontSize: size * 0.04,
-            fontWeight: FontWeight.bold,
-            ontap: () {},
+          BlocBuilder<CartBloc, CartState>(
+            builder: (context, state) {
+              final isCart = state.cartIds.contains(product.id);
+              return CustomButton(
+                width: 180,
+                ontap: () {
+                  context.read<CartBloc>().add(
+                    ToggleCart(productModel: product, isCart: isCart),
+                  );
+                },
+                backColor: AppColors.bgWhite,
+                textColor: AppColors.textBlack,
+                widget: Icon(
+                  isCart ? CupertinoIcons.cart_fill : CupertinoIcons.cart,
+                  color: isCart ? AppColors.iconOrangeAccent  : null,
+                ),
+                text: isCart ? 'Added To Cart' : 'Add to Cart',
+                fontSize: size * 0.04,
+                fontWeight: FontWeight.bold,
+              );
+            },
           ),
           CustomButton(
             width: 180,
@@ -325,7 +352,7 @@ customReadmoreText(String description) {
 Color hexToColor(String code) {
   String hex = code.replaceAll('#', '');
   if (hex.length == 6) {
-    hex = 'FF$hex'; 
+    hex = 'FF$hex';
   }
   return Color(int.parse(hex, radix: 16));
 }

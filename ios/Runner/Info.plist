@@ -45,5 +45,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need access to speech recognition services to convert your spoken words into a search query.</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to the microphone to capture your voice for the search function.</string>
+	
 </dict>
 </plist>
