@@ -6,7 +6,7 @@ import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
-import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';

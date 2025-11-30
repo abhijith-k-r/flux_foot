@@ -23,7 +23,7 @@ Padding customBackButton(BuildContext context) {
 }
 
 // ! Custom Forword Button
-Padding customForwordButton(BuildContext context, Widget page, {Color? color}) {
+Padding customForwordButton(BuildContext context, Widget page,  {Color? color}) {
   return Padding(
     padding: const EdgeInsets.all(10),
     child: GestureDetector(

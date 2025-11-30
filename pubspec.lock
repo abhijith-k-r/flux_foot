@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  card_3d_carousel:
+    dependency: "direct main"
+    description:
+      name: card_3d_carousel
+      sha256: b307de96dce7aa2e26c2772ecf013c9c3646265f5b29ba1a4d11206fc4e855dc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   characters:
     dependency: transitive
     description:
@@ -702,5 +710,5 @@ packages:
     source: hosted
     version: "1.1.0"
 sdks:
-  dart: ">=3.9.0 <4.0.0"
+  dart: ">=3.9.2 <4.0.0"
   flutter: ">=3.32.4"

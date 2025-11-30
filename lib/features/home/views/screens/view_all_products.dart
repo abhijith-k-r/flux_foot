@@ -8,7 +8,7 @@ import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
-import 'package:fluxfoot_user/features/home/view_model/bloc/product_variant_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
@@ -105,9 +105,11 @@ class ViewAllProducts extends StatelessWidget {
                                     BlocProvider(
                                       create: (context) =>
                                           ProductVariantBloc(product),
+                                          // ! Card Product Detaled view..
                                       child: ProductView(product: product),
                                     ),
                                   ),
+                                  // ! Gridview Showing Product Cart
                                   child: ProductCard(
                                     productName: product.name,
                                     regularPrice: product.regularPrice,

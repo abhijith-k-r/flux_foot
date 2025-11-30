@@ -10,7 +10,6 @@ import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.
 
 class ProductCard extends StatelessWidget {
   final String productName;
-  // final List<String> imageUrl;
   final String regularPrice;
   final String salePrice;
   final String description;
@@ -19,7 +18,6 @@ class ProductCard extends StatelessWidget {
   const ProductCard({
     super.key,
     required this.productName,
-    // required this.imageUrl,
     required this.regularPrice,
     required this.salePrice,
     required this.description,

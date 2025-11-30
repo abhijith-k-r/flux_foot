@@ -51,6 +51,7 @@ dependencies:
   flutter_glass_morphism: ^1.0.2
   liquid_glass: ^0.0.2
   speech_to_text: ^7.3.0
+  card_3d_carousel: ^1.0.3
 
 
 
