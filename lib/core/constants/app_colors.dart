@@ -25,3 +25,4 @@ class AppColors {
   static Color sucessGreen = Colors.green;
   static Color bgGrey = Colors.grey;
 }
+

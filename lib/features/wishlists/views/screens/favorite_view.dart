@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
@@ -11,6 +12,7 @@ import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class FavoriteView extends StatelessWidget {
   const FavoriteView({super.key});
@@ -44,7 +46,21 @@ class FavoriteView extends StatelessWidget {
               final favoriteProducts = state.favoriteProducts;
 
               if (favoriteProducts.isEmpty) {
-                return customText(size * 0.04, 'No favorites added yet!');
+                return Column(
+                  children: [
+                    SizedBox(height: size * 0.3),
+                    ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        AppColors.iconOrange,
+                        BlendMode.srcATop,
+                      ),
+                      child: Lottie.asset(
+                        'Flux_Foot/assets/images/lottie/Favorite.json',
+                      ),
+                    ),
+                    customText(size * 0.05, 'No Favorites Added Yet!.'),
+                  ],
+                );
               }
 
               favoriteProducts.sort(
@@ -54,7 +70,7 @@ class FavoriteView extends StatelessWidget {
               return Column(
                 children: [
                   // ! Custom SearchBar
-                  CustomSearchBarWithFilter(width: size, height: size * 1.3),
+                  CustomSearchBar(width: size, height: size * 1.3),
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, filterState) {
                       List<ProductModel> filteredProducts =
@@ -71,6 +87,24 @@ class FavoriteView extends StatelessWidget {
                             query.toLowerCase().trim(),
                           );
                         }).toList();
+                      }
+
+                      if (filteredProducts.isEmpty) {
+                        return Column(
+                          children: [
+                            SizedBox(height: size * 0.3),
+                            ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                AppColors.iconOrange,
+                                BlendMode.srcATop,
+                              ),
+                              child: Lottie.asset(
+                                'Flux_Foot/assets/images/lottie/Favorite.json',
+                              ),
+                            ),
+                            customText(size * 0.05, 'No Favorites Added'),
+                          ],
+                        );
                       }
 
                       return Column(

@@ -6,12 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/carousal_cubit.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/productview_transparant_screen.dart';
 
 class ProductImageFlipCarousel extends StatefulWidget {
   final List<String> images;
   final double height;
 
-  const ProductImageFlipCarousel({
+  const ProductImageFlipCarousel({ 
     super.key,
     required this.images,
     required this.height,
@@ -85,16 +86,24 @@ class _ProductImageFlipCarouselState extends State<ProductImageFlipCarousel> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.network(
-                    widget.images[index],
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Center(child: CircularProgressIndicator());
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(child: Icon(Icons.broken_image, size: 50));
-                    },
+                  child: InkWell(
+                    onTap: () => navigateToTransparentScreen(
+                      context,
+                      widget.images[index],
+                    ),
+                    child: Image.network(
+                      widget.images[index],
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Center(child: CircularProgressIndicator());
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Center(
+                          child: Icon(Icons.broken_image, size: 50),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

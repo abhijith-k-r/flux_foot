@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 
 class ActionButtons extends StatelessWidget {
   const ActionButtons({super.key});
@@ -11,6 +12,8 @@ class ActionButtons extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFF5F6F8);
 
+    final filterBloc = context.read<FilterBloc>();
+    final homeBloc = context.read<HomeBloc>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -25,7 +28,21 @@ class ActionButtons extends StatelessWidget {
         children: [
           Expanded(
             child: ElevatedButton(
-              onPressed: () => context.read<FilterBloc>().add(ResetFilters()),
+              onPressed: () {
+                filterBloc.add(ResetFilters());
+
+                homeBloc.add(
+                  FilterProducts(
+                    filterBloc.state.copyWith(
+                      selectedSort: SortOption.newestFirst,
+                      selectedCategory: '',
+                      minPrice: filterBloc.state.minPrice,
+                      maxPrice: filterBloc.state.maxPrice,
+                      searchQuery: '',
+                    ),
+                  ),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
                 foregroundColor: isDark ? Colors.white : Colors.grey[900],
@@ -45,8 +62,9 @@ class ActionButtons extends StatelessWidget {
           Expanded(
             child: ElevatedButton(
               onPressed: () {
-                context.read<FilterBloc>().add(ApplyFilters());
-                Navigator.pop(context, context.read<FilterBloc>().state);
+                final currentFilterState = filterBloc.state;
+                homeBloc.add(FilterProducts(currentFilterState));
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.iconOrangeAccent,

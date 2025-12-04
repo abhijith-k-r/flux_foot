@@ -9,6 +9,7 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/all_brands_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class AllBrands extends StatelessWidget {
   const AllBrands({super.key});
@@ -49,8 +50,14 @@ class AllBrands extends StatelessWidget {
                 final allProducts = state.products;
 
                 if (brands.isEmpty) {
-                  return Center(
-                    child: customText(16, 'No active brands available.'),
+                  return Column(
+                    children: [
+                      SizedBox(height: size * 0.3),
+                      Lottie.asset(
+                        'Flux_Foot/assets/images/lottie/Empty Cart.json',
+                      ),
+                      customText(size * 0.05, 'No active brands available.'),
+                    ],
                   );
                 }
                 // ! Counting Each BrandProducts Count.

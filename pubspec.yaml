@@ -52,6 +52,8 @@ dependencies:
   liquid_glass: ^0.0.2
   speech_to_text: ^7.3.0
   card_3d_carousel: ^1.0.3
+  animated_read_more_text: ^0.0.6
+  lottie: ^3.3.2
 
 
 
@@ -82,7 +84,7 @@ flutter:
   assets:
     - Flux_Foot/assets/images/splash/
     - Flux_Foot/assets/images/icons/
-  #   - images/a_dot_ham.jpeg
+    - Flux_Foot/assets/images/lottie/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

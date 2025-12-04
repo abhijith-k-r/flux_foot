@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/views/screens/perticular_categories.dart';
+import 'package:lottie/lottie.dart';
 
 // ! Categories Tab Content
 Widget buildCategoriesTab(
@@ -20,7 +21,7 @@ Widget buildCategoriesTab(
     child: Column(
       children: [
         // ! Custom SearchBar
-        CustomSearchBarWithFilter(width: size, height: size * 1.2),
+        CustomSearchBar(width: size, height: size * 1.2),
 
         BlocBuilder<FilterBloc, FilterState>(
           builder: (context, filterState) {
@@ -40,7 +41,15 @@ Widget buildCategoriesTab(
                 SizedBox(height: 10),
 
                 if (visibleCategory.isEmpty)
-                  Center(child: customText(16, 'No Category available.'))
+                  Column(
+                    children: [
+                      SizedBox(height: size * 0.3),
+                      Lottie.asset(
+                        'Flux_Foot/assets/images/lottie/Empty Cart.json',
+                      ),
+                      customText(size * 0.05, 'No Category Available.'),
+                    ],
+                  )
                 else
                   ListView.builder(
                     shrinkWrap: true,

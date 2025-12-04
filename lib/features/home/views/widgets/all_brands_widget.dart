@@ -8,6 +8,7 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/brands_model.dart';
 import 'package:fluxfoot_user/features/home/views/screens/perticular_brand.dart';
+import 'package:lottie/lottie.dart';
 
 // ! All Brands Showing as Gridview
 Widget buildAllBrands(
@@ -26,6 +27,16 @@ Widget buildAllBrands(
             query.toLowerCase().trim(),
           );
         }).toList();
+      }
+
+      if (searchableBrands.isEmpty) {
+        return Column(
+          children: [
+            SizedBox(height: size * 0.3),
+            Lottie.asset('Flux_Foot/assets/images/lottie/Empty Cart.json'),
+            customText(size * 0.05, 'Brand Not Found!.'),
+          ],
+        );
       }
       return Column(
         spacing: 10,

@@ -1,28 +1,16 @@
-// ! Custom READ MORE TEXT
 import 'dart:ui';
 
-import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:animated_read_more_text/animated_read_more_text.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:readmore/readmore.dart';
 
+// ! Custom READ MORE TEXT
 customReadmoreText(String description) {
-  return ReadMoreText(
+  return AnimatedReadMoreText(
     description,
-    trimLines: 5,
-    colorClickableText: AppColors.textBlack,
-    trimMode: TrimMode.Line,
-    trimCollapsedText: '...Read more',
-    trimExpandedText: ' Less',
-    style: GoogleFonts.openSans(fontSize: 14, fontWeight: FontWeight.w500),
-    moreStyle: GoogleFonts.openSans(
-      fontSize: 15,
-      fontWeight: FontWeight.bold,
-      color: AppColors.textBlack,
-    ),
-    lessStyle: GoogleFonts.openSans(
-      fontSize: 14,
-      fontWeight: FontWeight.bold,
-      color: AppColors.textBlack,
-    ),
+    maxLines: 5,
+    readLessText: ' Less',
+    readMoreText: '...Read more',
+    textStyle: GoogleFonts.openSans(fontSize: 14, fontWeight: FontWeight.w500),
   );
 }

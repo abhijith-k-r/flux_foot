@@ -16,7 +16,6 @@ import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/carousal_cubit.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
-import 'package:fluxfoot_user/features/home/views/widgets/productview_carousel_widget.dart';
 import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.dart';
 import 'package:fluxfoot_user/firebase_options.dart';
 

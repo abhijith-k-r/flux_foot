@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
@@ -11,6 +11,7 @@ import 'package:fluxfoot_user/features/home/view_model/product_variant/product_v
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class CartsViews extends StatelessWidget {
   const CartsViews({super.key});
@@ -44,7 +45,15 @@ class CartsViews extends StatelessWidget {
               final cartProducts = state.cartProducts;
 
               if (cartProducts.isEmpty) {
-                return customText(size * 0.04, 'No Carts added yet!');
+                return Column(
+                  children: [
+                    SizedBox(height: size * 0.3),
+                    Lottie.asset(
+                      'Flux_Foot/assets/images/lottie/Carrinho De Compras.json',
+                    ),
+                    customText(size * 0.05, 'No Cart Added yet!.'),
+                  ],
+                );
               }
 
               cartProducts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -52,7 +61,7 @@ class CartsViews extends StatelessWidget {
               return Column(
                 children: [
                   // ! Custom SearchBar
-                  CustomSearchBarWithFilter(width: size, height: size * 1.3),
+                  CustomSearchBar(width: size, height: size * 1.3),
                   BlocBuilder<FilterBloc, FilterState>(
                     builder: (context, filterState) {
                       List<ProductModel> filteredProducts = state.cartProducts;
@@ -68,6 +77,18 @@ class CartsViews extends StatelessWidget {
                             query.toLowerCase().trim(),
                           );
                         }).toList();
+                      }
+
+                      if (filteredProducts.isEmpty) {
+                        return Column(
+                          children: [
+                            SizedBox(height: size * 0.3),
+                            Lottie.asset(
+                              'Flux_Foot/assets/images/lottie/Carrinho De Compras.json',
+                            ),
+                            customText(size * 0.05, 'No Cart Added yet!.'),
+                          ],
+                        );
                       }
 
                       return Column(

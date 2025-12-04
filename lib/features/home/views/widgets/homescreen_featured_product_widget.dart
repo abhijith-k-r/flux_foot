@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
@@ -37,8 +38,9 @@ class FeaturedProductGrid extends StatelessWidget {
           }
 
           // ! Limit to 4 products for the home screen view
-          final products = state.products;
-          int count = products.length < 4 ? products.length : 4;
+          final List<ProductModel> featured = state.originalProducts
+              .take(4)
+              .toList();
 
           return GridView.builder(
             shrinkWrap: true,
@@ -49,9 +51,9 @@ class FeaturedProductGrid extends StatelessWidget {
               mainAxisSpacing: 5,
               childAspectRatio: 0.85,
             ),
-            itemCount: count,
+            itemCount: featured.length,
             itemBuilder: (context, index) {
-              final product = products[index];
+              final product = featured[index];
 
               return InkWell(
                 onTap: () => fadePush(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
+import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/brands_model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 
@@ -16,6 +17,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._productRepository) : super(HomeInitial()) {
     on<LoadFeaturedProducts>(_onLoadFeaturedProducts);
     on<UpdateFeaturedProducts>(_onUpdateFeaturedProducts);
+
+    on<FilterProducts>(_onFilterProducts);
 
     on<LoadBrands>(_onLoadBrands);
     on<UpdateBrands>(_onUpdateBrands);
@@ -50,7 +53,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ? currentState.brands
         : [];
 
-    emit(HomeDataLoaded(products: event.products, brands: currentBrands));
+    emit(
+      HomeDataLoaded(
+        products: event.products,
+        originalProducts: event.products,
+        filteredProducts: event.products,
+        brands: currentBrands,
+      ),
+    );
   }
 
   // ! For BRANDS
@@ -78,6 +88,74 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         : [];
 
     emit(HomeDataLoaded(products: currentProducts, brands: event.brands));
+  }
+
+  void _onFilterProducts(FilterProducts event, Emitter<HomeState> emit) {
+    final currentState = state;
+    if (currentState is! HomeDataLoaded) return;
+
+    List<ProductModel> filteredProducts = List.from(
+      currentState.originalProducts,
+    );
+    final filterState = event.filterState;
+
+    // ! 1. Filter by Search Query
+    final query = filterState.searchQuery.toLowerCase().trim();
+    if (query.isNotEmpty) {
+      filteredProducts = filteredProducts.where((product) {
+        return product.name.toLowerCase().trim().contains(query);
+      }).toList();
+    }
+
+    // ! 2. Filter by Category
+    final category = filterState.selectedCategory;
+    if (category.isNotEmpty) {
+      filteredProducts = filteredProducts.where((product) {
+        // Assuming 'product.category' is a String field in ProductModel
+        return product.category == category;
+      }).toList();
+    }
+
+    // ! 3. Filter by Price Range
+    filteredProducts = filteredProducts.where((product) {
+      final price = double.tryParse(product.salePrice) ?? 0.0;
+      return price >= filterState.minPrice && price <= filterState.maxPrice;
+    }).toList();
+
+    // ! 4. Sort the filtered results
+    switch (filterState.selectedSort) {
+      case SortOption.priceLowToHigh:
+        filteredProducts.sort(
+          (a, b) => (double.tryParse(a.salePrice) ?? 0.0).compareTo(
+            double.tryParse(b.salePrice) ?? 0.0,
+          ),
+        );
+        break;
+
+      case SortOption.priceHighToLow:
+        filteredProducts.sort(
+          (a, b) => (double.tryParse(b.salePrice) ?? 0.0).compareTo(
+            double.tryParse(a.salePrice) ?? 0.0,
+          ),
+        );
+        break;
+
+      case SortOption.newestFirst:
+        filteredProducts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        break;
+
+      case SortOption.popularity:
+        break;
+    }
+
+    emit(
+      HomeDataLoaded(
+        products: currentState.products,
+        originalProducts: currentState.originalProducts,
+        brands: currentState.brands,
+        filteredProducts: filteredProducts,
+      ),
+    );
   }
 
   @override

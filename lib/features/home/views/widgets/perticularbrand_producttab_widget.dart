@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
-import 'package:fluxfoot_user/core/widgets/custom_searchbar_withfilter.dart';
+import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
+import 'package:lottie/lottie.dart';
 
 // ! Products Tab Content
 Widget buildProductsTab(
@@ -20,7 +21,7 @@ Widget buildProductsTab(
     child: Column(
       children: [
         // ! Custom SearchBar
-        CustomSearchBarWithFilter(width: size, height: size * 1.2),
+        CustomSearchBar(width: size, height: size * 1.2),
         BlocBuilder<FilterBloc, FilterState>(
           builder: (context, filterState) {
             final List<ProductModel> allBrandProducts = List<ProductModel>.from(
@@ -41,7 +42,15 @@ Widget buildProductsTab(
                 SizedBox(height: 10),
 
                 if (visibleProducts.isEmpty)
-                  Center(child: customText(16, 'No $title products available.'))
+                  Column(
+                    children: [
+                      SizedBox(height: size * 0.3),
+                      Lottie.asset(
+                        'Flux_Foot/assets/images/lottie/Empty Cart.json',
+                      ),
+                      customText(size * 0.05, '$title products Not Found!.'),
+                    ],
+                  )
                 else
                   GridView.builder(
                     shrinkWrap: true,
