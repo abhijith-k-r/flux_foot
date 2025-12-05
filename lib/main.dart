@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/services/auth/authwrapper.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/firebase/address_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/cart_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/favorites_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
+import 'package:fluxfoot_user/features/address/view_model/bloc/shippin_address_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_service.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
@@ -38,6 +40,7 @@ class MyAPP extends StatelessWidget {
     final productRepository = UserProductRepository();
     final favoritesRepository = FavoritesRepository();
     final cartRepository = CartRepository();
+    final addressRepository = AddressRepository();
     return MultiBlocProvider(
       providers: [
         RepositoryProvider<BaseAuthRepository>.value(value: authRepository),
@@ -72,6 +75,11 @@ class MyAPP extends StatelessWidget {
           create: (context) => CartBloc(repo: cartRepository),
         ),
         BlocProvider(create: (context) => CarouselCubit()),
+
+        BlocProvider(
+          create: (context) =>
+              ShippingAddressBloc(repository: addressRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',

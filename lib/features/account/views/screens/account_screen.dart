@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
-import 'package:fluxfoot_user/features/account/presentation/screens/profile_screen.dart';
-import 'package:fluxfoot_user/features/account/presentation/widgets/account_widgets.dart';
+import 'package:fluxfoot_user/features/account/views/screens/profile_screen.dart';
+import 'package:fluxfoot_user/features/account/views/widgets/account_widgets.dart';
+import 'package:fluxfoot_user/features/address/views/screens/shipping_address_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -43,7 +44,7 @@ class AccountScreen extends StatelessWidget {
             icon: Icons.location_on_outlined,
             title: 'Shipping Addresses',
             subtitle: 'check Addresses',
-            // ontap: ()=> fadePush(context, profilesc),
+            ontap: () => fadePush(context, ShippingAddressView()),
           ).fadeInRightBig(from: 100),
           // ! Order History
           AccountContent(
