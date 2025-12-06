@@ -25,4 +25,20 @@ class UserModel {
       dob: map['dob'] as String?,
     );
   }
+
+  UserModel copyWith({String? uid,
+    String? imageUrl,
+    String? name,
+    String? email,
+    String? phone,
+    String? dob,}){
+      return UserModel(
+      uid: uid ?? this.uid,
+      imageUrl: imageUrl ?? this.imageUrl,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      dob: dob ?? this.dob,
+    );
+    }
 }

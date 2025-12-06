@@ -9,20 +9,18 @@ class UserProfileImage extends StatelessWidget {
     super.key,
     required this.size,
     this.radius,
-    this.data,
+    this.imageUrl,
   });
 
   final double size;
   final double? radius;
-  final Map<String, dynamic>? data;
+  final String? imageUrl;
 
   @override
   Widget build(BuildContext context) {
     final ImageProvider? bgImage =
-        (data != null &&
-            data!['imageUrl'] != null &&
-            (data!['imageUrl'] as String).isNotEmpty)
-        ? NetworkImage(data!['imageUrl'] as String)
+        (imageUrl != null && imageUrl!.isNotEmpty)
+        ? NetworkImage(imageUrl!)
         : null;
     return Center(
       child: Container(
@@ -33,7 +31,7 @@ class UserProfileImage extends StatelessWidget {
         child: CircleAvatar(
           radius: radius,
           backgroundColor: AppColors.bgWhite,
-
+          backgroundImage: bgImage, 
           child: bgImage == null
               ? Icon(
                   CupertinoIcons.person,

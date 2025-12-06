@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
+import 'package:fluxfoot_user/core/services/firebase/auth_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_event.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_state.dart';
 

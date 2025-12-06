@@ -130,106 +130,105 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
     );
   }
 
-// ! All Text Form and Save & undate Butoon
+  // ! All Text Form and Save & undate Butoon
   Widget buildTextFormasInsideColum(double size, bool isEditing) {
     return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ! User Name Text Form Field
-                buildTextField(
-                  size: size,
-                  label: 'NAME',
-                  hint: 'Full name*',
-                  controller: nameController,
-                ),
-                SizedBox(height: size * 0.03),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ! User Name Text Form Field
+        buildTextField(
+          size: size,
+          label: 'NAME',
+          hint: 'Full name*',
+          controller: nameController,
+        ),
+        SizedBox(height: size * 0.03),
 
-                // ! Phone Number
-                buildTextField(
-                  size: size,
-                  label: 'PHONE NUMBER',
-                  hint: 'phone number*',
-                  controller: phoneController,
-                  keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: size * 0.03),
+        // ! Phone Number
+        buildTextField(
+          size: size,
+          label: 'PHONE NUMBER',
+          hint: 'phone number*',
+          controller: phoneController,
+          keyboardType: TextInputType.phone,
+        ),
+        SizedBox(height: size * 0.03),
 
-                // ! Pin Code & District
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildHalfTextField(
-                      size: size,
-                      label: 'PIN CODE',
-                      hint: 'pin code*',
-                      controller: pinController,
-                      keyboardType: TextInputType.number,
-                    ),
-                    buildHalfTextField(
-                      size: size,
-                      label: 'District',
-                      hint: 'district*',
-                      controller: districtController,
-                    ),
-                  ],
-                ),
-                SizedBox(height: size * 0.03),
+        // ! Pin Code & District
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            buildHalfTextField(
+              size: size,
+              label: 'PIN CODE',
+              hint: 'pin code*',
+              controller: pinController,
+              keyboardType: TextInputType.number,
+            ),
+            buildHalfTextField(
+              size: size,
+              label: 'District',
+              hint: 'district*',
+              controller: districtController,
+            ),
+          ],
+        ),
+        SizedBox(height: size * 0.03),
 
-                // ! State & City
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    buildHalfTextField(
-                      size: size,
-                      label: 'STATE',
-                      hint: 'state*',
-                      controller: stateController,
-                    ),
-                    buildHalfTextField(
-                      size: size,
-                      label: 'CITY',
-                      hint: 'city*',
-                      controller: cityController,
-                    ),
-                  ],
-                ),
-                SizedBox(height: size * 0.03),
+        // ! State & City
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            buildHalfTextField(
+              size: size,
+              label: 'STATE',
+              hint: 'state*',
+              controller: stateController,
+            ),
+            buildHalfTextField(
+              size: size,
+              label: 'CITY',
+              hint: 'city*',
+              controller: cityController,
+            ),
+          ],
+        ),
+        SizedBox(height: size * 0.03),
 
-                // ! HOUSE NO, Building Name
-                buildTextField(
-                  size: size,
-                  label: 'HOUSE NO, BUILDING NAME',
-                  hint: 'house no, building name*',
-                  controller: houseController,
-                ),
-                SizedBox(height: size * 0.03),
+        // ! HOUSE NO, Building Name
+        buildTextField(
+          size: size,
+          label: 'HOUSE NO, BUILDING NAME',
+          hint: 'house no, building name*',
+          controller: houseController,
+        ),
+        SizedBox(height: size * 0.03),
 
-                // ! Road , area, colony
-                buildTextField(
-                  size: size,
-                  label: 'ROAD NAME, AREA, COLONY',
-                  hint: 'road name, area, colony*',
-                  controller: roadController,
-                ),
-                SizedBox(height: size * 0.05),
+        // ! Road , area, colony
+        buildTextField(
+          size: size,
+          label: 'ROAD NAME, AREA, COLONY',
+          hint: 'road name, area, colony*',
+          controller: roadController,
+        ),
+        SizedBox(height: size * 0.05),
 
-                // ! CustomButton with BLoC State Check
-                buildAddressAddEditButton(
-                  isEditing,
-                  size,
-                  formKey,
-                  widget.addressToEdit,
-                  nameController,
-                  phoneController,
-                  pinController,
-                  districtController,
-                  stateController,
-                  cityController,
-                  houseController,
-                  roadController,
-                ),
-              ],
-            );
+        // ! CustomButton with BLoC State Check
+        buildAddressAddEditButton(
+          isEditing,
+          size,
+          formKey,
+          widget.addressToEdit,
+          nameController,
+          phoneController,
+          pinController,
+          districtController,
+          stateController,
+          cityController,
+          houseController,
+          roadController,
+        ),
+      ],
+    );
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:fluxfoot_user/features/filter/views/widgets/category_section.dar
 import 'package:fluxfoot_user/features/filter/views/widgets/price_range_section.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/sort_by_section.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({super.key});
@@ -51,63 +52,76 @@ class FilterBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFF5F6F8);
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.9,
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: Column(
-        children: [
-          //! Handle
-          Container(
-            height: 20,
-            alignment: Alignment.center,
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[700] : Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+    return LiquidGlassLayer(
+      child: LiquidGlass(
+        shape: LiquidRoundedSuperellipse(borderRadius: 15),
+        child: GlassGlow(
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.9,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
               ),
             ),
-          ),
-          //! App Bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
+            child: Column(
               children: [
-                const SizedBox(width: 48),
-                const Expanded(
-                  child: Text(
-                    'Filters & Sort',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                //! Handle
+                Container(
+                  height: 20,
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.grey[700] : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close),
+                //! App Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 48),
+                      const Expanded(
+                        child: Text(
+                          'Filters & Sort',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
                 ),
+                // Content
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.only(bottom: 100),
+                    children: const [
+                      SortBySection(),
+                      CategorySection(),
+                      PriceRangeSection(),
+                    ],
+                  ),
+                ),
+                //! Action Buttons
+                const ActionButtons(),
               ],
             ),
           ),
-          // Content
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.only(bottom: 100),
-              children: const [
-                SortBySection(),
-                CategorySection(),
-                PriceRangeSection(),
-              ],
-            ),
-          ),
-          //! Action Buttons
-          const ActionButtons(),
-        ],
+        ),
       ),
     );
   }

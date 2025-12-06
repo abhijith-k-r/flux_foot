@@ -8,9 +8,10 @@ import 'package:fluxfoot_user/core/services/firebase/address_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/cart_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/favorites_repository.dart';
 import 'package:fluxfoot_user/core/services/firebase/user_product_repository.dart';
+import 'package:fluxfoot_user/features/account/view_model/bloc/profile_bloc.dart';
 import 'package:fluxfoot_user/features/address/view_model/bloc/shippin_address_bloc.dart';
-import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
-import 'package:fluxfoot_user/features/auth/view_model/firebase/firebase_auth_service.dart';
+import 'package:fluxfoot_user/core/services/firebase/auth_repository.dart';
+import 'package:fluxfoot_user/core/services/firebase/firebase_auth_service.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_bloc.dart';
@@ -80,6 +81,8 @@ class MyAPP extends StatelessWidget {
           create: (context) =>
               ShippingAddressBloc(repository: addressRepository),
         ),
+
+        BlocProvider(create: (context) => ProfileBloc(authRepository: authRepository),)
       ],
       child: MaterialApp(
         title: 'FluxFoot_User',

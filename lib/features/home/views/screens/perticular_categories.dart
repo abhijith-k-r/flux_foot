@@ -48,5 +48,3 @@ class PerticularCategories extends StatelessWidget {
     );
   }
 }
-
-

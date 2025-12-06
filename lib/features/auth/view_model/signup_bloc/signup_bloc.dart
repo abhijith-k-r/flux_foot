@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluxfoot_user/features/auth/view_model/firebase/auth_repository.dart';
+import 'package:fluxfoot_user/core/services/firebase/auth_repository.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_event.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signup_bloc/signup_state.dart';
 

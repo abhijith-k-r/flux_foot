@@ -10,19 +10,18 @@ class ActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFF5F6F8);
+    // final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFF5F6F8);
 
     final filterBloc = context.read<FilterBloc>();
     final homeBloc = context.read<HomeBloc>();
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
-        border: Border(
-          top: BorderSide(
-            color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
-          ),
-        ),
+        // border: Border(
+        //   top: BorderSide(
+        //     color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+        //   ),
+        // ),
       ),
       child: Row(
         children: [
