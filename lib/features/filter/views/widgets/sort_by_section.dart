@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/sort_option.dart';
 
@@ -13,11 +14,15 @@ class SortBySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Text(
             'Sort By',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textWite,
+            ),
           ),
         ),
         Padding(

@@ -5,10 +5,9 @@ import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/filter/views/screens/filter_bottomsheet.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-
 
 class CustomSearchBarWithFilter extends StatelessWidget {
   CustomSearchBarWithFilter({
@@ -35,7 +34,6 @@ class CustomSearchBarWithFilter extends StatelessWidget {
 
     return BlocListener<FilterBloc, FilterState>(
       listener: (context, state) {
-
         final homeBloc = context.read<HomeBloc>();
 
         homeBloc.add(FilterProducts(state));
@@ -44,6 +42,7 @@ class CustomSearchBarWithFilter extends StatelessWidget {
       child: Stack(
         children: [
           LiquidGlassLayer(
+            settings: iosGlassSettings,
             child: Row(
               children: [
                 LiquidGlass(
@@ -98,6 +97,7 @@ class CustomSearchBarWithFilter extends StatelessWidget {
                             shape: LiquidRoundedSuperellipse(borderRadius: 15),
                             child: GlassGlow(
                               glowColor: Colors.white24,
+
                               glowRadius: 1.0,
                               child: BlocBuilder<FilterBloc, FilterState>(
                                 bloc: bloc,
@@ -133,10 +133,8 @@ class CustomSearchBarWithFilter extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: width * 0.03,
-                ), 
-                //! Filter Section 
+                SizedBox(width: width * 0.03),
+                //! Filter Section
                 LiquidGlass(
                   shape: LiquidRoundedSuperellipse(borderRadius: 15),
                   child: GlassGlow(

@@ -1,10 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 // ! Custom Back Button
@@ -15,16 +14,16 @@ Padding customBackButton(BuildContext context) {
     child: GestureDetector(
       onTap: () => Navigator.pop(context),
       child: LiquidGlassLayer(
+        settings: iosGlassSettings,
         child: LiquidGlass(
           shape: LiquidRoundedSuperellipse(borderRadius: 10),
           child: GlassGlow(
             child: SizedBox(
               child: Container(
                 decoration: BoxDecoration(
-                  // color: AppColors.bgWhite,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.arrow_back_ios_new, color: AppColors.bgGrey),
+                child: Icon(CupertinoIcons.back),
               ),
             ),
           ),
@@ -34,27 +33,12 @@ Padding customBackButton(BuildContext context) {
   );
 }
 
-
 // ! Custom Forword Button
-Padding customForwordButton(BuildContext context, Widget page, {Color? color}) {
-  return Padding(
-    padding: const EdgeInsets.all(10),
-    child: GestureDetector(
-      onTap: () {
-        fadePush(context, page);
-      },
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: Container(
-          decoration: BoxDecoration(
-            color: color ?? AppColors.bgWhite,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(Icons.arrow_forward_ios),
-        ),
-      ),
-    ),
+customForwordButton(BuildContext context, Widget page, {Color? color}) {
+  return IconButton(
+    onPressed: () {
+      fadePush(context, page);
+    },
+    icon: Icon(CupertinoIcons.forward),
   );
 }
-

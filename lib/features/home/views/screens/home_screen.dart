@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_searchbar.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
+import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/homescreen_content_widget.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/homescreen_loading_content.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/homescreen_search_result_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -51,7 +53,11 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // ! Custom Search Bar - This updates the FilterBloc
-              CustomSearchBar(width: size, height: size * 1.2),
+              SlideInDown(
+                delay: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 700),
+                child: CustomSearchBar(width: size, height: size * 1.2),
+              ),
               SizedBox(height: size * 0.05),
 
               // ! BlocBuilder to switch between Home and Search Results
@@ -64,7 +70,14 @@ class HomeScreen extends StatelessWidget {
                     return buildSearchResults(context, size, query);
                   } else {
                     // !2. SHOW NORMAL HOME CONTENT
-                    return buildHomeContent(context, size);
+                    return BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoading) {
+                          return buildShimmerHomeContent(context, size);
+                        }
+                        return buildHomeContent(context, size);
+                      },
+                    );
                   }
                 },
               ),
@@ -74,12 +87,5 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
-  }  
-
- 
-
- 
+  }
 }
-
-
-

@@ -12,6 +12,8 @@ import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart'
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_event.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_state.dart';
 import 'package:fluxfoot_user/features/auth/views/screens/sign_in_screen.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 // !  Logout Button
 Widget builldLogOtButton(double size) {
@@ -46,23 +48,33 @@ Widget builldLogOtButton(double size) {
     },
     child: BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        return CustomButton(
-          widget: Icon(
-            CupertinoIcons.person_crop_circle_badge_exclam,
-            color: AppColors.iconRed,
+        return LiquidGlassLayer(
+          settings: iosGlassSettings,
+          child: LiquidGlass(
+            shape: LiquidRoundedSuperellipse(borderRadius: 15),
+            child: GlassGlow(
+              child: CustomButton(
+                backColor: Colors.transparent,
+                widget: Icon(
+                  CupertinoIcons.person_crop_circle_badge_exclam,
+                  color: AppColors.iconRed,
+                ),
+                text: 'LogOut Account',
+                fontSize: size * 0.05,
+                spacing: size * 0.05,
+                fontWeight: FontWeight.bold,
+                showTextAndWidget: true,
+                textColor: AppColors.textBlack,
+                ontap: () async {
+                  final confirmed = await showLogoutDialog(context);
+                  if (confirmed == true) {
+                    context.read<AuthBloc>().add(const AuthLogoutRequested());
+                  }
+                },
+              ).fadeInUp(),
+            ),
           ),
-          text: 'LogOut Account',
-          fontSize: size * 0.05,
-          spacing: size * 0.05,
-          fontWeight: FontWeight.bold,
-          showTextAndWidget: true,
-          ontap: () async {
-            final confirmed = await showLogoutDialog(context);
-            if (confirmed == true) {
-              context.read<AuthBloc>().add(const AuthLogoutRequested());
-            }
-          },
-        ).fadeInUp();
+        );
       },
     ),
   );

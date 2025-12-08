@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
 import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
@@ -62,10 +63,14 @@ class ProductCard extends StatelessWidget {
                 fit: BoxFit.contain,
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
+                  return const ShimmerPlaceholder(
+                    width: 140,
+                    height: 90,
+                    borderRadius: 10,
+                  );
                 },
                 errorBuilder: (context, error, stackTrace) =>
-                    const Center(child: Icon(Icons.broken_image, size: 40)),
+                    const Center(child: Icon(Icons.broken_image, size: 30)),
               ),
             ),
           ),

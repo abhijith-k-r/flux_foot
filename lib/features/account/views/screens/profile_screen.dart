@@ -15,6 +15,8 @@ import 'package:fluxfoot_user/features/account/views/screens/edit_profile_screen
 import 'package:fluxfoot_user/features/account/views/widgets/account_widgets.dart';
 import 'package:fluxfoot_user/features/account/views/widgets/profile_widgets.dart';
 import 'package:fluxfoot_user/features/account/views/widgets/profilescreen_logoutbutton.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -75,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ProfileName(
                   size: size,
                   name: data['name'] as String,
-                ).fadeInDownBig(),
+                ).fadeInDown(),
                 // !User Name Details
                 ProfileDetails(
                   size: size,
@@ -105,20 +107,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   subtitle: data['dob'] ?? '00/00/0000',
                 ).fadeInRight(),
                 // ! User Edit Button
-                CustomButton(
-                  backColor: AppColors.bgOrange,
-                  widget: Icon(Icons.edit, color: AppColors.iconWhite),
-                  text: 'Edit Profile',
-                  fontSize: size * 0.05,
-                  spacing: size * 0.05,
-                  fontWeight: FontWeight.bold,
-                  showTextAndWidget: true,
-                  ontap: () {
-                    fadePush(context, EditProfileScreen());
-                  },
-                ).fadeInUpBig(),
+                LiquidGlassLayer(
+                  settings: iosGlassSettings,
+                  child: LiquidGlass(
+                    shape: LiquidRoundedSuperellipse(borderRadius: 15),
+                    child: GlassGlow(
+                      child: CustomButton(
+                        backColor: Colors.transparent,
+                        widget: Icon(Icons.edit, color: AppColors.iconBlack),
+                        text: 'Edit Profile',
+                        fontSize: size * 0.05,
+                        spacing: size * 0.05,
+                        fontWeight: FontWeight.bold,
+                        showTextAndWidget: true,
+                        textColor: AppColors.textBlack,
+                        ontap: () {
+                          fadePush(context, EditProfileScreen());
+                        },
+                      ).fadeInLeft(),
+                    ),
+                  ),
+                ),
                 // ! User Log Out Button
-                builldLogOtButton(size),
+                builldLogOtButton(size).fadeInRight(),
               ],
             );
           },

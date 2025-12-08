@@ -55,6 +55,7 @@ dependencies:
   animated_read_more_text: ^0.0.6
   lottie: ^3.3.2
   image_picker: ^1.2.1
+  shimmer: ^3.0.0
 
 
 

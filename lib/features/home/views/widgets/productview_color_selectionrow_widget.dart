@@ -55,7 +55,7 @@ Widget buildColorSelectionRow(
                       },
                       errorBuilder: (context, error, stackTrace) =>
                           const Center(
-                            child: Icon(Icons.broken_image, size: 40),
+                            child: Icon(Icons.broken_image, size: 20),
                           ),
                     ),
 

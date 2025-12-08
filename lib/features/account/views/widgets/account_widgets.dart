@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 // ! Circle Avatar For Use Profile
 class UserProfileImage extends StatelessWidget {
@@ -18,27 +20,49 @@ class UserProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ImageProvider? bgImage =
-        (imageUrl != null && imageUrl!.isNotEmpty)
-        ? NetworkImage(imageUrl!)
-        : null;
+
     return Center(
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.outLineOrang),
         ),
-        child: CircleAvatar(
-          radius: radius,
-          backgroundColor: AppColors.bgWhite,
-          backgroundImage: bgImage, 
-          child: bgImage == null
-              ? Icon(
-                  CupertinoIcons.person,
-                  size: size * 0.15,
-                  color: AppColors.iconBlack,
-                )
-              : null,
+        child: LiquidGlassLayer(
+          settings: iosGlassSettings,
+          child: LiquidGlass(
+            shape: LiquidRoundedSuperellipse(borderRadius: radius!),
+            child: GlassGlow(
+              child: SizedBox(
+                width: radius! * 2,
+                height: radius! * 2,
+                child: ClipOval(
+                  child: (imageUrl != null && imageUrl!.isNotEmpty)
+                      ? Image.network(
+                          imageUrl!,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              CupertinoIcons.person,
+                              size: size * 0.15,
+                              color: AppColors.iconBlack,
+                            );
+                          },
+                        )
+                      : Icon(
+                          CupertinoIcons.person,
+                          size: size * 0.15,
+                          color: AppColors.iconBlack,
+                        ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

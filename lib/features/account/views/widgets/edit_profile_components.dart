@@ -25,25 +25,48 @@ class EditProfileImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider? imageProvider;
-    if (selectedImage != null) {
-      imageProvider = FileImage(File(selectedImage!.path));
-    } else if (networkImageUrl != null && networkImageUrl!.isNotEmpty) {
-      imageProvider = NetworkImage(networkImageUrl!);
-    } else {
-      imageProvider = null;
-    }
+
 
     return Center(
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          CircleAvatar(
-            radius: size * 0.15,
-            backgroundImage: imageProvider,
-            child: imageProvider == null
-                ? Icon(Icons.person, size: size * 0.15)
-                : null,
+          Container(
+            width: size * 0.3,
+            height: size * 0.3,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.grey[200],
+            ),
+            child: ClipOval(
+              child: selectedImage != null
+                  ? Image.file(
+                      File(selectedImage!.path),
+                      fit: BoxFit.cover,
+                    )
+                  : (networkImageUrl != null && networkImageUrl!.isNotEmpty)
+                      ? Image.network(
+                          networkImageUrl!,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Icon(
+                              Icons.person,
+                              size: size * 0.15,
+                              color: Colors.grey,
+                            );
+                          },
+                        )
+                      : Icon(
+                          Icons.person,
+                          size: size * 0.15,
+                          color: Colors.grey,
+                        ),
+            ),
           ),
           if (!isUpdating)
             InkWell(

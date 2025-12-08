@@ -7,6 +7,8 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/views/screens/perticular_categories.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
+import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:lottie/lottie.dart';
 
 // ! Categories Tab Content
@@ -59,27 +61,35 @@ Widget buildCategoriesTab(
                       final category = visibleCategory[index];
                       final counts = categoryCount[category] ?? 0;
 
-                      return Card(
-                        color: AppColors.bgWhite,
-                        child: ListTile(
-                          leading: SizedBox(),
-                          title: customText(
-                            15,
-                            category,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          subtitle: customText(
-                            12,
-                            '$counts Products',
-                            fontWeight: FontWeight.w500,
-                          ),
-                          trailing: customForwordButton(
-                            context,
-                            PerticularCategories(
-                              brandProducts: brandProducts,
-                              categoryName: category,
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: LiquidGlassLayer(
+                          settings: iosGlassSettings,
+                          child: LiquidGlass(
+                            shape: LiquidRoundedSuperellipse(borderRadius: 15),
+                            child: GlassGlow(
+                              child: ListTile(
+                                leading: SizedBox(),
+                                title: customText(
+                                  15,
+                                  category,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                subtitle: customText(
+                                  12,
+                                  '$counts Products',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                trailing: customForwordButton(
+                                  context,
+                                  PerticularCategories(
+                                    brandProducts: brandProducts,
+                                    categoryName: category,
+                                  ),
+                                  color: AppColors.bgGrey,
+                                ),
+                              ),
                             ),
-                            color: AppColors.bgGrey,
                           ),
                         ),
                       );

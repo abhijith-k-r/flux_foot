@@ -14,11 +14,15 @@ class PriceRangeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Text(
             'Price Range',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textWite,
+            ),
           ),
         ),
         Padding(
@@ -43,9 +47,10 @@ class PriceRangeSection extends StatelessWidget {
                           child: Text(
                             '\$${state.minPrice.toInt()}',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.textWite,
                             ),
                           ),
                         ),
@@ -65,9 +70,10 @@ class PriceRangeSection extends StatelessWidget {
                           child: Text(
                             '\$${state.maxPrice.toInt()}',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: AppColors.textWite,
                             ),
                           ),
                         ),

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/action_buttons.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/category_section.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/price_range_section.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/sort_by_section.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 class FilterBottomSheet extends StatelessWidget {
@@ -54,6 +56,7 @@ class FilterBottomSheet extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return LiquidGlassLayer(
+      settings: iosGlassSettings,
       child: LiquidGlass(
         shape: LiquidRoundedSuperellipse(borderRadius: 15),
         child: GlassGlow(
@@ -63,6 +66,7 @@ class FilterBottomSheet extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(24),
               ),
+              color: Colors.black38,
             ),
             child: Column(
               children: [
@@ -88,19 +92,20 @@ class FilterBottomSheet extends StatelessWidget {
                   child: Row(
                     children: [
                       const SizedBox(width: 48),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           'Filters & Sort',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
+                            color: AppColors.textWite,
                           ),
                         ),
                       ),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: const Icon(Icons.close),
+                        icon: Icon(Icons.close, color: AppColors.iconWhite),
                       ),
                     ],
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
@@ -30,6 +31,7 @@ class CustomSearchBar extends StatelessWidget {
     return Stack(
       children: [
         LiquidGlassLayer(
+          settings: iosGlassSettings,
           child: Row(
             spacing: width * 0.03,
             children: [
