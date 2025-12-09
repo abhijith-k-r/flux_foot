@@ -5,9 +5,9 @@ class ProductModel {
   final String id;
   final String name;
   final String? description;
-  final String regularPrice;
-  final String salePrice;
-  final String quantity;
+  final double regularPrice; 
+  final double salePrice; 
+  final int quantity;
   final String category;
   final String brand;
   final List<String> images;
@@ -34,6 +34,40 @@ class ProductModel {
     this.variants = const [],
   });
 
+  ProductModel copyWith({
+    String? id,
+    String? name,
+    String? description,
+    double? regularPrice,
+    double? salePrice,
+    int? quantity,
+    String? category,
+    String? brand,
+    List<String>? images,
+    String? status,
+    String? sellerId,
+    DateTime? createdAt,
+    Map<String, dynamic>? dynammicSpecs,
+    List<ColorvariantModel>? variants,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      regularPrice: regularPrice ?? this.regularPrice,
+      salePrice: salePrice ?? this.salePrice,
+      quantity: quantity ?? this.quantity,
+      category: category ?? this.category,
+      brand: brand ?? this.brand,
+      images: images ?? this.images,
+      status: status ?? this.status,
+      sellerId: sellerId ?? this.sellerId,
+      createdAt: createdAt ?? this.createdAt,
+      dynammicSpecs: dynammicSpecs ?? this.dynammicSpecs,
+      variants: variants ?? this.variants,
+    );
+  }
+
   factory ProductModel.fromFirestore(Map<String, dynamic> data, String id) {
     var imagesData = data['images'];
     List<String> imagesList;
@@ -47,7 +81,7 @@ class ProductModel {
     } else {
       imagesList = [];
     }
-     // Read variants safely
+    // Read variants safely
     final variantsRaw = data['variants'] as List<dynamic>? ?? [];
     final variantsList = variantsRaw
         .map(
@@ -55,13 +89,26 @@ class ProductModel {
         )
         .toList();
 
+        // Helper function for safe number parsing
+    double parsePrice(dynamic value) {
+      if (value is num) return value.toDouble();
+      if (value is String) return double.tryParse(value) ?? 0.0;
+      return 0.0;
+    }
+
+    int parseInt(dynamic value) {
+      if (value is num) return value.toInt();
+      if (value is String) return int.tryParse(value) ?? 1; 
+      return 1;
+    }
+
     return ProductModel(
       id: id,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
-      regularPrice: data['regularPrice'] ?? '',
-      salePrice: data['salePrice'] ?? '',
-      quantity: data['quantity'] ?? '',
+      regularPrice: parsePrice(data['regularPrice']),
+      salePrice: parsePrice(data['salePrice']),
+      quantity: parseInt(data['quantity']),
       category: data['category'] ?? '',
       brand: data['brand'] ?? '',
       images: imagesList,

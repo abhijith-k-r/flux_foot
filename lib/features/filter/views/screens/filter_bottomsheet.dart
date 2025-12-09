@@ -20,23 +20,15 @@ class FilterBottomSheet extends StatelessWidget {
     double globalMaxPrice = 5000.0;
 
     if (homeState is HomeDataLoaded && homeState.products.isNotEmpty) {
-      globalMaxPrice = double.parse(
+      globalMaxPrice = 
         homeState.products
-            .reduce(
-              (a, b) =>
-                  double.parse(a.salePrice) > double.parse(b.salePrice) ? a : b,
-            )
-            .salePrice,
-      );
+            .reduce((a, b) => (a.salePrice) > (b.salePrice) ? a : b)
+            .salePrice
+      ;
 
-      globalMinPrice = double.parse(
-        homeState.products
-            .reduce(
-              (a, b) =>
-                  double.parse(a.salePrice) < double.parse(b.salePrice) ? a : b,
-            )
-            .salePrice,
-      );
+      globalMinPrice = homeState.products
+          .reduce((a, b) => (a.salePrice) < (b.salePrice) ? a : b)
+          .salePrice;
     }
 
     showModalBottomSheet(

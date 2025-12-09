@@ -120,13 +120,13 @@ class ProductCard extends StatelessWidget {
                         Row(
                           children: [
                             customText(
-                              size * 0.04,
-                              '₹ $salePrice/-',
+                              size * 0.035,
+                              '₹ $salePrice',
                               fontWeight: FontWeight.bold,
                             ),
                             SizedBox(width: 5),
                             customText(
-                              size * 0.025,
+                              size * 0.02,
                               '₹ $regularPrice/-',
                               textDecoration: TextDecoration.lineThrough,
                             ),

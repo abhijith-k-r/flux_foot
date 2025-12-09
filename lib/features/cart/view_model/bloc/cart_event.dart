@@ -17,9 +17,22 @@ class ToggleCart extends CartEvent {
 
 class UpdatedCartList extends CartEvent {
   final List<String> cartIds;
-  UpdatedCartList(this.cartIds);
+  final String uid;
+  UpdatedCartList(this.cartIds, this.uid);
 }
 
 class ClearCarts extends CartEvent {}
 
+class UpdateCartQuantityEvent extends CartEvent {
+  final ProductModel product;
+  final int quantity;
 
+  UpdateCartQuantityEvent({required this.product, required this.quantity});
+}
+
+
+class RemoveFromCartEvent extends CartEvent {
+  final ProductModel product;
+
+  RemoveFromCartEvent({required this.product});
+}

@@ -27,7 +27,7 @@ class MainScreen extends StatelessWidget {
               children: const [
                 HomeScreen(),
                 CartsViews(),
-                FavoriteView(),
+                Favourites(),
                 AccountScreen(),
               ],
             ),

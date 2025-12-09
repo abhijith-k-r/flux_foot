@@ -15,7 +15,7 @@ class CustomBottomNavBar extends StatelessWidget {
           option: DotBarOptions(
             dotStyle: DotStyle.tile,
             gradient: LinearGradient(
-              colors: [AppColors. btnDeepPurple, AppColors. btnPink],
+              colors: [AppColors.btnDeepPurple, AppColors.btnPink],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -24,24 +24,24 @@ class CustomBottomNavBar extends StatelessWidget {
             BottomBarItem(
               icon: const Icon(Icons.home_filled),
               title: const Text('Home'),
-              backgroundColor: AppColors. iconRedAccent,
+              backgroundColor: AppColors.iconRedAccent,
               selectedIcon: const Icon(Icons.read_more),
             ),
             BottomBarItem(
               icon: const Icon(Icons.shopping_cart_outlined),
               title: const Text('Carts'),
-              backgroundColor: AppColors. iconOrangeAccent,
+              backgroundColor: AppColors.iconOrangeAccent,
             ),
             BottomBarItem(
               icon: const Icon(Icons.favorite_border),
-              title: const Text('Favorites'),
-              backgroundColor: AppColors. iconPurple,
+              title: const Text('favourites'),
+              backgroundColor: AppColors.iconPurple,
             ),
 
             BottomBarItem(
               icon: const Icon(Icons.person_outline_rounded),
               title: const Text('Account'),
-              backgroundColor: AppColors. iconOrange,
+              backgroundColor: AppColors.iconOrange,
             ),
           ],
           hasNotch: true,

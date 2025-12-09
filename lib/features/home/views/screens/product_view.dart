@@ -39,8 +39,8 @@ class ProductView extends StatelessWidget {
           final availableSizes = state.selectedVariant.sizes;
 
           final String productName = product.name;
-          final String regularPrice = product.regularPrice;
-          final String salePrice = product.salePrice;
+          final String regularPrice = product.regularPrice.toString();
+          final String salePrice = product.salePrice.toString();
           final String description = product.description ?? '';
 
           return SingleChildScrollView(

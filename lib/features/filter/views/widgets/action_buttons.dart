@@ -14,20 +14,12 @@ class ActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
-    // final isDark = Theme.of(context).brightness == Brightness.dark;
-    // final bgColor = isDark ? const Color(0xFF101622) : const Color(0xFFF5F6F8);
 
     final filterBloc = context.read<FilterBloc>();
     final homeBloc = context.read<HomeBloc>();
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        // border: Border(
-        //   top: BorderSide(
-        //     color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
-        //   ),
-        // ),
-      ),
+      decoration: BoxDecoration(),
       child: Row(
         children: [
           // ! Reset Custom Button
@@ -67,7 +59,7 @@ class ActionButtons extends StatelessWidget {
                       child: Center(
                         child: customText(
                           size * 0.04,
-                          'Apply Filters',
+                          'Reset All',
                           appColor: AppColors.textWite,
                           fontWeight: FontWeight.bold,
                         ),

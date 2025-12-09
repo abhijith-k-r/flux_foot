@@ -118,7 +118,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     // ! 3. Filter by Price Range
     filteredProducts = filteredProducts.where((product) {
-      final price = double.tryParse(product.salePrice) ?? 0.0;
+      final price = product.salePrice;
       return price >= filterState.minPrice && price <= filterState.maxPrice;
     }).toList();
 
@@ -126,16 +126,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     switch (filterState.selectedSort) {
       case SortOption.priceLowToHigh:
         filteredProducts.sort(
-          (a, b) => (double.tryParse(a.salePrice) ?? 0.0).compareTo(
-            double.tryParse(b.salePrice) ?? 0.0,
+          (a, b) => (a.salePrice).compareTo(
+            b.salePrice,
           ),
         );
         break;
 
       case SortOption.priceHighToLow:
         filteredProducts.sort(
-          (a, b) => (double.tryParse(b.salePrice) ?? 0.0).compareTo(
-            double.tryParse(a.salePrice) ?? 0.0,
+          (a, b) => (b.salePrice).compareTo(
+           (a.salePrice),
           ),
         );
         break;

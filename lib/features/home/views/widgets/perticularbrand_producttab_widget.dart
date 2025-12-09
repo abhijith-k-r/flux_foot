@@ -75,8 +75,8 @@ Widget buildProductsTab(
                         ),
                         child: ProductCard(
                           productName: product.name,
-                          regularPrice: product.regularPrice,
-                          salePrice: product.salePrice,
+                          regularPrice: product.regularPrice.toString(),
+                          salePrice: product.salePrice.toString(),
                           description: product.description ?? '',
                           product: product,
                           productVariants: product.variants.first,

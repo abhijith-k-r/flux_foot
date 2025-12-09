@@ -7,6 +7,7 @@ import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart'
 import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
+import 'package:lottie/lottie.dart';
 
 // ! Extracting featured products logic into a separate widget for clarity
 class FeaturedProductGrid extends StatelessWidget {
@@ -32,8 +33,14 @@ class FeaturedProductGrid extends StatelessWidget {
           state.products.sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
           if (state.products.isEmpty) {
-            return Center(
-              child: customText(16, 'No featured products available.'),
+            return Column(
+              children: [
+                Lottie.asset(
+                  'Flux_Foot/assets/images/lottie/Empty Cart.json',
+                  width: size * 0.3,
+                ),
+                customText(size * 0.04, 'No products match your filters!.'),
+              ],
             );
           }
 
@@ -65,8 +72,8 @@ class FeaturedProductGrid extends StatelessWidget {
                 ),
                 child: ProductCard(
                   productName: product.name,
-                  regularPrice: product.regularPrice,
-                  salePrice: product.salePrice,
+                  regularPrice: product.regularPrice.toString(),
+                  salePrice: product.salePrice.toString(),
                   description: product.description ?? '',
                   product: product,
                   productVariants: product.variants.isNotEmpty

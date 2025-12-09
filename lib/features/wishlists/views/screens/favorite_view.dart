@@ -14,8 +14,8 @@ import 'package:fluxfoot_user/features/wishlists/view_model/bloc/favorites_bloc.
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-class FavoriteView extends StatelessWidget {
-  const FavoriteView({super.key});
+class Favourites extends StatelessWidget {
+  const Favourites({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class FavoriteView extends StatelessWidget {
       appBar: CustomAppBar(
         title: customText(
           size,
-          'Favarites',
+          'favourites',
           style: GoogleFonts.rozhaOne(fontSize: size * 0.08),
         ),
       ),
@@ -141,8 +141,8 @@ class FavoriteView extends StatelessWidget {
                                 ),
                                 child: ProductCard(
                                   productName: product.name,
-                                  regularPrice: product.regularPrice,
-                                  salePrice: product.salePrice,
+                                  regularPrice: product.regularPrice.toString(),
+                                  salePrice: product.salePrice.toString(),
                                   description: product.description ?? '',
                                   product: product,
                                   productVariants: product.variants.isNotEmpty
