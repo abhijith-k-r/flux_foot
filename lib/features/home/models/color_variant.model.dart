@@ -13,6 +13,20 @@ class ColorvariantModel {
     this.sizes = const [],
   });
 
+  ColorvariantModel copyWith({
+    String? colorName,
+    String? colorCode,
+    List<String>? imageUrls,
+    List<SizeQuantityVariant>? sizes,
+  }) {
+    return ColorvariantModel(
+      colorName: colorName ?? this.colorName,
+      colorCode: colorCode ?? this.colorCode,
+      imageUrls: imageUrls ?? this.imageUrls,
+      sizes: sizes ?? this.sizes,
+    );
+  }
+
   Map<String, dynamic> toMap() => {
     'colorName': colorName,
     'colorCode': colorCode,

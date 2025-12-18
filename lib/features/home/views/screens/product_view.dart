@@ -102,7 +102,16 @@ class ProductView extends StatelessWidget {
         spacing: size * 0.02,
         children: [
           // ! Add to Cart Button
-          buildAddtoCartButton(size, product),
+          BlocBuilder<ProductVariantBloc, ProductVariantState>(
+            builder: (context, variantState) {
+              final selectedVariant = variantState.selectedVariant;
+              final selectedSize = variantState.selectedSize;
+              return buildAddtoCartButton(size, product,
+                selectedColorName: selectedVariant.colorName,
+                selectedSize: selectedSize?.size,
+              );
+            },
+          ),
           CustomButton(
             width: 180,
             backColor: AppColors.bgOrange,

@@ -11,8 +11,13 @@ class LoadCartItems extends CartEvent {
 class ToggleCart extends CartEvent {
   final ProductModel productModel;
   final bool isCart;
+  final String? selectedColorName;
+  final String? selectedSize;
 
-  ToggleCart({required this.productModel, required this.isCart});
+  ToggleCart( {required this.productModel, required this.isCart,
+    this.selectedColorName,
+    this.selectedSize,
+  });
 }
 
 class UpdatedCartList extends CartEvent {

@@ -8,7 +8,10 @@ import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
 // ! Custom Add to Cart Button
-Widget buildAddtoCartButton(double size, ProductModel product) {
+Widget buildAddtoCartButton(double size, ProductModel product, {
+  String? selectedColorName,
+  String? selectedSize,
+}) {
   return BlocBuilder<CartBloc, CartState>(
     builder: (context, state) {
       final isCart = state.cartIds.contains(product.id);
@@ -20,7 +23,10 @@ Widget buildAddtoCartButton(double size, ProductModel product) {
               width: 180,
               ontap: () {
                 context.read<CartBloc>().add(
-                  ToggleCart(productModel: product, isCart: isCart),
+                  ToggleCart(productModel: product, isCart: isCart,
+                    selectedColorName: selectedColorName,
+                    selectedSize: selectedSize,
+                  ),
                 );
               },
               backColor: Colors.transparent,

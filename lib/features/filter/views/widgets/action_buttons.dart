@@ -32,7 +32,7 @@ class ActionButtons extends StatelessWidget {
                   FilterProducts(
                     filterBloc.state.copyWith(
                       selectedSort: SortOption.newestFirst,
-                      selectedCategory: '',
+                      selectedCategory: [],
                       minPrice: filterBloc.state.minPrice,
                       maxPrice: filterBloc.state.maxPrice,
                       searchQuery: '',

@@ -20,6 +20,8 @@ class FirebaseAuthService implements BaseAuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   static String? error;
 
+  static const String _isOnlineField = 'isOnline';
+
   FirebaseAuthService(this._firebaseAuth);
 
   @override
@@ -69,10 +71,17 @@ class FirebaseAuthService implements BaseAuthRepository {
   @override
   Future<void> signIn({required String email, required String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
+
+      if (userCredential.user != null) {
+        await _firestore
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .update({_isOnlineField: true});
+      }
     } on FirebaseAuthException {
       rethrow;
     } catch (e) {
@@ -83,9 +92,16 @@ class FirebaseAuthService implements BaseAuthRepository {
 
   @override
   Future<void> signOut() async {
+    final user = _firebaseAuth.currentUser;
     try {
       await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
+
+      if (user != null) {
+        await _firestore.collection('users').doc(user.uid).update({
+          _isOnlineField: false,
+        });
+      }
     } catch (e) {
       debugPrint('Error during Firebase signOut: $e');
       rethrow;
@@ -96,7 +112,10 @@ class FirebaseAuthService implements BaseAuthRepository {
   Future<UserModel> fetchUserDetails(String uid) async {
     try {
       // ! Force fetching from server to avoid stale cache issues after update
-      final doc = await _firestore.collection('users').doc(uid).get(const GetOptions(source: Source.server));
+      final doc = await _firestore
+          .collection('users')
+          .doc(uid)
+          .get(const GetOptions(source: Source.server));
 
       if (!doc.exists || doc.data() == null) {
         log('User data document not found for UID: $uid');
@@ -143,11 +162,15 @@ class FirebaseAuthService implements BaseAuthRepository {
             'email': user.email ?? '',
             'phone': user.phoneNumber ?? '',
             'status': 'verified',
+            'isOnline': true,
             'createdAt': Timestamp.now(),
           });
+        } else {
+          await docRef.update({'isOnline': true});
         }
       }
       return user;
+      
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         error = 'Sign-in Cancelled by user';
@@ -192,7 +215,8 @@ class FirebaseAuthService implements BaseAuthRepository {
 
       final request = http.MultipartRequest('POST', Uri.parse(url))
         ..fields['upload_preset'] = cloudinaryUploadPreset
-        ..fields['folder'] = 'fluxfoot_user_profiles'; // ! Removed public_id to allow Cloudinary to generate a unique random ID for every upload
+        ..fields['folder'] =
+            'fluxfoot_user_profiles'; // ! Removed public_id to allow Cloudinary to generate a unique random ID for every upload
 
       final multipartFile = await http.MultipartFile.fromPath(
         'file',

@@ -108,11 +108,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     // ! 2. Filter by Category
-    final category = filterState.selectedCategory;
+    final category = filterState.selectedCategories;
     if (category.isNotEmpty) {
       filteredProducts = filteredProducts.where((product) {
         // Assuming 'product.category' is a String field in ProductModel
-        return product.category == category;
+        return category.contains(product.category);
       }).toList();
     }
 
@@ -125,19 +125,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     // ! 4. Sort the filtered results
     switch (filterState.selectedSort) {
       case SortOption.priceLowToHigh:
-        filteredProducts.sort(
-          (a, b) => (a.salePrice).compareTo(
-            b.salePrice,
-          ),
-        );
+        filteredProducts.sort((a, b) => (a.salePrice).compareTo(b.salePrice));
         break;
 
       case SortOption.priceHighToLow:
-        filteredProducts.sort(
-          (a, b) => (b.salePrice).compareTo(
-           (a.salePrice),
-          ),
-        );
+        filteredProducts.sort((a, b) => (b.salePrice).compareTo((a.salePrice)));
         break;
 
       case SortOption.newestFirst:

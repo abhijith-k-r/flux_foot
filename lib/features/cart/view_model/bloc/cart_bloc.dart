@@ -68,7 +68,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         return;
       }
 
-      await _repo.toggleToCart(event.productModel, event.isCart, currentUid);
+      await _repo.toggleToCart(
+        product: event.productModel,
+        shouldRemove: event.isCart,
+        uid: currentUid,
+        selectedColorName: event.selectedColorName,
+        selectedSize: event.selectedSize,
+      );
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }
@@ -76,7 +82,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
   void _onUpdateCartList(UpdatedCartList event, Emitter<CartState> emit) async {
     // Only show loading if checking for the first time or list is empty to avoid flickering
-    emit(state.copyWith(cartIds: event.cartIds, isLoading: state.cartProducts.isEmpty));
+    emit(
+      state.copyWith(
+        cartIds: event.cartIds,
+        isLoading: state.cartProducts.isEmpty,
+      ),
+    );
 
     try {
       // 🛠️ FIX: Pass the UID to the repository method
@@ -160,7 +171,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
 
       await _repo.removeFromCart(event.product.id, currentUid);
-
     } catch (e) {
       emit(state.copyWith(error: 'Failed to remove item: ${e.toString()}'));
     }

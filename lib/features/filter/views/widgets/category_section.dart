@@ -71,10 +71,10 @@ class CategorySection extends StatelessWidget {
                     final isDark =
                         Theme.of(context).brightness == Brightness.dark;
 
-                    return BlocSelector<FilterBloc, FilterState, String?>(
-                      selector: (state) => state.selectedCategory,
+                    return BlocSelector<FilterBloc, FilterState, List<String>>(
+                      selector: (state) => state.selectedCategories,
                       builder: (context, selectedCategory) {
-                        final isSelected = selectedCategory == category;
+                        final isSelected = selectedCategory.contains(category);
                         return ElevatedButton(
                           onPressed: () => context.read<FilterBloc>().add(
                             ToggleCategory(category),

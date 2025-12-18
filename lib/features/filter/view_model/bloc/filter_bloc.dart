@@ -29,7 +29,15 @@ class FilterBloc extends Bloc<FilterEvent, FilterState> {
   }
 
   void _onToggleCategory(ToggleCategory event, Emitter<FilterState> emit) {
-    emit(state.copyWith(selectedCategory: event.category));
+    final category = event.category;
+    final currentCategories = List<String>.from(state.selectedCategories);
+
+    if (currentCategories.contains(category)) {
+      currentCategories.remove(category);
+    } else {
+      currentCategories.add(category);
+    }
+    emit(state.copyWith(selectedCategory: currentCategories));
   }
 
   void _onUpdatePriceRange(UpdatePriceRange event, Emitter<FilterState> emit) {
