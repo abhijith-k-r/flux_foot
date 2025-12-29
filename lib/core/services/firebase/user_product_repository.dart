@@ -19,7 +19,6 @@ class UserProductRepository {
   }
 
   // ! Stream active Products Brands from Admin Side
-
   Stream<List<BrandModel>> streamActiveBrands() {
     return _firestore
         .collection('brands')
@@ -31,4 +30,6 @@ class UserProductRepository {
               .toList();
         });
   }
+
+  
 }

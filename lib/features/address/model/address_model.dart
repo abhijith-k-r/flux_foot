@@ -11,6 +11,8 @@ class AddressModel {
   final String houseNo;
   final String roadAreaColony;
   final String userId;
+  final String label;
+  final bool isSelected;
   final DateTime createdAt;
   AddressModel({
     this.id,
@@ -23,6 +25,8 @@ class AddressModel {
     required this.houseNo,
     required this.roadAreaColony,
     required this.userId,
+    required this.label,
+    required this.isSelected,
     required this.createdAt,
   });
 
@@ -37,6 +41,8 @@ class AddressModel {
       'houseNo': houseNo,
       'roadAreaColony': roadAreaColony,
       'userId': userId,
+      'label': label,
+      'isSelected':isSelected,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
@@ -53,6 +59,8 @@ class AddressModel {
       houseNo: map['houseNo'] ?? '',
       roadAreaColony: map['roadAreaColony'] ?? '',
       userId: map['userId'] ?? '',
+      label: map['label'] ?? '',
+      isSelected: map['isSelected'] ?? false,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
     );
   }

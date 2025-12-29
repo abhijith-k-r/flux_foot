@@ -13,10 +13,12 @@ const LiquidGlassSettings iosGlassSettings = LiquidGlassSettings(
 // ! Custom Tab Bar Widget
 Widget buildCustomTabBar(
   BuildContext context,
-  double size,
-  int categoryCount,
-  int productCount,
-) {
+  double size, {
+  String? title1,
+  String? title2,
+  int? categoryCount,
+  int? productCount,
+}) {
   const double borderRadius = 15;
 
   return SizedBox(
@@ -49,23 +51,24 @@ Widget buildCustomTabBar(
                     children: [
                       customText(
                         size * 0.04,
-                        'Category',
+                        title1 ?? 'Category',
                         fontWeight: FontWeight.w600,
                       ),
                       SizedBox(width: size * 0.02),
-                      Container(
-                        padding: EdgeInsets.all(size * 0.015),
-                        decoration: BoxDecoration(
-                          color: AppColors.bgBlack,
-                          shape: BoxShape.circle,
+                      if (productCount != null)
+                        Container(
+                          padding: EdgeInsets.all(size * 0.015),
+                          decoration: BoxDecoration(
+                            color: AppColors.bgBlack,
+                            shape: BoxShape.circle,
+                          ),
+                          child: customText(
+                            size * 0.03,
+                            categoryCount.toString(),
+                            appColor: AppColors.textWite,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: customText(
-                          size * 0.03,
-                          categoryCount.toString(),
-                          appColor: AppColors.textWite,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -77,23 +80,24 @@ Widget buildCustomTabBar(
                     children: [
                       customText(
                         size * 0.04,
-                        'Products',
+                        title2 ?? 'Products',
                         fontWeight: FontWeight.w600,
                       ),
                       SizedBox(width: size * 0.02),
-                      Container(
-                        padding: EdgeInsets.all(size * 0.015),
-                        decoration: BoxDecoration(
-                          color: AppColors.bgBlack,
-                          shape: BoxShape.circle,
+                      if (productCount != null)
+                        Container(
+                          padding: EdgeInsets.all(size * 0.015),
+                          decoration: BoxDecoration(
+                            color: AppColors.bgBlack,
+                            shape: BoxShape.circle,
+                          ),
+                          child: customText(
+                            size * 0.03,
+                            productCount.toString(),
+                            appColor: AppColors.textWite,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        child: customText(
-                          size * 0.03,
-                          productCount.toString(),
-                          appColor: AppColors.textWite,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
                     ],
                   ),
                 ),

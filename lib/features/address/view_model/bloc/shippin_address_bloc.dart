@@ -22,6 +22,7 @@ class ShippingAddressBloc
     on<SaveNewAddress>(_onSaveNewAddress);
     on<UpdateAddress>(_onUpdateAddress);
     on<DeleteAddress>(_onDeleteAddress);
+    on<SelectAddressEvent>(_onSelectAddress);
   }
 
   Future<void> _onSaveNewAddress(
@@ -95,6 +96,18 @@ class ShippingAddressBloc
       emit(AddAddressSuccess());
     } catch (e) {
       emit(ShippingAddressFailure(error: e.toString()));
+    }
+  }
+
+    Future<void> _onSelectAddress(
+    SelectAddressEvent event,
+    Emitter<ShippingAddressState> emit,
+  ) async {
+    try {
+      await _repository.selectAddress(event.addressId);
+    } catch (e) {
+      emit(ShippingAddressFailure(error: e.toString()));
+      add(LoadShippingAddresses());
     }
   }
 

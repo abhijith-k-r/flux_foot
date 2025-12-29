@@ -17,6 +17,7 @@ import 'package:fluxfoot_user/features/account/views/widgets/profile_widgets.dar
 import 'package:fluxfoot_user/features/account/views/widgets/profilescreen_logoutbutton.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -52,7 +53,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state.status == ProfileStatus.loading || state.user == null) {
-              return const Center(child: CircularProgressIndicator());
+              return Center(
+                child: LoadingAnimationWidget.fallingDot(
+                  color: AppColors.iconOrangeAccent,
+                  size: size * 0.2,
+                ),
+              );
             }
 
             final user = state.user!;

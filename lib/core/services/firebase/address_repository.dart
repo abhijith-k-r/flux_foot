@@ -80,4 +80,26 @@ class AddressRepository {
       throw Exception('Failed to delete address: $e');
     }
   }
+
+  Future<void> selectAddress(String addressId) async {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    if (currentUserId == null) throw Exception('User not authenticated');
+
+    final batch = _firestore.batch();
+    final collectionRef = _getAddressesCollection(currentUserId);
+    final snapshot = await collectionRef.get();
+
+    for (var doc in snapshot.docs) {
+      if (doc.id == addressId) {
+        batch.update(doc.reference, {'isSelected': true});
+      } else {
+        // Reset others to false
+        batch.update(doc.reference, {'isSelected': false});
+      }
+    }
+    await batch.commit();
+  }
 }
+
+
+

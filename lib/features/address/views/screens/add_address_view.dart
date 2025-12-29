@@ -33,6 +33,7 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
   late final TextEditingController cityController;
   late final TextEditingController houseController;
   late final TextEditingController roadController;
+  late final TextEditingController labelController;
 
   @override
   void initState() {
@@ -62,6 +63,9 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
     roadController = TextEditingController(
       text: widget.addressToEdit?.roadAreaColony ?? '',
     );
+    labelController = TextEditingController(
+      text: widget.addressToEdit?.label ?? '',
+    );
   }
 
   // Dispose controllers to prevent memory leaks
@@ -75,6 +79,7 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
     cityController.dispose();
     houseController.dispose();
     roadController.dispose();
+    labelController.dispose();
     super.dispose();
   }
 
@@ -85,7 +90,7 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        leading: customBackButton(context),
+        leading: const BackButton(),
         title: customText(
           size * 0.065,
           isEditing ? 'Edit Address' : 'Add Address',
@@ -141,6 +146,15 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
           label: 'NAME',
           hint: 'Full name*',
           controller: nameController,
+        ),
+        SizedBox(height: size * 0.03),
+
+        // ! User Address Label Text Form Field
+        buildTextField(
+          size: size,
+          label: 'LABEL',
+          hint: 'HOUSE,OFFICE*',
+          controller: labelController,
         ),
         SizedBox(height: size * 0.03),
 
@@ -227,6 +241,7 @@ class _AddAddressViewBodyState extends State<AddAddressViewBody> {
           cityController,
           houseController,
           roadController,
+          labelController
         ),
       ],
     );

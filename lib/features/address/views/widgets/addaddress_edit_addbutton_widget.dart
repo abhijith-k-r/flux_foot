@@ -22,6 +22,8 @@ Widget buildAddressAddEditButton(
   TextEditingController cityController,
   TextEditingController houseController,
   TextEditingController roadController,
+    TextEditingController labelController,
+
 ) {
   return BlocBuilder<ShippingAddressBloc, ShippingAddressState>(
     builder: (context, state) {
@@ -43,6 +45,9 @@ Widget buildAddressAddEditButton(
                 cityController,
                 houseController,
                 roadController,
+                labelController
+                
+                
               ),
         widget: isLoading
             ? CupertinoActivityIndicator(color: AppColors.textBlack)
@@ -77,6 +82,7 @@ void saveAddress(
   TextEditingController cityController,
   TextEditingController houseController,
   TextEditingController roadController,
+  TextEditingController labelController,
 ) {
   if (formKey.currentState!.validate()) {
     final String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -99,6 +105,8 @@ void saveAddress(
       houseNo: houseController.text.trim(),
       roadAreaColony: roadController.text.trim(),
       userId: currentUserId,
+      label: labelController.text.trim(),
+      isSelected: true,
       createdAt: addressToEdit?.createdAt ?? DateTime.now(),
     );
 

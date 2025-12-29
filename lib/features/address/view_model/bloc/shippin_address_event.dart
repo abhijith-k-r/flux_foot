@@ -23,3 +23,9 @@ class DeleteAddress extends ShippingAddressEvent {
   final String addressId;
   DeleteAddress({required this.addressId});
 }
+
+
+class SelectAddressEvent extends ShippingAddressEvent {
+  final String addressId;
+  SelectAddressEvent(this.addressId);
+}

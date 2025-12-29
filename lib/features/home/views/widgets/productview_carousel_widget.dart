@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
-import 'package:fluxfoot_user/features/home/view_model/cubit/carousal_cubit.dart';
+import 'package:fluxfoot_user/features/home/view_model/carousel_cubit/carousal_cubit.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/productview_transparant_screen.dart';
 
 class ProductImageFlipCarousel extends StatefulWidget {

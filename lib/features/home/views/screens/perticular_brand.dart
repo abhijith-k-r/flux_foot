@@ -103,8 +103,8 @@ class PerticularBrand extends StatelessWidget {
                     buildCustomTabBar(
                       context,
                       size,
-                      sortedCategory.length,
-                      filteredProducts.length,
+                      categoryCount: sortedCategory.length,
+                      productCount: filteredProducts.length,
                     ),
                     SizedBox(height: 10),
                     Expanded(

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +14,7 @@ import 'package:fluxfoot_user/features/address/view_model/bloc/shippin_address_b
 import 'package:fluxfoot_user/features/address/view_model/bloc/shippin_address_state.dart';
 import 'package:fluxfoot_user/features/address/views/screens/add_address_view.dart';
 import 'package:fluxfoot_user/features/address/views/widgets/shippingaddress_addresscard_widget.dart';
+import 'package:fluxfoot_user/features/address/views/widgets/shippingaddress_edit_delete_widget.dart';
 
 class ShippingAddressView extends StatefulWidget {
   const ShippingAddressView({super.key});
@@ -22,13 +25,14 @@ class ShippingAddressView extends StatefulWidget {
 
 class _ShippingAddressViewState extends State<ShippingAddressView> {
   List<AddressModel> _lastLoadedAddresses = [];
+  String? _selectedAddressId;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: CustomAppBar(
-        leading: customBackButton(context),
+        leading: const BackButton(),
         title: customText(
           size * 0.065,
           'Shipping Addresses',
@@ -57,7 +61,7 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
             SizedBox(height: size * 0.02),
             customText(
               size * 0.05,
-              'Mange Adress',
+              'Saved Addresses',
               fontWeight: FontWeight.bold,
             ),
 
@@ -82,13 +86,7 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
                   if (state is ShippingAddressLoading) {
                     // ! Show last loaded addresses if available, otherwise show loading
                     if (_lastLoadedAddresses.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: _lastLoadedAddresses.length,
-                        itemBuilder: (context, index) {
-                          final address = _lastLoadedAddresses[index];
-                          return AddressCard(size: size, address: address);
-                        },
-                      );
+                      return buildAddressList();
                     }
                     return const Center(child: CircularProgressIndicator());
                   }
@@ -96,13 +94,7 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
                   if (state is ShippingAddressFailure) {
                     // ! Show last loaded addresses if available, otherwise show error
                     if (_lastLoadedAddresses.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: _lastLoadedAddresses.length,
-                        itemBuilder: (context, index) {
-                          final address = _lastLoadedAddresses[index];
-                          return AddressCard(size: size, address: address);
-                        },
-                      );
+                      return buildAddressList();
                     }
                     return Center(
                       child: Column(
@@ -130,25 +122,13 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
                         child: Text('No saved addresses yet. Add one!'),
                       );
                     }
-                    return ListView.builder(
-                      itemCount: state.addresses.length,
-                      itemBuilder: (context, index) {
-                        final address = state.addresses[index];
-                        return AddressCard(size: size, address: address);
-                      },
-                    );
+                    return buildAddressList();
                   }
 
                   // ! Handle AddAddressSuccess - show last loaded addresses
                   if (state is AddAddressSuccess) {
                     if (_lastLoadedAddresses.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: _lastLoadedAddresses.length,
-                        itemBuilder: (context, index) {
-                          final address = _lastLoadedAddresses[index];
-                          return AddressCard(size: size, address: address);
-                        },
-                      );
+                      return buildAddressList();
                     }
                     return const Center(
                       child: Text('No saved addresses yet. Add one!'),
@@ -162,6 +142,50 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
           ],
         ),
       ),
+    );
+  }
+
+  // ! Helper Fucntion For Show Show edit delete menu and Address Card.
+  Widget buildAddressList() {
+    final size = MediaQuery.of(context).size.width;
+
+    if (_selectedAddressId == null && _lastLoadedAddresses.isNotEmpty) {
+      try {
+        final selected = _lastLoadedAddresses.firstWhere((a) => a.isSelected);
+        _selectedAddressId = selected.id;
+      } catch (e) {
+        // None selected
+      }
+    }
+
+    return ListView.builder(
+      itemCount: _lastLoadedAddresses.length,
+      itemBuilder: (context, index) {
+        final address = _lastLoadedAddresses[index];
+                final isSelected =
+            (_selectedAddressId == address.id) ||
+            (address.isSelected && _selectedAddressId == null);
+
+        return SelectableAddressCard(
+          size: size,
+          address: address,
+          isSelected: isSelected,
+          onSelect: () {
+            setState(() {
+              _selectedAddressId = address.id;
+            });
+                        context.read<ShippingAddressBloc>().add(
+              SelectAddressEvent(address.id!),
+            );
+
+             Future.delayed(const Duration(milliseconds: 300), () {
+              if (mounted) Navigator.pop(context);
+            });
+
+          },
+          onEdit: () => showEditDeleteMenu(context, address),
+        );
+      },
     );
   }
 }

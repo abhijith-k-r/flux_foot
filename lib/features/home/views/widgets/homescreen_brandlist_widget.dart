@@ -7,6 +7,7 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
 import 'package:fluxfoot_user/features/home/models/brands_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 //! Extracting brand list logic into a separate widget for clarity
 class BrandListWidget extends StatelessWidget {
@@ -19,7 +20,12 @@ class BrandListWidget extends StatelessWidget {
       buildWhen: (previous, current) => previous != current,
       builder: (context, state) {
         if (state is HomeLoading || state is HomeInitial) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: LoadingAnimationWidget.hexagonDots(
+              color: AppColors.iconOrangeAccent,
+              size: size * 0.2,
+            ),
+          );
         }
         if (state is HomeError) {
           return Center(child: Text('Error loading brands: ${state.message}'));

@@ -11,6 +11,7 @@ Widget customText(
   TextOverflow? overflow,
   int? maxLines,
   TextStyle? style,
+  TextAlign? textAlign
 }) {
   return Text(
     text,
@@ -21,7 +22,9 @@ Widget customText(
           fontSize: size ,
           fontWeight: fontWeight,
           decoration: textDecoration,
+        
         ),
+        textAlign: textAlign,
     overflow: overflow ?? TextOverflow.ellipsis,
   );
 }

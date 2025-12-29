@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
@@ -20,7 +21,6 @@ class UserProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Center(
       child: Container(
         decoration: BoxDecoration(
@@ -42,8 +42,10 @@ class UserProfileImage extends StatelessWidget {
                           fit: BoxFit.cover,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
-                            return const Center(
-                              child: CircularProgressIndicator(),
+                            return Center(
+                              child: ShimmerWrapper(
+                                child: CircleAvatar(radius: radius! * 2),
+                              ),
                             );
                           },
                           errorBuilder: (context, error, stackTrace) {

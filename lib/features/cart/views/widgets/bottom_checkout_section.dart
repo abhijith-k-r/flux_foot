@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/features/cart/views/widgets/price_row_widget.dart';
+import 'package:fluxfoot_user/features/checkout/view_model/bloc/checkout_bloc.dart';
+import 'package:fluxfoot_user/features/checkout/views/screens/checkout_view.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 
 //!  Bottom Checkout Section
 Widget buildBottomCheckoutSection(
+  BuildContext context,
   double size,
   List<ProductModel> cartProducts,
   double subtotal,
@@ -44,7 +48,23 @@ Widget buildBottomCheckoutSection(
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (context) => CheckoutBloc()
+                      ..add(
+                        LoadCheckoutData(
+                          products: cartProducts,
+                          totalAmount: total,
+                        ),
+                      ),
+                    child: const CheckoutPage(),
+                  ),
+                ),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.bgOrange,
               shape: RoundedRectangleBorder(
@@ -56,7 +76,7 @@ Widget buildBottomCheckoutSection(
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.textWite,
               ),
             ),
           ),

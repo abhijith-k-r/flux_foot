@@ -8,6 +8,7 @@ import 'package:fluxfoot_user/features/account/view_model/bloc/profile_bloc.dart
 import 'package:fluxfoot_user/features/account/views/screens/profile_screen.dart';
 import 'package:fluxfoot_user/features/account/views/widgets/account_widgets.dart';
 import 'package:fluxfoot_user/features/address/views/screens/shipping_address_view.dart';
+import 'package:fluxfoot_user/features/order/views/screen/my_orders.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -64,12 +65,12 @@ class AccountScreen extends StatelessWidget {
                   icon: Icons.card_giftcard,
                   title: 'Order History',
                   subtitle: 'view all purchases',
-                  // ontap: ()=> fadePush(context, profilesc),
+                  ontap: () => fadePush(context, MyOrders()),
                 ).fadeInRight(from: 150),
                 // ! Settings
                 AccountContent(
                   size: size,
-                  icon: Icons.settings,
+                  icon: Icons.settings, 
                   title: 'Settings',
                   subtitle: 'further details',
                   // ontap: ()=> fadePush(context, profilesc),

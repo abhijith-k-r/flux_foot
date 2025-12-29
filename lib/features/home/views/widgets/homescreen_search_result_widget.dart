@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
@@ -7,13 +8,19 @@ import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart'
 import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/product_view.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/product_card_widget.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 // !--- Helper Widget: Search Results View ---
 Widget buildSearchResults(BuildContext context, double size, String query) {
   return BlocBuilder<HomeBloc, HomeState>(
     builder: (context, state) {
       if (state is HomeLoading || state is HomeInitial) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(
+          child: LoadingAnimationWidget.hexagonDots(
+            color: AppColors.iconOrangeAccent,
+            size: size * 0.2,
+          ),
+        );
       }
 
       if (state is HomeError) {

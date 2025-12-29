@@ -84,6 +84,7 @@ class CartsViews extends StatelessWidget {
 
               //!  Bottom Checkout Section
               buildBottomCheckoutSection(
+                context,
                 size,
                 cartProducts,
                 subtotal,
