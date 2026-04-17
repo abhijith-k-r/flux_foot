@@ -1,11 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
-import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/address/model/address_model.dart';
-import 'package:fluxfoot_user/features/address/views/widgets/shippingaddress_edit_delete_widget.dart';
 
 // ! Helper Widget to display a single address card
 // class AddressCard extends StatelessWidget {

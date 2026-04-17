@@ -85,7 +85,7 @@ Widget buildProductDetails(
               SizedBox(width: size * 0.02),
               if (availableSizes.isNotEmpty)
                 SizedBox(
-                  width: size * 0.73,
+                  width: size * 0.69,
                   height: size * 0.08,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -113,7 +113,7 @@ Widget buildProductDetails(
                                 right: size * 0.02,
                                 bottom: size * 0.01,
                               ),
-                              child: customText(15, sizeVariant.size),
+                              child: customText(10, sizeVariant.size,fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

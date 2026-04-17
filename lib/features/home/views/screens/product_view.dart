@@ -29,7 +29,7 @@ class ProductView extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
     final variantBloc = context.read<ProductVariantBloc>();
-
+    // final stripeService = StripeRepository();
     return Scaffold(
       appBar: CustomAppBar(
         leading: customBackButton(context),
@@ -311,17 +311,38 @@ class ProductView extends StatelessWidget {
               );
             },
           ),
-          CustomButton(
-            width: 180,
-            backColor: AppColors.bgOrange,
-            textColor: AppColors.textBlack,
-            widget: Icon(Icons.price_change),
-            text: 'Buy now',
-            fontSize: size * 0.04,
-            fontWeight: FontWeight.bold,
-            ontap: () {
-              goToCheckout(context, product);
-            },
+          Expanded(
+            child: CustomButton(
+              width: 180,
+              backColor: AppColors.bgOrange,
+              textColor: AppColors.textBlack,
+              widget: Icon(Icons.price_change),
+              text: 'Buy now',
+              fontSize: size * 0.04,
+              fontWeight: FontWeight.bold,
+              ontap: () async {
+                // context.read<CheckoutBloc>().add(
+                //   const PlaceOrderEvent(paymentMethod: 'Stripe'),
+                // );
+                goToCheckout(context, product);
+                // try {
+                //   await stripeService.initPaymentSheet(
+                //     amount: '10',
+                //     currency: 'usd',
+                //     merchantName: 'WTF Code',
+                //   );
+            
+                //   await stripeService.presentPaymentSheet();
+                //   ScaffoldMessenger.of(context).showSnackBar(
+                //     const SnackBar(content: Text('Payment Successful')),
+                //   );
+                // } catch (e) {
+                //   ScaffoldMessenger.of(
+                //     context,
+                //   ).showSnackBar(SnackBar(content: Text('Error: $e')));
+                // }
+              },
+            ),
           ),
         ],
       ),

@@ -59,6 +59,8 @@ class CustomButton extends StatelessWidget {
                   fontSize: fontSize,
                   fontWeight: fontWeight,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ],
           ),

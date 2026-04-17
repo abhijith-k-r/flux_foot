@@ -10,16 +10,17 @@ plugins {
 
 android {
     namespace = "com.example.fluxfoot_user"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -28,7 +29,7 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -45,3 +46,25 @@ android {
 flutter {
     source = "../.."
 }
+
+subprojects {
+    afterEvaluate {
+        val subproject = this
+        if (subproject.hasProperty("android")) {
+            val android = subproject.extensions.getByName("android") as com.android.build.gradle.BaseExtension
+            
+            // This manually injects the version so the plugin doesn't have to "query" it
+            android.compileSdkVersion(35)
+            
+            android.defaultConfig {
+                if (targetSdkVersion == null) {
+                    targetSdkVersion(35)
+                }
+                if (minSdkVersion == null) {
+                    minSdkVersion(23)
+                }
+            }
+        }
+    }
+}
+    

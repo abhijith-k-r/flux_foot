@@ -191,7 +191,7 @@ class CartItemCard extends StatelessWidget {
                               },
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              padding: EdgeInsets.symmetric(horizontal: 8),
                               child: Text(
                                 '$quantity',
                                 style: TextStyle(
@@ -214,13 +214,15 @@ class CartItemCard extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       // Price
-                      Text(
-                        '₹${(price * quantity).toStringAsFixed(2)}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Expanded(
+                        child: Text(
+                          '₹${(price * quantity).toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1
                         ),
                       ),
                     ],

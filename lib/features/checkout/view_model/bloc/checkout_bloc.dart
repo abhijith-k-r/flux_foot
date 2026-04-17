@@ -1,28 +1,31 @@
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluxfoot_user/core/services/firebase/stripe_repository.dart';
 import 'package:fluxfoot_user/features/address/model/address_model.dart';
 import 'package:fluxfoot_user/features/checkout/models/order_model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 part 'checkout_event.dart';
 part 'checkout_state.dart';
 
 class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
-  late Razorpay _razorpay;
+  // late Razorpay _razorpay;
+  final StripeRepository _stripeRepository = StripeRepository();
 
   CheckoutBloc() : super(CheckoutState()) {
-    _razorpay = Razorpay();
-    // Handlers
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    // _razorpay = Razorpay();
+    // // Handlers
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    // _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
 
     on<LoadCheckoutData>(_onLoadCheckoutData);
     on<PlaceOrderEvent>(_onPlaceOrder);
     on<UpdatePaymentStatus>(_onUpdatePaymentStatus);
+    on<SelectAddress>(_onSelectAddress);
   }
 
   Future<void> _onLoadCheckoutData(
@@ -41,22 +44,24 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             .collection('users')
             .doc(userId)
             .collection('addresses')
-            .orderBy('createdAt', descending: true)
+            // .orderBy('createdAt', descending: true)
             .get();
 
         if (snapshot.docs.isNotEmpty) {
-          try {
-            // Try to find one with isSelected == true
-            var selectedDoc = snapshot.docs.firstWhere(
-              (doc) => doc.data()['isSelected'] == true,
-              orElse: () => snapshot.docs.first,
-            );
+          final selectedDocs = snapshot.docs.where(
+            (doc) => doc.data()['isSelected'] == true,
+          );
+
+          if (selectedDocs.isNotEmpty) {
             address = AddressModel.fromFirestore(
-              selectedDoc.data(),
-              selectedDoc.id,
+              selectedDocs.first.data(),
+              selectedDocs.first.id,
             );
-          } catch (e) {
-            address = null;
+          } else {
+            address = AddressModel.fromFirestore(
+              snapshot.docs.first.data(),
+              snapshot.docs.first.id,
+            );
           }
         }
       }
@@ -107,46 +112,55 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    // When payment succeeds, we tell the Bloc to save the order
-    add(UpdatePaymentStatus(paymentId: response.paymentId!, isSuccess: true));
-  }
+  // void _handlePaymentSuccess(PaymentSuccessResponse response) {
+  //   // When payment succeeds, we tell the Bloc to save the order
+  //   add(UpdatePaymentStatus(paymentId: response.paymentId!, isSuccess: true));
+  // }
 
-  void _handlePaymentError(PaymentFailureResponse response) {
-    add(const UpdatePaymentStatus(isSuccess: false));
-  }
+  // void _handlePaymentError(PaymentFailureResponse response) {
+  //   add(const UpdatePaymentStatus(isSuccess: false));
+  // }
 
   Future<void> _onPlaceOrder(
     PlaceOrderEvent event,
     Emitter<CheckoutState> emit,
   ) async {
-    if (state.selectedAddress == null) {
-      emit(
-        state.copyWith(
-          status: CheckoutStatus.failure,
-          errorMessage: "Please select an address",
-        ),
-      );
-      return;
-    }
-    if (event.paymentMethod == 'COD') {
-      emit(state.copyWith(status: CheckoutStatus.paymentProcessing));
-      await _createOrderInFirestore(paymentId: "COD", method: "COD");
-      emit(state.copyWith(status: CheckoutStatus.success));
-    } else {
-      // Trigger Razorpay
-      var options = {
-        'key': 'rzp_test_RxLmZP0MJXDE9e',
-        'amount': state.total * 100, // amount in paise
-        'name': 'Flux Foot',
-        'description': 'Purchase Football Gear',
-        'prefill': {'contact': '8888888888', 'email': 'test@test.com'},
-      };
+    if (state.selectedAddress == null) return;
 
-      try {
-        _razorpay.open(options);
-      } catch (e) {
-        debugPrint('Error From OpenPay: $e');
+    emit(state.copyWith(status: CheckoutStatus.loading));
+
+    try {
+      final String amount = (state.total * 100).toInt().toString();
+
+      await _stripeRepository.initPaymentSheet(
+        amount: amount,
+        currency: 'inr',
+        merchantName: 'Flux Foot India',
+      );
+
+      await _stripeRepository.presentPaymentSheet();
+
+      await _createOrderInFirestore(
+        paymentId: "STRIPE_${DateTime.now().millisecondsSinceEpoch}",
+        method: "Stripe",
+      );
+
+      emit(state.copyWith(status: CheckoutStatus.success));
+    } catch (e) {
+      if (e is StripeException) {
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: e.error.localizedMessage ?? "payment Cancellec",
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: e.toString(),
+          ),
+        );
       }
     }
   }
@@ -196,9 +210,18 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
+  void _onSelectAddress(SelectAddress event, Emitter<CheckoutState> emit) {
+    emit(
+      state.copyWith(
+        selectedAddress: event.address,
+        status: CheckoutStatus.success,
+      ),
+    );
+  }
+
   @override
   Future<void> close() {
-    _razorpay.clear();
+    // _razorpay.clear();
     return super.close();
   }
 }

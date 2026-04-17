@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/address/model/address_model.dart';
 import 'package:fluxfoot_user/features/address/views/screens/shipping_address_view.dart';
 import 'package:fluxfoot_user/features/checkout/view_model/bloc/checkout_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -16,6 +17,8 @@ class CheckoutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final stripeService = StripeRepository();
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     const primaryColor = Color(0xFFEE8C2B);
     final size = MediaQuery.of(context).size.width;
@@ -121,22 +124,29 @@ class CheckoutPage extends StatelessWidget {
                                   '${state.selectedAddress!.houseNo}, ${state.selectedAddress!.roadAreaColony}\n'
                                   '${state.selectedAddress!.city}, ${state.selectedAddress!.state} - ${state.selectedAddress!.pinCode}'
                             : 'No Address Selected',
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ShippingAddressView(),
-                            ),
-                          ).then((_) {
-                            if (state.products.isNotEmpty || state.total > 0) {
-                              context.read<CheckoutBloc>().add(
-                                LoadCheckoutData(
-                                  products: products,
-                                  totalAmount: state.total,
+                        onEdit: () async {
+                          final selectedAddress =
+                              await Navigator.push<AddressModel>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ShippingAddressView(),
                                 ),
                               );
-                            }
-                          });
+
+                          // 2. If an address was actually selected, update the Bloc state immediately
+                          if (selectedAddress != null && context.mounted) {
+                            context.read<CheckoutBloc>().add(
+                              SelectAddress(selectedAddress),
+                            );
+                          } else if (context.mounted) {
+                            // Fallback refresh just in case
+                            context.read<CheckoutBloc>().add(
+                              LoadCheckoutData(
+                                products: products,
+                                totalAmount: state.total,
+                              ),
+                            );
+                          }
                         },
                       ),
                       const SizedBox(height: 16),
@@ -172,7 +182,7 @@ class CheckoutPage extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (state.selectedAddress == null) {
                           customSnackBar(
                             context,
@@ -182,7 +192,7 @@ class CheckoutPage extends StatelessWidget {
                           );
                         } else {
                           context.read<CheckoutBloc>().add(
-                            const PlaceOrderEvent(paymentMethod: 'Razorpay'),
+                            const PlaceOrderEvent(),
                           );
                         }
                       },
@@ -299,11 +309,13 @@ class CheckoutPage extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Text(
-                      'Size: $size  • Color: $subtitle',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Text(
+                        'Size: $size |  Color: $subtitle',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],

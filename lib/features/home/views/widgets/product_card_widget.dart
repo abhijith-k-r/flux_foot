@@ -92,102 +92,106 @@ class ProductCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: EdgeInsets.all(size * 0.02),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: size * 0.005,
-                  children: [
-                    customText(
-                      size * 0.033,
-                      productName,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    // ! For RATING
-                    Row(
-                      spacing: 5,
-                      children: [
-                        customText(size * 0.03, 'rating'),
-                        customText(
-                          size * 0.03,
-                          '4.9',
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            customText(
-                              size * 0.035,
-                              '₹ $salePrice',
-                              fontWeight: FontWeight.bold,
-                            ),
-                            SizedBox(width: 5),
-                            customText(
-                              size * 0.02,
-                              '₹ $regularPrice/-',
-                              textDecoration: TextDecoration.lineThrough,
-                            ),
-                          ],
-                        ),
-
-                        // ! Container Icon For Cart
-                        BlocBuilder<CartBloc, CartState>(
-                          builder: (context, state) {
-                            final isCart = state.cartIds.contains(product.id);
-                            return Container(
-                              width: size * 0.08,
-                              height: size * 0.08,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    AppColors.bgOrangeAccent,
-                                    Color(0xFFF9F9F9),
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-
-                                borderRadius: BorderRadius.circular(7),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: size * 0.005,
+                    children: [
+                      customText(
+                        size * 0.033,
+                        productName,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      // ! For RATING
+                      Row(
+                        spacing: 5,
+                        children: [
+                          customText(size * 0.03, 'rating'),
+                          customText(
+                            size * 0.03,
+                            '4.9',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                  
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              customText(
+                                size * 0.035,
+                                '₹ $salePrice',
+                                fontWeight: FontWeight.bold,
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.all(1),
-                                child: InkWell(
-                                  onTap: () {
-                                    context.read<CartBloc>().add(
-                                      ToggleCart(
-                                        productModel: product,
-                                        isCart: isCart,
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: isCart
-                                          ? AppColors.bgOrange
-                                          : AppColors.bgWhite,
-                                      borderRadius: BorderRadius.circular(7),
+                              SizedBox(width: 5),
+                              customText(
+                                size * 0.02,
+                                '₹ $regularPrice/-',
+                                textDecoration: TextDecoration.lineThrough,
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          // ! Container Icon For Cart
+                          Expanded(
+                            child: BlocBuilder<CartBloc, CartState>(
+                              builder: (context, state) {
+                                final isCart = state.cartIds.contains(product.id);
+                                return Container(
+                                  width: size * 0.08,
+                                  height: size * 0.08,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        AppColors.bgOrangeAccent,
+                                        Color(0xFFF9F9F9),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
                                     ),
-                                    child: Icon(
-                                      isCart
-                                          ? CupertinoIcons.cart_fill
-                                          : CupertinoIcons.cart,
-                                      color: isCart
-                                          ? AppColors.iconWhite
-                                          : AppColors.iconOrangeAccent,
-                                      size: size * 0.045,
+                  
+                                    borderRadius: BorderRadius.circular(7),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(1),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.read<CartBloc>().add(
+                                          ToggleCart(
+                                            productModel: product,
+                                            isCart: isCart,
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: isCart
+                                              ? AppColors.bgOrange
+                                              : AppColors.bgWhite,
+                                          borderRadius: BorderRadius.circular(7),
+                                        ),
+                                        child: Icon(
+                                          isCart
+                                              ? CupertinoIcons.cart_fill
+                                              : CupertinoIcons.cart,
+                                          color: isCart
+                                              ? AppColors.iconWhite
+                                              : AppColors.iconOrangeAccent,
+                                          size: size * 0.045,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
