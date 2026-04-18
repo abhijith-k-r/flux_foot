@@ -44,33 +44,67 @@ class OrderDetailsScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: order.productImage.isNotEmpty
-                        ? Image.network(order.productImage, width: 70, height: 70, fit: BoxFit.cover)
-                        : Container(width: 70, height: 70, color: Colors.grey.shade300, child: const Icon(Icons.image)),
+                        ? Image.network(
+                            order.productImage,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 70,
+                            height: 70,
+                            color: Colors.grey.shade300,
+                            child: const Icon(Icons.image),
+                          ),
                   ),
                   const SizedBox(width: 15),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(order.productName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text("Order ID: ${order.id.substring(0, 10).toUpperCase()}", style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                        Text(
+                          order.productName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          "Order ID: ${order.id.substring(0, 10).toUpperCase()}",
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                            fontSize: 12,
+                          ),
+                        ),
                         const SizedBox(height: 5),
-                        Text("₹ ${order.totalAmount}", style: TextStyle(color: primaryColor, fontWeight: FontWeight.bold)),
+                        Text(
+                          "₹ ${order.totalAmount}",
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            
+
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Text("Order Progress", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              child: Text(
+                "Order Progress",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
 
             // Real-Time Vertical Tracker Widget
             StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance.collection('orders').doc(order.id).snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('orders')
+                  .doc(order.id)
+                  .snapshots(),
               builder: (context, snapshot) {
                 String currentStatus = order.status; // fallback
                 if (snapshot.hasData && snapshot.data!.exists) {
@@ -92,12 +126,19 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    const Text("Delivery Address", style: TextStyle(color: Colors.white70, fontSize: 14)),
+                    const Text(
+                      "Delivery Address",
+                      style: TextStyle(color: Colors.white70, fontSize: 14),
+                    ),
                     const SizedBox(height: 8),
                     Text(
-                      "${order.shippingAddress['addressLine1'] ?? ''}, ${order.shippingAddress['city'] ?? ''}",
+                      "${order.shippingAddress['label'] ?? ''} ${order.shippingAddress['state'] ?? ''} ${order.shippingAddress['district'] ?? ''}  ${order.shippingAddress['city'] ?? ''}",
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

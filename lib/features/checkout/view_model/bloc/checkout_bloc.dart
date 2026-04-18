@@ -173,6 +173,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     final addressMap = state.selectedAddress!.toFireStore();
 
     for (var product in state.products) {
+      double lineItemSubtotal = product.salePrice * product.quantity;
+      double proportion = state.subtotal > 0 ? (lineItemSubtotal / state.subtotal) : 1.0;
+
+      double lineItemDiscount = state.discount * proportion;
+      double lineItemShipping = state.shipping * proportion;
+      double finalLineItemTotal = lineItemSubtotal - lineItemDiscount + lineItemShipping;
+
       final order = OrderModel(
         id: '', // Firestore auto-id
         userId: userId!,
@@ -181,7 +188,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         productName: product.name,
         productImage: product.images.isNotEmpty ? product.images[0] : "",
         quantity: product.quantity,
-        totalAmount: product.salePrice * product.quantity, // Individual price requested by seller
+        totalAmount: finalLineItemTotal, // Pushed perfectly pro-rated cart total to DB securely
         paymentType: method,
         status: method == 'COD' ? 'Placed' : 'Paid',
         paymentId: paymentId,
