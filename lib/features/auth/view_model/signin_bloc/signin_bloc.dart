@@ -88,14 +88,15 @@ class SigninBloc extends Bloc<SigninEvent, SigninState> {
 
     } on FirebaseAuthException catch (e) {
       String message = 'Sign-in failed. Please try again.';
-      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        message = 'Invalid email or password.';
+      if (e.code == 'user-not-found' || e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        message = 'Incorrect email or password.';
       } else if (e.code == 'invalid-email') {
         message = 'Invalid email format.';
       } else if (e.code == 'user-disabled') {
         message = 'This account has been disabled.';
       }
       log('Firebase Sign-in Error: ${e.code} - ${e.message}');
+      emit(state.copyWith(isLoading: false, isSuccess: false, errorMessage: message));
     } catch (e) {
       String error = (e is Exception)
           ? 'Sign-in failed. please check your network or try again.'

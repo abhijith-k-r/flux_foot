@@ -7,7 +7,6 @@ import 'package:fluxfoot_user/core/widgets/custom_button.dart';
 import 'package:fluxfoot_user/features/auth/view_model/usecases/form_validator.dart';
 import 'package:fluxfoot_user/features/auth/views/screens/forgot_password.dart';
 import 'package:fluxfoot_user/features/auth/view_model/signin_bloc/signin_bloc.dart';
-import 'package:fluxfoot_user/features/auth/views/widgets/auth_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // ! Google Authentication
@@ -134,28 +133,42 @@ class RememberForgot extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SigninBloc, SigninState>(
       builder: (context, state) {
-        return AuthCheckBox(
-          mainAxis: MainAxisAlignment.spaceBetween,
-          checkBox: Checkbox(
-            activeColor: AppColors. activeOrange,
-            value: state.isRemember,
-            onChanged: (_) {
-              context.read<SigninBloc>().add(ToggleRememberMe());
-            },
-          ),
-          prefText: 'Remember me',
-          sufWidget: TextButton(
-            onPressed: () {
-              fadePush(context, ResetPasswordScreen());
-            },
-            child: Text(
-              'Forgot password?',
-              style: GoogleFonts.openSans(
-                fontWeight: FontWeight.bold,
-                color: AppColors. textBlack,
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {
+                context.read<SigninBloc>().add(ToggleRememberMe());
+              },
+              child: Row(
+                children: [
+                  Checkbox(
+                    activeColor: AppColors.activeOrange,
+                    value: state.isRemember,
+                    onChanged: (_) {
+                      context.read<SigninBloc>().add(ToggleRememberMe());
+                    },
+                  ),
+                  Text(
+                    'Remember me',
+                    style: GoogleFonts.openSans(),
+                  ),
+                ],
               ),
             ),
-          ),
+            TextButton(
+              onPressed: () {
+                fadePush(context, ResetPasswordScreen());
+              },
+              child: Text(
+                'Forgot password?',
+                style: GoogleFonts.openSans(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textBlack,
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

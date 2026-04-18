@@ -170,6 +170,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         return;
       }
 
+      // 🛠️ FIX: Eagerly update local state so the Dismissible widget gets removed synchronously!
+      final updatedProducts = state.cartProducts.where((p) => p.id != event.product.id).toList();
+      final updatedIds = state.cartIds.where((id) => id != event.product.id).toList();
+      emit(state.copyWith(cartProducts: updatedProducts, cartIds: updatedIds));
+
       await _repo.removeFromCart(event.product.id, currentUid);
     } catch (e) {
       emit(state.copyWith(error: 'Failed to remove item: ${e.toString()}'));

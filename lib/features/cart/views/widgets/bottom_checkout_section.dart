@@ -58,6 +58,9 @@ Widget buildBottomCheckoutSection(
                         LoadCheckoutData(
                           products: cartProducts,
                           totalAmount: total,
+                          subtotal: subtotal,
+                          discount: discount,
+                          shipping: shippingFee,
                         ),
                       ),
                     child: const CheckoutPage(),

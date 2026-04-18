@@ -44,13 +44,14 @@ class SigninState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
     autovalidateMode,
     email,
     password,
-    ?errorMessage,
+    errorMessage,
     isPasswordVisible,
     isLoading,
     isSuccess,
+    isRemember,
   ];
 }

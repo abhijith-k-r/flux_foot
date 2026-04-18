@@ -1,6 +1,6 @@
 part of 'checkout_bloc.dart';
 
-enum CheckoutStatus { initial, loading, success, failure, paymentProcessing , noAddress}
+enum CheckoutStatus { initial, loading, success, orderPlaced, failure, paymentProcessing , noAddress}
 
 class CheckoutState extends Equatable {
   final CheckoutStatus status;

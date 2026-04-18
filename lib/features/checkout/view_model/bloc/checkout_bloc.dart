@@ -67,16 +67,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       }
 
       // 2. Calculate Costs
-      // Calculate subtotal based on price * quantity for each item
-      double subtotal = event.products.fold(
+      double subtotal = event.subtotal ?? event.products.fold(
         0,
         (sums, item) => sums + (item.salePrice * item.quantity),
       );
-      double discount = 0.0; // Apply coupon logic here if any
-      double shipping = subtotal > 500
-          ? 0.0
-          : 40.0; // Example logic: Free shipping over $500
-      double finalTotal = subtotal - discount + shipping;
+      double discount = event.discount ?? 0.0;
+      double shipping = event.shipping ?? (subtotal > 500 ? 0.0 : 40.0);
+      double finalTotal = event.totalAmount;
       if (address == null) {
         // Emit noAddress status but still keep products so we can show them later
         emit(
@@ -130,7 +127,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(status: CheckoutStatus.loading));
 
     try {
-      final String amount = (state.total * 100).toInt().toString();
+      final String amount = state.total.toInt().toString();
 
       await _stripeRepository.initPaymentSheet(
         amount: amount,
@@ -145,7 +142,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         method: "Stripe",
       );
 
-      emit(state.copyWith(status: CheckoutStatus.success));
+      emit(state.copyWith(status: CheckoutStatus.orderPlaced));
     } catch (e) {
       if (e is StripeException) {
         emit(
@@ -165,26 +162,36 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  Future<void> _createOrderInFirestore({
+    Future<void> _createOrderInFirestore({
     required String paymentId,
     required String method,
   }) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (state.selectedAddress == null) return;
 
-    // Group products by Seller ID so each seller sees their specific order
+    // Convert address to map for historical record
+    final addressMap = state.selectedAddress!.toFireStore();
+
     for (var product in state.products) {
       final order = OrderModel(
         id: '', // Firestore auto-id
         userId: userId!,
-        sellerId: product.sellerId, // Ensure your ProductModel has sellerId
-        totalAmount: product.salePrice * product.quantity,
+        sellerId: product.sellerId,
+        productId: product.id,
+        productName: product.name,
+        productImage: product.images.isNotEmpty ? product.images[0] : "",
+        quantity: product.quantity,
+        totalAmount: product.salePrice * product.quantity, // Individual price requested by seller
         paymentType: method,
         status: method == 'COD' ? 'Placed' : 'Paid',
         paymentId: paymentId,
+        shippingAddress: addressMap,
       );
+
       await FirebaseFirestore.instance.collection('orders').add(order.toMap());
     }
   }
+
 
   Future<void> _onUpdatePaymentStatus(
     UpdatePaymentStatus event,
@@ -199,7 +206,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         method: "Razorpay",
       );
 
-      emit(state.copyWith(status: CheckoutStatus.success));
+      emit(state.copyWith(status: CheckoutStatus.orderPlaced));
     } else {
       emit(
         state.copyWith(

@@ -14,7 +14,9 @@ void customSnackBar(
         spacing: 5,
         children: [
           Icon(icon, color: AppColors.iconWhite),
-          Text(text),
+          Expanded(
+            child: Text(text, overflow: TextOverflow.ellipsis, maxLines: 2),
+          ),
         ],
       ),
       action: SnackBarAction(label: 'Undo', onPressed: () {}),

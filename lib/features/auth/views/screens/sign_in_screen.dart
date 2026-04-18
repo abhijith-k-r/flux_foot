@@ -34,9 +34,15 @@ class SignInScreen extends StatelessWidget {
             state.errorMessage!.isNotEmpty &&
             !state.isLoading &&
             !state.isSuccess) {
+          
+          String displayError = state.errorMessage!;
+          if (displayError.contains('invalid-credential')) {
+            displayError = 'Incorrect email or password.';
+          }
+
           customSnackBar(
             context,
-            state.errorMessage!,
+            displayError,
             CupertinoIcons.xmark_circle_fill,
             AppColors.bgRed,
           );

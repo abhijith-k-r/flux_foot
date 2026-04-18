@@ -10,6 +10,7 @@ import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/address/model/address_model.dart';
 import 'package:fluxfoot_user/features/address/views/screens/shipping_address_view.dart';
 import 'package:fluxfoot_user/features/checkout/view_model/bloc/checkout_bloc.dart';
+import 'package:fluxfoot_user/features/order/views/screen/order_success_screen.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CheckoutPage extends StatelessWidget {
@@ -31,6 +32,12 @@ class CheckoutPage extends StatelessWidget {
             "Please select a shipping address",
             CupertinoIcons.location_solid,
             AppColors.bgOrangeAccent,
+          );
+        } else if (state.status == CheckoutStatus.orderPlaced) {
+          // Navigate to Success screen, which will auto-redirect to My Orders
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const OrderSuccessScreen()),
           );
         }
       },
