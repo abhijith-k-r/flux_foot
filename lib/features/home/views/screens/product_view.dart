@@ -13,6 +13,7 @@ import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/seller_cubit.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/seller_state.dart';
 import 'package:fluxfoot_user/features/home/view_model/product_variant/product_variant_bloc.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/product_reviews_widget.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/productview_carousel_widget.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/productview_addtocart_widget.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/productview_color_selectionrow_widget.dart';
@@ -94,10 +95,8 @@ class ProductView extends StatelessWidget {
                     selectedSize,
                     variantBloc,
                   ),
-                  customText(16, 'Description', fontWeight: FontWeight.w600),
-                  // ! Custom Read More Text
-                  customReadmoreText(description),
-                  SizedBox(height: 10),
+
+                  SizedBox(height: 5),
                   // ! Seller Details
                   BlocProvider(
                     create: (context) =>
@@ -204,6 +203,7 @@ class ProductView extends StatelessWidget {
                               ],
                             ),
                           );
+
                           // ListTile(
                           // leading: Container(
                           //   height: size * 0.3,
@@ -287,6 +287,11 @@ class ProductView extends StatelessWidget {
                       },
                     ),
                   ),
+                  SizedBox(height: 5),
+                  customText(16, 'Description', fontWeight: FontWeight.w600),
+                  // ! Custom Read More Text
+                  customReadmoreText(description),
+                  ProductReviewsWidget(productId: product.id, description: '',),
                   SizedBox(height: size * 1),
                 ],
               ),
@@ -331,7 +336,7 @@ class ProductView extends StatelessWidget {
                 //     currency: 'usd',
                 //     merchantName: 'WTF Code',
                 //   );
-            
+
                 //   await stripeService.presentPaymentSheet();
                 //   ScaffoldMessenger.of(context).showSnackBar(
                 //     const SnackBar(content: Text('Payment Successful')),

@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/features/checkout/models/order_model.dart';
+import 'package:fluxfoot_user/features/home/views/widgets/review_manager.dart';
 import 'package:fluxfoot_user/features/order/views/widgets/order_tracker_vertical.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
@@ -144,8 +147,90 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            if (order.status == 'Delivered')
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red.shade400,
+                        ),
+                        onPressed: () => _handleReturnOrder(context, order.id),
+                        child: const Text(
+                          'Return Product',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          // TRIGGER THE RATING POPUP
+                          ReviewManager.showReviewBottomSheet(
+                            context,
+                            order.productId,
+                            order.productName,
+                          );
+                        },
+                        child: const Text('Write a Review'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 30),
           ],
         ),
+      ),
+    );
+  }
+
+  // --- NEW: The logic function that updates Firestore for returns ---
+  void _handleReturnOrder(BuildContext context, String orderId) {
+    TextEditingController reasonController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Return Product"),
+        content: TextField(
+          controller: reasonController,
+          decoration: const InputDecoration(hintText: "Reason for return..."),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () async {
+              if (reasonController.text.trim().isNotEmpty) {
+                await FirebaseFirestore.instance
+                    .collection('orders')
+                    .doc(orderId)
+                    .update({
+                      'status': 'Return Requested',
+                      'returnReason': reasonController.text.trim(),
+                      'lastUpdated': FieldValue.serverTimestamp(),
+                    });
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Return request submitted!")),
+                );
+              }
+            },
+            child: const Text("Submit", style: TextStyle(color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
