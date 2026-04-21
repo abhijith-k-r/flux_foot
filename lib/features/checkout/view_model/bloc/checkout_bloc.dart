@@ -180,6 +180,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       double lineItemShipping = state.shipping * proportion;
       double finalLineItemTotal = lineItemSubtotal - lineItemDiscount + lineItemShipping;
 
+      final double adminCommissionRate = 0.10; // 10% Platform fee
+      final double adminCommission = finalLineItemTotal * adminCommissionRate;
+      final double sellerEarning = finalLineItemTotal - adminCommission;
+
       final order = OrderModel(
         id: '', // Firestore auto-id
         userId: userId!,
@@ -195,7 +199,21 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         shippingAddress: addressMap,
       );
 
-      await FirebaseFirestore.instance.collection('orders').add(order.toMap());
+      // Save the order, and cleanly inject the financial splits directly into the DB Map
+      final orderMap = order.toMap();
+      orderMap['adminCommission'] = adminCommission;
+      orderMap['sellerEarning'] = sellerEarning;
+      orderMap['paymentReleased'] = false; // Flag to track if admin has paid the seller
+      orderMap['timestamp'] = FieldValue.serverTimestamp(); // Add timestamp for sorting
+
+      await FirebaseFirestore.instance.collection('orders').add(orderMap);
+
+      // --- FINANCIAL WALLET DISTRIBUTION (ESCROW) ---
+      // Update the Admin's Master Wallet to hold the total funds
+      await FirebaseFirestore.instance.collection('admin').doc('master_wallet').set({
+        'totalRevenueHeld': FieldValue.increment(finalLineItemTotal), 
+        'totalGrossRevenue': FieldValue.increment(finalLineItemTotal), // Tracks every rupee coming in via Stripe
+      }, SetOptions(merge: true));
     }
   }
 

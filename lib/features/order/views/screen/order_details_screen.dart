@@ -147,6 +147,119 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            // if (order.status == 'Delivered')
+            //   Padding(
+            //     padding: const EdgeInsets.symmetric(
+            //       horizontal: 16.0,
+            //       vertical: 8.0,
+            //     ),
+            //     child: Column(
+            //       children: [
+            //         SizedBox(
+            //           width: double.infinity,
+            //           child: ElevatedButton(
+            //             style: ElevatedButton.styleFrom(
+            //               backgroundColor: Colors.red.shade400,
+            //             ),
+            //             onPressed: () => _handleReturnOrder(context, order.id),
+            //             child: const Text(
+            //               'Return Product',
+            //               style: TextStyle(color: Colors.white),
+            //             ),
+            //           ),
+            //         ),
+            //         const SizedBox(height: 8),
+            //         SizedBox(
+            //           width: double.infinity,
+            //           child: OutlinedButton(
+            //             onPressed: () {
+            //               // TRIGGER THE RATING POPUP
+            //               ReviewManager.showReviewBottomSheet(
+            //                 context,
+            //                 order.productId,
+            //                 order.productName,
+            //               );
+            //             },
+            //             child: const Text('Write a Review'),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // const SizedBox(height: 30),
+
+                        // --- AUTHENTIC RETURN LIFECYCLE TRACKER ---
+            if ([
+              'Return Requested',
+              'Return Approved',
+              'Item Returned',
+              'Refund Processed',
+              'Return Rejected',
+            ].contains(order.status))
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 8.0,
+                ),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: order.status == 'Refund Processed'
+                      ? Colors.green.shade50
+                      : Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: order.status == 'Refund Processed'
+                        ? Colors.green
+                        : Colors.orange,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      order.status == 'Refund Processed'
+                          ? Icons.check_circle
+                          : Icons.info,
+                      color: order.status == 'Refund Processed'
+                          ? Colors.green
+                          : Colors.orange.shade800,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Return Status: ${order.status}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            order.status == 'Return Requested'
+                                ? "Waiting for Seller Approval"
+                                : order.status == 'Return Approved'
+                                ? "Approved! Please mail the item back."
+                                : order.status == 'Return Rejected'
+                                ? "The seller has declined this return."
+                                : order.status == 'Item Returned'
+                                ? "Seller successfully received the item back. Awaiting Admin Refund processing."
+                                : "Your money has been successfully refunded to your original payment method!",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey.shade800,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // --- DELIVERED ACTIONS ---
             if (order.status == 'Delivered')
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -163,7 +276,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                         onPressed: () => _handleReturnOrder(context, order.id),
                         child: const Text(
-                          'Return Product',
+                          'Request Return Product',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -173,7 +286,6 @@ class OrderDetailsScreen extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton(
                         onPressed: () {
-                          // TRIGGER THE RATING POPUP
                           ReviewManager.showReviewBottomSheet(
                             context,
                             order.productId,
@@ -183,10 +295,27 @@ class OrderDetailsScreen extends StatelessWidget {
                         child: const Text('Write a Review'),
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    // -- NEW: Dummy Help Button --
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.support_agent),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Opening Live Chat with Seller...'),
+                            ),
+                          );
+                        },
+                        label: const Text('Help! Chat with Seller'),
+                      ),
+                    ),
                   ],
                 ),
               ),
             const SizedBox(height: 30),
+
           ],
         ),
       ),
