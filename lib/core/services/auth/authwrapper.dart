@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluxfoot_user/core/services/notification_service.dart';
 import 'package:fluxfoot_user/features/onboarding/views/screens/onboardin_screen.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_state.dart';
 import 'package:fluxfoot_user/features/auth/view_model/auth_bloc/auth_bloc.dart';
@@ -62,7 +64,17 @@ class _AuthWrapperState extends State<AuthWrapper> {
             builder: (context, state) {
               log('AuthBloc state: $state');
               if (state is AuthAuthenticated) {
-                log('BlocBuilder: Rendering LoginSignUpScreen');
+                log('BlocBuilder: User Authenticated, saving FCM token');
+                // Save FCM Token to Firestore
+                NotificationService.getDeviceToken().then((token) {
+                  if (token != null) {
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(state.userId)
+                        .set({'fcmToken': token}, SetOptions(merge: true))
+                        .catchError((e) => log("Error saving FCM token: $e"));
+                  }
+                });
                 return const MainScreen();
               } else if (state is AuthUnauthenticated) {
                 return  SignInScreen();
