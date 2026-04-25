@@ -2,9 +2,11 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
+import 'package:fluxfoot_user/features/chat/view/screen/chat_screen.dart';
 import 'package:fluxfoot_user/features/checkout/models/order_model.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/review_manager.dart';
 import 'package:fluxfoot_user/features/order/views/widgets/order_tracker_vertical.dart';
@@ -188,7 +190,7 @@ class OrderDetailsScreen extends StatelessWidget {
             //   ),
             // const SizedBox(height: 30),
 
-                        // --- AUTHENTIC RETURN LIFECYCLE TRACKER ---
+            // --- AUTHENTIC RETURN LIFECYCLE TRACKER ---
             if ([
               'Return Requested',
               'Return Approved',
@@ -302,11 +304,7 @@ class OrderDetailsScreen extends StatelessWidget {
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.support_agent),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Opening Live Chat with Seller...'),
-                            ),
-                          );
+                          fadePush(context, ChatScreen(order: order));
                         },
                         label: const Text('Help! Chat with Seller'),
                       ),
@@ -315,7 +313,6 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
               ),
             const SizedBox(height: 30),
-
           ],
         ),
       ),
