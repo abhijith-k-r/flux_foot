@@ -1,13 +1,16 @@
-// lib/features/chat/views/screens/chat_screen.dart
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/chat/chat_service.dart';
+import 'package:fluxfoot_user/features/chat/model/message_model.dart';
 import 'package:fluxfoot_user/features/checkout/models/order_model.dart';
 
 class ChatScreen extends StatefulWidget {
   final OrderModel order;
-  const ChatScreen({super.key, required this.order});
+  final String chatId;
+  const ChatScreen({super.key, required this.order, required this.chatId});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -15,8 +18,12 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
+  final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
   final Color primaryColor = const Color(0xFF004349);
+
   final Color backgroundColor = const Color(0xFFF8F9FF);
+
   final Color sellerBubbleColor = const Color(0xFFE0E3E5);
 
   @override
@@ -47,57 +54,58 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              widget.order.status.toUpperCase(),
-              style: TextStyle(
-                color: Colors.green.shade800,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.info_outline, color: primaryColor),
-            onPressed: () {},
-          ),
-        ],
+        // actions: [
+        //   Container(
+        //     margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
+        //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        //     decoration: BoxDecoration(
+        //       color: Colors.green.shade100,
+        //       borderRadius: BorderRadius.circular(20),
+        //     ),
+        //     child: Text(
+        //       widget.order.status.toUpperCase(),
+        //       style: TextStyle(
+        //         color: Colors.green.shade800,
+        //         fontSize: 10,
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                _buildProductContextCard(),
-                const SizedBox(height: 24),
-                _buildDateSeparator("Today"),
-                const SizedBox(height: 24),
-                _buildMessageBubble(
-                  "Hello! How can I help you with your order today?",
-                  "10:42 AM",
-                  isMe: false,
-                ),
-                _buildMessageBubble(
-                  "Hi, I just received my shoes but they seem to be the wrong size.",
-                  "10:44 AM",
-                  isMe: true,
-                ),
-                _buildMessageBubble(
-                  "I'm sorry to hear that. Could you please send a photo of the size tag?",
-                  "10:45 AM",
-                  isMe: false,
-                ),
-                _buildSuggestionChips(),
-              ],
-            ),
+            child: _buildChatFeed(widget.chatId),
+
+            //  ListView(
+            //   padding: const EdgeInsets.all(16),
+            //   children: [
+            //     _buildProductContextCard(),
+            //     const SizedBox(height: 24),
+            //     _buildDateSeparator("Today"),
+            //     const SizedBox(height: 24),
+            //     _buildMessageBubble(
+            //       "Hello! How can I help you with your order today?",
+            //       "10:42 AM",
+            //       context,
+            //       isMe: false,
+            //     ),
+            //     _buildMessageBubble(
+            //       "Hi, I just received my shoes but they seem to be the wrong size.",
+            //       "10:44 AM",
+            //       context,
+            //       isMe: true,
+            //     ),
+            //     _buildMessageBubble(
+            //       "I'm sorry to hear that. Could you please send a photo of the size tag?",
+            //       "10:45 AM",
+            //       context,
+            //       isMe: false,
+            //     ),
+            //     _buildSuggestionChips(),
+            //   ],
+            // ),
           ),
           _buildMessageInput(),
         ],
@@ -105,62 +113,100 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildProductContextCard() {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.textWite,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade200),
-          boxShadow: [
-            BoxShadow(color: AppColors.bgBlack.withOpacity(0.05), blurRadius: 5),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                widget.order.productImage,
-                width: 60,
-                height: 60,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.order.productName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Size: 10.5 | ₹${widget.order.totalAmount}",
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                "View",
-                style: TextStyle(
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+  final ChatService _chatService = ChatService();
+
+  // 2. Update the ListView with a StreamBuilder
+  Widget _buildChatFeed(String chatId) {
+    return StreamBuilder<List<MessageModel>>(
+      stream: _chatService.getMessages(chatId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final messages = snapshot.data ?? [];
+
+        return ListView.builder(
+          reverse: true, // Start from bottom
+          itemCount: messages.length,
+          itemBuilder: (context, index) {
+            final msg = messages[index];
+            return _buildMessageBubble(
+              msg.text,
+              DateFormat('hh:mm a').format(msg.timestamp),
+              context,
+              isMe: msg.senderId == currentUserId,
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildMessageBubble(String text, String time, {required bool isMe}) {
+  // Widget _buildProductContextCard() {
+  //   return Center(
+  //     child: Container(
+  //       padding: const EdgeInsets.all(12),
+  //       decoration: BoxDecoration(
+  //         color: AppColors.textWite,
+  //         borderRadius: BorderRadius.circular(12),
+  //         border: Border.all(color: Colors.grey.shade200),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: AppColors.bgBlack.withOpacity(0.05),
+  //             blurRadius: 5,
+  //           ),
+  //         ],
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           ClipRRect(
+  //             borderRadius: BorderRadius.circular(8),
+  //             child: Image.network(
+  //               widget.order.productImage,
+  //               width: 60,
+  //               height: 60,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //           const SizedBox(width: 12),
+  //           Expanded(
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 Text(
+  //                   widget.order.productName,
+  //                   style: const TextStyle(fontWeight: FontWeight.bold),
+  //                 ),
+  //                 Text(
+  //                   "Size: 10.5 | ₹${widget.order.totalAmount}",
+  //                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {},
+  //             child: Text(
+  //               "View",
+  //               style: TextStyle(
+  //                 color: primaryColor,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  Widget _buildMessageBubble(
+    String text,
+    String time,
+    BuildContext context, {
+    required bool isMe,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
@@ -209,46 +255,46 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _buildDateSeparator(String label) {
-    return Center(
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 11,
-            letterSpacing: 1.2,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildDateSeparator(String label) {
+  //   return Center(
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+  //       decoration: BoxDecoration(
+  //         color: Colors.grey.shade100,
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //       child: Text(
+  //         label.toUpperCase(),
+  //         style: TextStyle(
+  //           color: Colors.grey.shade600,
+  //           fontSize: 11,
+  //           letterSpacing: 1.2,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildSuggestionChips() {
-    return Wrap(
-      spacing: 8,
-      children: [_chipButton("Take Photo"), _chipButton("Upload from Gallery")],
-    );
-  }
+  // Widget _buildSuggestionChips() {
+  //   return Wrap(
+  //     spacing: 8,
+  //     children: [_chipButton("Take Photo"), _chipButton("Upload from Gallery")],
+  //   );
+  // }
 
-  Widget _chipButton(String label) {
-    return OutlinedButton(
-      onPressed: () {},
-      style: OutlinedButton.styleFrom(
-        shape: StadiumBorder(),
-        side: BorderSide(color: Colors.grey.shade300),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
-      ),
-    );
-  }
+  // Widget _chipButton(String label) {
+  //   return OutlinedButton(
+  //     onPressed: () {},
+  //     style: OutlinedButton.styleFrom(
+  //       shape: StadiumBorder(),
+  //       side: BorderSide(color: Colors.grey.shade300),
+  //     ),
+  //     child: Text(
+  //       label,
+  //       style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
+  //     ),
+  //   );
+  // }
 
   Widget _buildMessageInput() {
     return Container(
@@ -287,7 +333,26 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             child: IconButton(
               icon: const Icon(Icons.send, color: Colors.white),
-              onPressed: () {},
+              onPressed: () async {
+                if (_messageController.text.trim().isNotEmpty) {
+                  final newMessage = MessageModel(
+                    senderId: currentUserId,
+                    text: _messageController.text.trim(),
+                    timestamp: DateTime.now(),
+                  );
+                  String text = _messageController.text;
+                  _messageController.clear();
+                  
+                  try {
+                    await _chatService.sendMessage(widget.chatId, newMessage);
+                  } catch (e) {
+                    _messageController.text = text;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Error sending message: $e")),
+                    );
+                  }
+                }
+              },
             ),
           ),
         ],

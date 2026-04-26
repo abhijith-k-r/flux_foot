@@ -304,7 +304,9 @@ class OrderDetailsScreen extends StatelessWidget {
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.support_agent),
                         onPressed: () {
-                          fadePush(context, ChatScreen(order: order));
+                            String chatId = "chat_${order.id}"; 
+
+                          fadePush(context, ChatScreen(order: order,chatId:chatId));
                         },
                         label: const Text('Help! Chat with Seller'),
                       ),
