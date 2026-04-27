@@ -1,6 +1,10 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
+import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/services/chat/chat_service.dart';
@@ -20,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
-  final Color primaryColor = const Color(0xFF004349);
+  final Color primaryColor = AppColors.bgOrangeAccent;
 
   final Color backgroundColor = const Color(0xFFF8F9FF);
 
@@ -30,49 +34,149 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: primaryColor),
-          onPressed: () => Navigator.pop(context),
+      appBar: CustomAppBar(
+        leading: customBackButton(context),
+        title: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('chats')
+              .doc(widget.chatId)
+              .snapshots(),
+          builder: (context, snapshot) {
+            return FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('sellers')
+                  .doc(widget.order.sellerId)
+                  .get(),
+              builder: (context, sellerSnapshot) {
+                String sellerName = "Seller";
+
+                // Priority 1: From chat document
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  final data = snapshot.data!.data() as Map<String, dynamic>?;
+                  if (data?['sellerName'] != null) {
+                    sellerName = data!['sellerName'];
+                  } else if (sellerSnapshot.hasData &&
+                      sellerSnapshot.data!.exists) {
+                    // Priority 2: From sellers collection
+                    final sellerData =
+                        sellerSnapshot.data!.data() as Map<String, dynamic>?;
+                    sellerName = sellerData?['store name'] ?? "Seller";
+                  }
+                } else if (sellerSnapshot.hasData &&
+                    sellerSnapshot.data!.exists) {
+                  final sellerData =
+                      sellerSnapshot.data!.data() as Map<String, dynamic>?;
+                  sellerName = sellerData?['store name'] ?? "Seller";
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Seller: $sellerName",
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Order: #${widget.order.id.substring(0, 8).toUpperCase()} | ${widget.order.productName}",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 11,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                );
+              },
+            );
+          },
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Seller: Premium Footwear",
-              style: TextStyle(
-                color: primaryColor,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Order #${widget.order.id.substring(0, 8).toUpperCase()}",
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-            ),
-          ],
-        ),
-        // actions: [
-        //   Container(
-        //     margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
-        //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        //     decoration: BoxDecoration(
-        //       color: Colors.green.shade100,
-        //       borderRadius: BorderRadius.circular(20),
-        //     ),
-        //     child: Text(
-        //       widget.order.status.toUpperCase(),
-        //       style: TextStyle(
-        //         color: Colors.green.shade800,
-        //         fontSize: 10,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),
-        // ],
       ),
+
+      // AppBar(
+      //   backgroundColor: Colors.black,
+      //   elevation: 0,
+      //   leading: customBackButton(context),
+      //   title: StreamBuilder<DocumentSnapshot>(
+      //     stream: FirebaseFirestore.instance
+      //         .collection('chats')
+      //         .doc(widget.chatId)
+      //         .snapshots(),
+      //     builder: (context, snapshot) {
+      //       return FutureBuilder<DocumentSnapshot>(
+      //         future: FirebaseFirestore.instance
+      //             .collection('sellers')
+      //             .doc(widget.order.sellerId)
+      //             .get(),
+      //         builder: (context, sellerSnapshot) {
+      //           String sellerName = "Seller";
+
+      //           // Priority 1: From chat document
+      //           if (snapshot.hasData && snapshot.data!.exists) {
+      //             final data = snapshot.data!.data() as Map<String, dynamic>?;
+      //             if (data?['sellerName'] != null) {
+      //               sellerName = data!['sellerName'];
+      //             } else if (sellerSnapshot.hasData &&
+      //                 sellerSnapshot.data!.exists) {
+      //               // Priority 2: From sellers collection
+      //               final sellerData =
+      //                   sellerSnapshot.data!.data() as Map<String, dynamic>?;
+      //               sellerName = sellerData?['store name'] ?? "Seller";
+      //             }
+      //           } else if (sellerSnapshot.hasData &&
+      //               sellerSnapshot.data!.exists) {
+      //             final sellerData =
+      //                 sellerSnapshot.data!.data() as Map<String, dynamic>?;
+      //             sellerName = sellerData?['store name'] ?? "Seller";
+      //           }
+
+      //           return Column(
+      //             crossAxisAlignment: CrossAxisAlignment.start,
+      //             children: [
+      //               Text(
+      //                 "Seller: $sellerName",
+      //                 style: TextStyle(
+      //                   color: primaryColor,
+      //                   fontSize: 15,
+      //                   fontWeight: FontWeight.bold,
+      //                 ),
+      //               ),
+      //               Text(
+      //                 "Order: #${widget.order.id.substring(0, 8).toUpperCase()} | ${widget.order.productName}",
+      //                 style: TextStyle(
+      //                   color: Colors.grey.shade600,
+      //                   fontSize: 11,
+      //                 ),
+      //                 overflow: TextOverflow.ellipsis,
+      //               ),
+      //             ],
+      //           );
+      //         },
+      //       );
+      //     },
+      //   ),
+      //   // actions: [
+      //   //   Container(
+      //   //     margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
+      //   //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      //   //     decoration: BoxDecoration(
+      //   //       color: Colors.green.shade100,
+      //   //       borderRadius: BorderRadius.circular(20),
+      //   //     ),
+      //   //     child: Text(
+      //   //       widget.order.status.toUpperCase(),
+      //   //       style: TextStyle(
+      //   //         color: Colors.green.shade800,
+      //   //         fontSize: 10,
+      //   //         fontWeight: FontWeight.bold,
+      //   //       ),
+      //   //     ),
+      //   //   ),
+      //   // ],
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -126,16 +230,34 @@ class _ChatScreenState extends State<ChatScreen> {
 
         final messages = snapshot.data ?? [];
 
+        if (messages.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.chat_bubble_outline, size: 50, color: Colors.grey),
+                const SizedBox(height: 10),
+                const Text("No messages yet. Send a message to start!"),
+              ],
+            ),
+          );
+        }
+
         return ListView.builder(
           reverse: true, // Start from bottom
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final msg = messages[index];
-            return _buildMessageBubble(
-              msg.text,
-              DateFormat('hh:mm a').format(msg.timestamp),
-              context,
-              isMe: msg.senderId == currentUserId,
+            return GestureDetector(
+              onLongPress: msg.senderId == currentUserId
+                  ? () => _showDeleteDialog(msg.id!)
+                  : null,
+              child: _buildMessageBubble(
+                msg.text,
+                DateFormat('hh:mm a').format(msg.timestamp),
+                context,
+                isMe: msg.senderId == currentUserId,
+              ),
             );
           },
         );
@@ -342,9 +464,31 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                   String text = _messageController.text;
                   _messageController.clear();
-                  
+
                   try {
-                    await _chatService.sendMessage(widget.chatId, newMessage);
+                    // Fetch real names to save in chat doc
+                    final userDoc = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(currentUserId)
+                        .get();
+                    final sellerDoc = await FirebaseFirestore.instance
+                        .collection('sellers')
+                        .doc(widget.order.sellerId)
+                        .get();
+
+                    String customerName = userDoc.data()?['name'] ?? "User";
+                    String sellerName =
+                        sellerDoc.data()?['store name'] ?? "Seller";
+
+                    await _chatService.sendMessage(
+                      chatId: widget.chatId,
+                      message: newMessage,
+                      sellerId: widget.order.sellerId,
+                      userId: currentUserId,
+                      productName: widget.order.productName,
+                      customerName: customerName,
+                      sellerName: sellerName,
+                    );
                   } catch (e) {
                     _messageController.text = text;
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -354,6 +498,29 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(String messageId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Message?"),
+        content: const Text("Are you sure you want to delete this message?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              await _chatService.deleteMessage(widget.chatId, messageId);
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

@@ -8,7 +8,10 @@ class MessageModel {
   final String type; // 'text', 'image'
   final bool isRead;
 
+  final String? id; // Document ID from Firestore
+
   MessageModel({
+    this.id,
     required this.senderId,
     required this.text,
     required this.timestamp,
@@ -24,7 +27,8 @@ class MessageModel {
     'isRead': isRead,
   };
 
-  factory MessageModel.fromMap(Map<String, dynamic> map) => MessageModel(
+  factory MessageModel.fromMap(Map<String, dynamic> map, String id) => MessageModel(
+    id: id,
     senderId: map['senderId'] ?? '',
     text: map['text'] ?? '',
     timestamp: (map['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
