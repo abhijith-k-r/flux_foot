@@ -10,7 +10,6 @@ import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart'
 import 'package:fluxfoot_user/features/home/views/widgets/homescreen_content_widget.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/homescreen_loading_content.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/homescreen_search_result_widget.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -36,12 +35,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        action: [
-          IconButton(
-            onPressed: () {},
-            icon: const FaIcon(FontAwesomeIcons.bell),
-          ),
-        ],
+       
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(

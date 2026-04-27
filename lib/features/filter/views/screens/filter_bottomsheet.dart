@@ -6,7 +6,6 @@ import 'package:fluxfoot_user/features/filter/views/widgets/action_buttons.dart'
 import 'package:fluxfoot_user/features/filter/views/widgets/category_section.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/price_range_section.dart';
 import 'package:fluxfoot_user/features/filter/views/widgets/sort_by_section.dart';
-import 'package:fluxfoot_user/features/home/view_model/home_bloc/home_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
@@ -14,30 +13,16 @@ class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({super.key});
 
   static void show(BuildContext context) {
-    final HomeState homeState = context.read<HomeBloc>().state;
 
-    double globalMinPrice = 0.0;
-    double globalMaxPrice = 5000.0;
-
-    if (homeState is HomeDataLoaded && homeState.products.isNotEmpty) {
-      globalMaxPrice = 
-        homeState.products
-            .reduce((a, b) => (a.salePrice) > (b.salePrice) ? a : b)
-            .salePrice
-      ;
-
-      globalMinPrice = homeState.products
-          .reduce((a, b) => (a.salePrice) < (b.salePrice) ? a : b)
-          .salePrice;
-    }
+    final filterBloc = context.read<FilterBloc>();
+    
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => BlocProvider(
-        create: (context) =>
-            FilterBloc(globalMin: globalMinPrice, globalMax: globalMaxPrice),
+      builder: (context) => BlocProvider.value(
+        value: filterBloc,
         child: const FilterBottomSheet(),
       ),
     );

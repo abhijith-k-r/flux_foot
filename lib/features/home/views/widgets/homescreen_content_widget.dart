@@ -1,10 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/routing/navigator.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
-import 'package:fluxfoot_user/features/filter/view_model/bloc/filter_bloc.dart';
 import 'package:fluxfoot_user/features/home/views/screens/all_brands.dart';
 import 'package:fluxfoot_user/features/home/views/screens/view_all_products.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/homepage_carousel_widget.dart';
@@ -41,10 +39,7 @@ Widget buildHomeContent(BuildContext context, double size) {
             onPressed: () {
               fadePush(
                 context,
-                BlocProvider(
-                  create: (_) => FilterBloc(),
-                  child: const AllBrands(),
-                ),
+                const AllBrands(),
               );
             },
             child: customText(15, 'View All'),
@@ -69,10 +64,7 @@ Widget buildHomeContent(BuildContext context, double size) {
             onPressed: () {
               fadePush(
                 context,
-                BlocProvider(
-                  create: (_) => FilterBloc(),
-                  child: const ViewAllProducts(),
-                ),
+                const ViewAllProducts(),
               );
             },
             child: customText(15, 'View All'),

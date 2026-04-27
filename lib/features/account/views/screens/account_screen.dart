@@ -50,7 +50,7 @@ class AccountScreen extends StatelessWidget {
                   ontap: () {
                     fadePush(context, ProfileScreen());
                   },
-                ).fadeInRight(from: 50),
+                ).fadeInRight(delay: const Duration(milliseconds: 100), from: 30),
                 // ! Shipping Address
                 AccountContent(
                   size: size,
@@ -58,7 +58,7 @@ class AccountScreen extends StatelessWidget {
                   title: 'Shipping Addresses',
                   subtitle: 'check Addresses',
                   ontap: () => fadePush(context, ShippingAddressView()),
-                ).fadeInRightBig(from: 100),
+                ).fadeInRight(delay: const Duration(milliseconds: 200), from: 30),
                 // ! Order History
                 AccountContent(
                   size: size,
@@ -66,7 +66,7 @@ class AccountScreen extends StatelessWidget {
                   title: 'Order History',
                   subtitle: 'view all purchases',
                   ontap: () => fadePush(context, MyOrders()),
-                ).fadeInRight(from: 150),
+                ).fadeInRight(delay: const Duration(milliseconds: 300), from: 30),
                 // ! Settings
                 AccountContent(
                   size: size,
@@ -74,7 +74,7 @@ class AccountScreen extends StatelessWidget {
                   title: 'Settings',
                   subtitle: 'further details',
                   // ontap: ()=> fadePush(context, profilesc),
-                ).fadeInRightBig(from: 200),
+                ).fadeInRight(delay: const Duration(milliseconds: 400), from: 30),
               ],
             ),
           );

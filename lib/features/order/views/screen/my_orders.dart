@@ -2,7 +2,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
@@ -32,10 +31,6 @@ class MyOrders extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          action: [
-            IconButton(onPressed: () {}, icon: const Icon(CupertinoIcons.bell)),
-            SizedBox(width: size.width * 0.01),
-          ],
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(
@@ -52,7 +47,7 @@ class MyOrders extends StatelessWidget {
                 title2: 'Completed',
               ),
               const SizedBox(height: 16),
-              
+
               // THE TAB BAR VIEW THAT ACTUALLY SHOWS DATA
               Expanded(
                 child: TabBarView(
@@ -86,7 +81,9 @@ class MyOrders extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return  Center(child: CircularProgressIndicator(color: AppColors.bgOrange));
+          return Center(
+            child: CircularProgressIndicator(color: AppColors.bgOrange),
+          );
         }
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
@@ -103,18 +100,26 @@ class MyOrders extends StatelessWidget {
 
         final filteredOrders = allOrders.where((order) {
           // Hide corrupted tester data
-          if(order.productName == 'Unknown Product' || order.productId.isEmpty) return false;
+          if (order.productName == 'Unknown Product' || order.productId.isEmpty) {
+            return false;
+          }
 
           final ongoingStatuses = ['Placed', 'Processing', 'Shipped', 'Paid'];
           if (isOngoing) {
             return ongoingStatuses.contains(order.status);
           } else {
-            return !ongoingStatuses.contains(order.status); // Delivered, Cancelled
+            return !ongoingStatuses.contains(
+              order.status,
+            ); // Delivered, Cancelled
           }
         }).toList();
 
         if (filteredOrders.isEmpty) {
-          return Center(child: Text(isOngoing ? 'No ongoing orders.' : 'No completed orders.'));
+          return Center(
+            child: Text(
+              isOngoing ? 'No ongoing orders.' : 'No completed orders.',
+            ),
+          );
         }
 
         return ListView.builder(
@@ -152,8 +157,18 @@ class MyOrders extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: order.productImage.isNotEmpty
-                    ? Image.network(order.productImage, width: 80, height: 80, fit: BoxFit.cover)
-                    : Container(width: 80, height: 80, color: Colors.grey.shade300, child: const Icon(Icons.image)),
+                    ? Image.network(
+                        order.productImage,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: 80,
+                        height: 80,
+                        color: Colors.grey.shade300,
+                        child: const Icon(Icons.image),
+                      ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -162,26 +177,40 @@ class MyOrders extends StatelessWidget {
                   children: [
                     Text(
                       order.productName,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: _getStatusColor(order.status).withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         order.status,
-                        style: TextStyle(color: _getStatusColor(order.status), fontWeight: FontWeight.bold, fontSize: 12),
+                        style: TextStyle(
+                          color: _getStatusColor(order.status),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       '₹ ${order.totalAmount}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: primaryColor),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: primaryColor,
+                      ),
                     ),
                   ],
                 ),

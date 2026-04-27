@@ -96,121 +96,9 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
 
-      // AppBar(
-      //   backgroundColor: Colors.black,
-      //   elevation: 0,
-      //   leading: customBackButton(context),
-      //   title: StreamBuilder<DocumentSnapshot>(
-      //     stream: FirebaseFirestore.instance
-      //         .collection('chats')
-      //         .doc(widget.chatId)
-      //         .snapshots(),
-      //     builder: (context, snapshot) {
-      //       return FutureBuilder<DocumentSnapshot>(
-      //         future: FirebaseFirestore.instance
-      //             .collection('sellers')
-      //             .doc(widget.order.sellerId)
-      //             .get(),
-      //         builder: (context, sellerSnapshot) {
-      //           String sellerName = "Seller";
-
-      //           // Priority 1: From chat document
-      //           if (snapshot.hasData && snapshot.data!.exists) {
-      //             final data = snapshot.data!.data() as Map<String, dynamic>?;
-      //             if (data?['sellerName'] != null) {
-      //               sellerName = data!['sellerName'];
-      //             } else if (sellerSnapshot.hasData &&
-      //                 sellerSnapshot.data!.exists) {
-      //               // Priority 2: From sellers collection
-      //               final sellerData =
-      //                   sellerSnapshot.data!.data() as Map<String, dynamic>?;
-      //               sellerName = sellerData?['store name'] ?? "Seller";
-      //             }
-      //           } else if (sellerSnapshot.hasData &&
-      //               sellerSnapshot.data!.exists) {
-      //             final sellerData =
-      //                 sellerSnapshot.data!.data() as Map<String, dynamic>?;
-      //             sellerName = sellerData?['store name'] ?? "Seller";
-      //           }
-
-      //           return Column(
-      //             crossAxisAlignment: CrossAxisAlignment.start,
-      //             children: [
-      //               Text(
-      //                 "Seller: $sellerName",
-      //                 style: TextStyle(
-      //                   color: primaryColor,
-      //                   fontSize: 15,
-      //                   fontWeight: FontWeight.bold,
-      //                 ),
-      //               ),
-      //               Text(
-      //                 "Order: #${widget.order.id.substring(0, 8).toUpperCase()} | ${widget.order.productName}",
-      //                 style: TextStyle(
-      //                   color: Colors.grey.shade600,
-      //                   fontSize: 11,
-      //                 ),
-      //                 overflow: TextOverflow.ellipsis,
-      //               ),
-      //             ],
-      //           );
-      //         },
-      //       );
-      //     },
-      //   ),
-      //   // actions: [
-      //   //   Container(
-      //   //     margin: const EdgeInsets.only(right: 16, top: 12, bottom: 12),
-      //   //     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      //   //     decoration: BoxDecoration(
-      //   //       color: Colors.green.shade100,
-      //   //       borderRadius: BorderRadius.circular(20),
-      //   //     ),
-      //   //     child: Text(
-      //   //       widget.order.status.toUpperCase(),
-      //   //       style: TextStyle(
-      //   //         color: Colors.green.shade800,
-      //   //         fontSize: 10,
-      //   //         fontWeight: FontWeight.bold,
-      //   //       ),
-      //   //     ),
-      //   //   ),
-      //   // ],
-      // ),
       body: Column(
         children: [
-          Expanded(
-            child: _buildChatFeed(widget.chatId),
-
-            //  ListView(
-            //   padding: const EdgeInsets.all(16),
-            //   children: [
-            //     _buildProductContextCard(),
-            //     const SizedBox(height: 24),
-            //     _buildDateSeparator("Today"),
-            //     const SizedBox(height: 24),
-            //     _buildMessageBubble(
-            //       "Hello! How can I help you with your order today?",
-            //       "10:42 AM",
-            //       context,
-            //       isMe: false,
-            //     ),
-            //     _buildMessageBubble(
-            //       "Hi, I just received my shoes but they seem to be the wrong size.",
-            //       "10:44 AM",
-            //       context,
-            //       isMe: true,
-            //     ),
-            //     _buildMessageBubble(
-            //       "I'm sorry to hear that. Could you please send a photo of the size tag?",
-            //       "10:45 AM",
-            //       context,
-            //       isMe: false,
-            //     ),
-            //     _buildSuggestionChips(),
-            //   ],
-            // ),
-          ),
+          Expanded(child: _buildChatFeed(widget.chatId)),
           _buildMessageInput(),
         ],
       ),
@@ -265,64 +153,6 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  // Widget _buildProductContextCard() {
-  //   return Center(
-  //     child: Container(
-  //       padding: const EdgeInsets.all(12),
-  //       decoration: BoxDecoration(
-  //         color: AppColors.textWite,
-  //         borderRadius: BorderRadius.circular(12),
-  //         border: Border.all(color: Colors.grey.shade200),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: AppColors.bgBlack.withOpacity(0.05),
-  //             blurRadius: 5,
-  //           ),
-  //         ],
-  //       ),
-  //       child: Row(
-  //         children: [
-  //           ClipRRect(
-  //             borderRadius: BorderRadius.circular(8),
-  //             child: Image.network(
-  //               widget.order.productImage,
-  //               width: 60,
-  //               height: 60,
-  //               fit: BoxFit.cover,
-  //             ),
-  //           ),
-  //           const SizedBox(width: 12),
-  //           Expanded(
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   widget.order.productName,
-  //                   style: const TextStyle(fontWeight: FontWeight.bold),
-  //                 ),
-  //                 Text(
-  //                   "Size: 10.5 | ₹${widget.order.totalAmount}",
-  //                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           TextButton(
-  //             onPressed: () {},
-  //             child: Text(
-  //               "View",
-  //               style: TextStyle(
-  //                 color: primaryColor,
-  //                 fontWeight: FontWeight.bold,
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildMessageBubble(
     String text,
     String time,
@@ -376,47 +206,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
-  // Widget _buildDateSeparator(String label) {
-  //   return Center(
-  //     child: Container(
-  //       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-  //       decoration: BoxDecoration(
-  //         color: Colors.grey.shade100,
-  //         borderRadius: BorderRadius.circular(20),
-  //       ),
-  //       child: Text(
-  //         label.toUpperCase(),
-  //         style: TextStyle(
-  //           color: Colors.grey.shade600,
-  //           fontSize: 11,
-  //           letterSpacing: 1.2,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildSuggestionChips() {
-  //   return Wrap(
-  //     spacing: 8,
-  //     children: [_chipButton("Take Photo"), _chipButton("Upload from Gallery")],
-  //   );
-  // }
-
-  // Widget _chipButton(String label) {
-  //   return OutlinedButton(
-  //     onPressed: () {},
-  //     style: OutlinedButton.styleFrom(
-  //       shape: StadiumBorder(),
-  //       side: BorderSide(color: Colors.grey.shade300),
-  //     ),
-  //     child: Text(
-  //       label,
-  //       style: TextStyle(color: Colors.grey.shade800, fontSize: 13),
-  //     ),
-  //   );
-  // }
 
   Widget _buildMessageInput() {
     return Container(
@@ -479,6 +268,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     String customerName = userDoc.data()?['name'] ?? "User";
                     String sellerName =
                         sellerDoc.data()?['store name'] ?? "Seller";
+                    String? customerImageUrl = userDoc.data()?['imageUrl'];
 
                     await _chatService.sendMessage(
                       chatId: widget.chatId,
@@ -488,6 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       productName: widget.order.productName,
                       customerName: customerName,
                       sellerName: sellerName,
+                      customerImageUrl: customerImageUrl,
                     );
                   } catch (e) {
                     _messageController.text = text;

@@ -17,6 +17,7 @@ class ChatService {
     String? productName,
     String? customerName,
     String? sellerName,
+    String? customerImageUrl,
   }) async {
     final chatDoc = _firestore.collection('chats').doc(chatId);
 
@@ -33,6 +34,7 @@ class ChatService {
       if (productName != null) 'productName': productName,
       if (customerName != null) 'customerName': customerName,
       if (sellerName != null) 'sellerName': sellerName,
+      if (customerImageUrl != null) 'customerImageUrl': customerImageUrl,
     }, SetOptions(merge: true));
   }
 
