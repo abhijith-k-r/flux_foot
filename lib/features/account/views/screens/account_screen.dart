@@ -9,6 +9,7 @@ import 'package:fluxfoot_user/features/account/views/screens/profile_screen.dart
 import 'package:fluxfoot_user/features/account/views/widgets/account_widgets.dart';
 import 'package:fluxfoot_user/features/address/views/screens/shipping_address_view.dart';
 import 'package:fluxfoot_user/features/order/views/screen/my_orders.dart';
+import 'package:fluxfoot_user/features/settings/view/screen/settings_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -50,7 +51,7 @@ class AccountScreen extends StatelessWidget {
                   ontap: () {
                     fadePush(context, ProfileScreen());
                   },
-                ).fadeInRight(delay: const Duration(milliseconds: 100), from: 30),
+                ),
                 // ! Shipping Address
                 AccountContent(
                   size: size,
@@ -58,7 +59,7 @@ class AccountScreen extends StatelessWidget {
                   title: 'Shipping Addresses',
                   subtitle: 'check Addresses',
                   ontap: () => fadePush(context, ShippingAddressView()),
-                ).fadeInRight(delay: const Duration(milliseconds: 200), from: 30),
+                ),
                 // ! Order History
                 AccountContent(
                   size: size,
@@ -66,15 +67,15 @@ class AccountScreen extends StatelessWidget {
                   title: 'Order History',
                   subtitle: 'view all purchases',
                   ontap: () => fadePush(context, MyOrders()),
-                ).fadeInRight(delay: const Duration(milliseconds: 300), from: 30),
+                ),
                 // ! Settings
                 AccountContent(
                   size: size,
                   icon: Icons.settings, 
                   title: 'Settings',
                   subtitle: 'further details',
-                  // ontap: ()=> fadePush(context, profilesc),
-                ).fadeInRight(delay: const Duration(milliseconds: 400), from: 30),
+                  ontap: ()=> fadePush(context, SettingsView()),
+                ),
               ],
             ),
           );

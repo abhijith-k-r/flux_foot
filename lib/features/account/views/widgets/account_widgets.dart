@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
 import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
 import 'package:fluxfoot_user/features/home/views/widgets/perticularbrand_tabar_widget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 
@@ -79,25 +80,41 @@ class AccountContent extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.ontap,
-    required this.icon,
+    required this.icon, // Changed type to dynamic to support IconData, FaIconData, or Widget
   });
 
   final double size;
   final String title;
   final String subtitle;
   final Function()? ontap;
-  final IconData icon;
+  final dynamic icon; // accepts any type of icon/widget
 
   @override
   Widget build(BuildContext context) {
+    Widget leadingWidget;
+
+    if (icon is FaIconData) {
+      leadingWidget = FaIcon(
+        icon as FaIconData,
+        size: size * 0.1,
+        color: AppColors.iconOrangeAccent,
+      );
+    } else if (icon is IconData) {
+      leadingWidget = Icon(
+        icon as IconData,
+        size: size * 0.1,
+        color: AppColors.iconOrangeAccent,
+      );
+    } else if (icon is Widget) {
+      leadingWidget = icon as Widget;
+    } else {
+      leadingWidget = const SizedBox.shrink();
+    }
+
     return Padding(
       padding: EdgeInsets.only(left: size * 0.04, right: size * 0.04),
       child: ListTile(
-        leading: Icon(
-          icon,
-          size: size * 0.1,
-          color: AppColors.iconOrangeAccent,
-        ),
+        leading: leadingWidget,
         title: Text(
           title,
           style: GoogleFonts.openSans(
@@ -107,7 +124,7 @@ class AccountContent extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(subtitle, style: GoogleFonts.openSans()),
-        trailing: Icon(Icons.arrow_forward_ios),
+        trailing: const Icon(Icons.arrow_forward_ios),
         onTap: ontap,
         tileColor: AppColors.bgWhite,
         shape: RoundedRectangleBorder(
