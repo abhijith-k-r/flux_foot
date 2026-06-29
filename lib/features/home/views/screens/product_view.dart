@@ -203,85 +203,6 @@ class ProductView extends StatelessWidget {
                               ],
                             ),
                           );
-
-                          // ListTile(
-                          // leading: Container(
-                          //   height: size * 0.3,
-                          //   width: size * 0.3,
-                          //   // radius: size * 0.05,
-                          //   // backgroundColor: AppColors.bgWhite,
-                          //   // // AppColors.bgOrangeAccent,
-                          //   decoration: BoxDecoration(
-                          //     shape: BoxShape.circle,
-                          //     color: AppColors.bgWhite,
-                          //   ),
-                          //   child: Center(
-                          //     child: customText(
-                          //       8,
-                          //       state.seller.name,
-                          //       maxLines: 2,
-                          //     ),
-                          //   ),
-                          // ),
-                          // title: Row(
-                          //   spacing: 5,
-                          //   children: [
-                          //     customText(
-                          //       size * 0.04,
-                          //       state.seller.storeName,
-                          //       fontWeight: FontWeight.w600,
-                          //     ),
-                          //     CircleAvatar(
-                          //       radius: size * 0.02,
-                          //       backgroundColor: AppColors.sucessGreen,
-                          //       child: Icon(
-                          //         CupertinoIcons.check_mark,
-                          //         size: size * 0.02,
-                          //         color: AppColors.iconWhite,
-                          //         fontWeight: FontWeight.bold,
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                          // subtitle: Row(
-                          //   spacing: 10,
-                          //   children: [
-                          //     customText(
-                          //       size * 0.03,
-                          //       '98% Positive',
-                          //       appColor: AppColors.bgOrange,
-                          //     ),
-                          //     customText(
-                          //       size * 0.033,
-                          //       'In Active Seller',
-                          //       appColor: AppColors.textGrey,
-                          //       fontWeight: FontWeight.w500,
-                          //     ),
-                          //   ],
-                          // ),
-                          // trailing: InkWell(
-                          //   onTap: () {},
-                          //   child: Container(
-                          //     width: size * 0.2,
-                          //     height: size * 0.07,
-                          //     decoration: BoxDecoration(
-                          //       border: BoxBorder.all(
-                          //         width: .3,
-                          //         color: AppColors.outLineOrang,
-                          //       ),
-                          //       borderRadius: BorderRadius.circular(15),
-                          //       color: AppColors.bgWhite,
-                          //     ),
-                          //     child: Center(
-                          //       child: customText(
-                          //         10,
-                          //         'View Profile',
-                          //         fontWeight: FontWeight.bold,
-                          //       ),
-                          //     ),
-                          //   ),
-                          // ),
-                          // );
                         }
                         return ShimmerWrapper(child: ListTile());
                       },
@@ -291,7 +212,7 @@ class ProductView extends StatelessWidget {
                   customText(16, 'Description', fontWeight: FontWeight.w600),
                   // ! Custom Read More Text
                   customReadmoreText(description),
-                  ProductReviewsWidget(productId: product.id, description: '',),
+                  ProductReviewsWidget(productId: product.id, description: ''),
                   SizedBox(height: size * 1),
                 ],
               ),
@@ -326,26 +247,7 @@ class ProductView extends StatelessWidget {
               fontSize: size * 0.04,
               fontWeight: FontWeight.bold,
               ontap: () async {
-                // context.read<CheckoutBloc>().add(
-                //   const PlaceOrderEvent(paymentMethod: 'Stripe'),
-                // );
                 goToCheckout(context, product);
-                // try {
-                //   await stripeService.initPaymentSheet(
-                //     amount: '10',
-                //     currency: 'usd',
-                //     merchantName: 'WTF Code',
-                //   );
-
-                //   await stripeService.presentPaymentSheet();
-                //   ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(content: Text('Payment Successful')),
-                //   );
-                // } catch (e) {
-                //   ScaffoldMessenger.of(
-                //     context,
-                //   ).showSnackBar(SnackBar(content: Text('Error: $e')));
-                // }
               },
             ),
           ),
