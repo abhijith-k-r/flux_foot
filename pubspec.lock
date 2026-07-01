@@ -65,14 +65,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  card_3d_carousel:
-    dependency: "direct main"
-    description:
-      name: card_3d_carousel
-      sha256: b307de96dce7aa2e26c2772ecf013c9c3646265f5b29ba1a4d11206fc4e855dc
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.3"
   carousel_slider:
     dependency: "direct main"
     description:
@@ -350,14 +342,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.1"
-  flutter_glass_morphism:
-    dependency: "direct main"
-    description:
-      name: flutter_glass_morphism
-      sha256: c5e5e7ecc73b43cd1e1231e2a12eae8dc6fb77ed47d44073f9fe25f59481d506
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -672,14 +656,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  liquid_glass:
-    dependency: "direct main"
-    description:
-      name: liquid_glass
-      sha256: "75e47208b0cbec00dedebb52ca7c701c207253b88a5a10fe607d24419b337d7d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.2"
   liquid_glass_renderer:
     dependency: "direct main"
     description:

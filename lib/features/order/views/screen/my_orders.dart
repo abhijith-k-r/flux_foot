@@ -24,7 +24,7 @@ class MyOrders extends StatelessWidget {
           leading: customBackButton(context),
           title: Center(
             child: customText(
-              size.width * 0.065,
+              size.width * 0.065,                                  
               'My Orders',
               fontWeight: FontWeight.w600,
             ),
