@@ -13,6 +13,8 @@ class ShippingAddressListLoaded extends ShippingAddressState {
 
 class AddAddressSuccess extends ShippingAddressState {}
 
+class DeleteAddressSuccess extends ShippingAddressState {}
+
 class ShippingAddressFailure extends ShippingAddressState {
   final String error;
   ShippingAddressFailure({required this.error});

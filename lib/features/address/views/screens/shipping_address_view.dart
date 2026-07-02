@@ -71,6 +71,20 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Error: ${state.error}')),
                     );
+                  } else if (state is DeleteAddressSuccess) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Success'),
+                        content: const Text('Address deleted successfully.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 },
                 builder: (context, state) {
@@ -124,8 +138,8 @@ class _ShippingAddressViewState extends State<ShippingAddressView> {
                     return buildAddressList();
                   }
 
-                  // ! Handle AddAddressSuccess - show last loaded addresses
-                  if (state is AddAddressSuccess) {
+                  // ! Handle AddAddressSuccess and DeleteAddressSuccess - show last loaded addresses
+                  if (state is AddAddressSuccess || state is DeleteAddressSuccess) {
                     if (_lastLoadedAddresses.isNotEmpty) {
                       return buildAddressList();
                     }

@@ -93,7 +93,8 @@ class ShippingAddressBloc
     emit(ShippingAddressLoading());
     try {
       await _repository.deleteAddress(addressId: event.addressId);
-      emit(AddAddressSuccess());
+      emit(DeleteAddressSuccess());
+      add(LoadShippingAddresses());
     } catch (e) {
       emit(ShippingAddressFailure(error: e.toString()));
     }
