@@ -75,6 +75,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         selectedColorName: event.selectedColorName,
         selectedSize: event.selectedSize,
       );
+
+      // ! Emit one-shot feedback status for the UI to display a toast
+      emit(
+        state.copyWith(
+          lastAction: event.isCart
+              ? CartActionStatus.itemRemoved
+              : CartActionStatus.itemAdded,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }

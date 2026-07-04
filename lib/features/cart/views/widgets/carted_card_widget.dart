@@ -214,7 +214,8 @@ class CartItemCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Price
+                      SizedBox(width: 10),
+                      // ! Price
                       Expanded(
                         child: Text(
                           '₹${(price * quantity).toStringAsFixed(2)}',
@@ -222,7 +223,7 @@ class CartItemCard extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
-                          maxLines: 1
+                          maxLines: 1,
                         ),
                       ),
                     ],

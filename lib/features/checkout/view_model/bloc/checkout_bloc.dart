@@ -214,6 +214,14 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         'totalRevenueHeld': FieldValue.increment(finalLineItemTotal), 
         'totalGrossRevenue': FieldValue.increment(finalLineItemTotal), // Tracks every rupee coming in via Stripe
       }, SetOptions(merge: true));
+
+      // Remove the purchased item from the user's cart
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('cart')
+          .doc(product.id)
+          .delete();
     }
   }
 

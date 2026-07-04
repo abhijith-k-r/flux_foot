@@ -148,7 +148,7 @@ Widget buildOrderList(BuildContext context, {required bool isOngoing}) {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '₹ ${order.totalAmount}',
+                      '₹ ${order.totalAmount.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

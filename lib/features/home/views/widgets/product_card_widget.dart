@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
 import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
@@ -114,7 +115,7 @@ class ProductCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                  
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -138,7 +139,9 @@ class ProductCard extends StatelessWidget {
                           Expanded(
                             child: BlocBuilder<CartBloc, CartState>(
                               builder: (context, state) {
-                                final isCart = state.cartIds.contains(product.id);
+                                final isCart = state.cartIds.contains(
+                                  product.id,
+                                );
                                 return Container(
                                   width: size * 0.08,
                                   height: size * 0.08,
@@ -151,7 +154,7 @@ class ProductCard extends StatelessWidget {
                                       begin: Alignment.topCenter,
                                       end: Alignment.bottomCenter,
                                     ),
-                  
+
                                     borderRadius: BorderRadius.circular(7),
                                   ),
                                   child: Padding(
@@ -164,13 +167,25 @@ class ProductCard extends StatelessWidget {
                                             isCart: isCart,
                                           ),
                                         );
+                                        !isCart
+                                            ? showFeedback(
+                                                context,
+                                                '🛒 Item added to cart!',
+                                              )
+                                            : showFeedback(
+                                                context,
+                                                'Item removed from cart',
+                                                isError: false,
+                                              );
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: isCart
                                               ? AppColors.bgOrange
                                               : AppColors.bgWhite,
-                                          borderRadius: BorderRadius.circular(7),
+                                          borderRadius: BorderRadius.circular(
+                                            7,
+                                          ),
                                         ),
                                         child: Icon(
                                           isCart

@@ -7,8 +7,10 @@ import 'package:fluxfoot_user/core/widgets/custom_appbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_backbutton.dart';
 import 'package:fluxfoot_user/core/widgets/custom_button.dart';
 import 'package:fluxfoot_user/core/widgets/custom_readmore_widget.dart';
+import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
 import 'package:fluxfoot_user/core/widgets/custom_text.dart';
 import 'package:fluxfoot_user/core/widgets/shimmer_widgets.dart';
+import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/seller_cubit.dart';
 import 'package:fluxfoot_user/features/home/view_model/cubit/seller_state.dart';
@@ -31,7 +33,20 @@ class ProductView extends StatelessWidget {
     final size = MediaQuery.of(context).size.width;
     final variantBloc = context.read<ProductVariantBloc>();
     // final stripeService = StripeRepository();
-    return Scaffold(
+
+    // ! Listen for cart add/remove actions and show a toast feedback
+    return BlocListener<CartBloc, CartState>(
+      listenWhen: (previous, current) =>
+          current.lastAction != CartActionStatus.none &&
+          current.lastAction != previous.lastAction,
+      listener: (context, state) {
+        if (state.lastAction == CartActionStatus.itemAdded) {
+          showFeedback(context, '🛒 Item added to cart!');
+        } else if (state.lastAction == CartActionStatus.itemRemoved) {
+          showFeedback(context, 'Item removed from cart', isError: false);
+        }
+      },
+      child: Scaffold(
       appBar: CustomAppBar(
         leading: customBackButton(context),
         action: [
@@ -253,6 +268,7 @@ class ProductView extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ),   // ! closes BlocListener
+  );
   }
 }

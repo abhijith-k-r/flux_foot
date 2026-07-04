@@ -84,7 +84,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          "₹ ${order.totalAmount}",
+                          "₹ ${order.totalAmount.toStringAsFixed(2)}",
                           style: TextStyle(
                             color: primaryColor,
                             fontWeight: FontWeight.bold,

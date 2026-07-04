@@ -107,7 +107,7 @@ class CheckoutPage extends StatelessWidget {
                                   product.variants.first.colorName;
                             }
                             String size = '';
-                            if (product.variants.isNotEmpty) {
+                            if (product.variants.isNotEmpty && product.variants.first.sizes.isNotEmpty) {
                               size = product.variants.first.sizes.first.size;
                             }
                             return buildProductItem(
