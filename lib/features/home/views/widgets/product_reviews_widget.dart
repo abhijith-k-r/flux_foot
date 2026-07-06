@@ -24,6 +24,15 @@ class ProductReviewsWidget extends StatelessWidget {
           .where('productId', isEqualTo: productId)
           .snapshots(),
       builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          // Permission-denied or any Firestore error — don't hang on a spinner
+          return const Center(
+            child: Text(
+              'Could not load reviews.',
+              style: TextStyle(color: Colors.grey),
+            ),
+          );
+        }
         if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(color: AppColors.bgOrange),

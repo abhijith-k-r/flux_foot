@@ -94,6 +94,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "207851949341-i82hsbfojpbid4nd6jh1f12p9r0racrb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fluxfoot_user",
+            "certificate_hash": "00b71d129f179ab8f6746fc2481ad290a228db43"
+          }
+        },
+        {
           "client_id": "207851949341-q7slo29v8e934bqf0p99p9vcmrhlltbh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
