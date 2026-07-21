@@ -8,6 +8,8 @@ class OrderModel {
   final String productName;
   final String productImage;
   final int quantity;
+  final String? size;
+  final String? color;
   final double totalAmount;
   final String paymentType; 
   final String status; 
@@ -23,6 +25,8 @@ class OrderModel {
     required this.productName,
     required this.productImage,
     required this.quantity,
+    this.size,
+    this.color,
     required this.totalAmount,
     required this.paymentType,
     this.status = 'Placed',
@@ -38,6 +42,8 @@ class OrderModel {
     'productName': productName,
     'productImage': productImage,
     'quantity': quantity,
+    'size': size,
+    'color': color,
     'totalAmount': totalAmount,
     'paymentType': paymentType,
     'status': status,
@@ -54,6 +60,8 @@ class OrderModel {
     productName: map['productName'] ?? 'Unknown Product',
     productImage: map['productImage'] ?? '',
     quantity: map['quantity'] ?? 1,
+    size: map['size'],
+    color: map['color'],
     totalAmount: (map['totalAmount'] ?? 0.0).toDouble(),
     paymentType: map['paymentType'] ?? 'COD',
     status: map['status'] ?? 'Placed',

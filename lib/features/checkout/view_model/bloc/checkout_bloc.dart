@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -67,10 +68,12 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       }
 
       // 2. Calculate Costs
-      double subtotal = event.subtotal ?? event.products.fold(
-        0,
-        (sums, item) => sums + (item.salePrice * item.quantity),
-      );
+      double subtotal =
+          event.subtotal ??
+          event.products.fold(
+            0,
+            (sums, item) => sums + (item.salePrice * item.quantity),
+          );
       double discount = event.discount ?? 0.0;
       double shipping = event.shipping ?? (subtotal > 500 ? 0.0 : 40.0);
       double finalTotal = event.totalAmount;
@@ -127,6 +130,66 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(status: CheckoutStatus.loading));
 
     try {
+      // --- Validate Live Stock Before Payment (variant-level check) ---
+      for (var product in state.products) {
+        final productDoc = await FirebaseFirestore.instance
+            .collection('products')
+            .doc(product.id)
+            .get();
+            
+        if (productDoc.exists) {
+          final data = productDoc.data()!;
+          
+          // Get the selected color and size from the cart product
+          String selectedColor = product.variants.isNotEmpty 
+              ? product.variants.first.colorName : '';
+          String selectedSize = (product.variants.isNotEmpty && 
+              product.variants.first.sizes.isNotEmpty) 
+              ? product.variants.first.sizes.first.size : '';
+
+          // Validate against specific variant size stock
+          List<dynamic> variants = data['variants'] ?? [];
+          bool variantFound = false;
+
+          for (var i = 0; i < variants.length; i++) {
+            if (variants[i]['colorName'] == selectedColor) {
+              List<dynamic> sizes = variants[i]['sizes'] ?? [];
+              for (var j = 0; j < sizes.length; j++) {
+                if (sizes[j]['size'] == selectedSize) {
+                  variantFound = true;
+                  int sizeQty = int.tryParse(sizes[j]['quantity']?.toString() ?? '0') ?? 0;
+                  if (product.quantity > sizeQty) {
+                    emit(
+                      state.copyWith(
+                        status: CheckoutStatus.failure,
+                        errorMessage: 'Sorry! Only $sizeQty items left for ${product.name} (Size: $selectedSize).',
+                      ),
+                    );
+                    return; // Stop checkout
+                  }
+                }
+              }
+            }
+          }
+
+          // If no specific variant was found, fall back to global quantity check
+          if (!variantFound) {
+            int globalQty = int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;
+            if (globalQty > 0 && product.quantity > globalQty) {
+              emit(
+                state.copyWith(
+                  status: CheckoutStatus.failure,
+                  errorMessage: 'Sorry! Only $globalQty items left for ${product.name}.',
+                ),
+              );
+              return;
+            }
+          }
+        }
+      }
+      // ------------------------------------------------
+
+
       final String amount = state.total.toInt().toString();
 
       await _stripeRepository.initPaymentSheet(
@@ -162,7 +225,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-    Future<void> _createOrderInFirestore({
+  Future<void> _createOrderInFirestore({
     required String paymentId,
     required String method,
   }) async {
@@ -174,15 +237,23 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     for (var product in state.products) {
       double lineItemSubtotal = product.salePrice * product.quantity;
-      double proportion = state.subtotal > 0 ? (lineItemSubtotal / state.subtotal) : 1.0;
+      double proportion = state.subtotal > 0
+          ? (lineItemSubtotal / state.subtotal)
+          : 1.0;
 
       double lineItemDiscount = state.discount * proportion;
       double lineItemShipping = state.shipping * proportion;
-      double finalLineItemTotal = lineItemSubtotal - lineItemDiscount + lineItemShipping;
+      double finalLineItemTotal =
+          lineItemSubtotal - lineItemDiscount + lineItemShipping;
 
       final double adminCommissionRate = 0.10; // 10% Platform fee
       final double adminCommission = finalLineItemTotal * adminCommissionRate;
       final double sellerEarning = finalLineItemTotal - adminCommission;
+
+      String selectedColor = product.variants.isNotEmpty ? product.variants.first.colorName : 'N/A';
+      String selectedSize = (product.variants.isNotEmpty && product.variants.first.sizes.isNotEmpty) 
+                             ? product.variants.first.sizes.first.size 
+                             : 'N/A';
 
       final order = OrderModel(
         id: '', // Firestore auto-id
@@ -192,7 +263,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         productName: product.name,
         productImage: product.images.isNotEmpty ? product.images[0] : "",
         quantity: product.quantity,
-        totalAmount: finalLineItemTotal, // Pushed perfectly pro-rated cart total to DB securely
+        size: selectedSize,
+        color: selectedColor,
+        totalAmount:
+            finalLineItemTotal, // Pushed perfectly pro-rated cart total to DB securely
         paymentType: method,
         status: method == 'COD' ? 'Placed' : 'Paid',
         paymentId: paymentId,
@@ -203,17 +277,24 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       final orderMap = order.toMap();
       orderMap['adminCommission'] = adminCommission;
       orderMap['sellerEarning'] = sellerEarning;
-      orderMap['paymentReleased'] = false; // Flag to track if admin has paid the seller
-      orderMap['timestamp'] = FieldValue.serverTimestamp(); // Add timestamp for sorting
+      orderMap['paymentReleased'] =
+          false; // Flag to track if admin has paid the seller
+      orderMap['timestamp'] =
+          FieldValue.serverTimestamp(); // Add timestamp for sorting
 
       await FirebaseFirestore.instance.collection('orders').add(orderMap);
 
       // --- FINANCIAL WALLET DISTRIBUTION (ESCROW) ---
       // Update the Admin's Master Wallet to hold the total funds
-      await FirebaseFirestore.instance.collection('admin').doc('master_wallet').set({
-        'totalRevenueHeld': FieldValue.increment(finalLineItemTotal), 
-        'totalGrossRevenue': FieldValue.increment(finalLineItemTotal), // Tracks every rupee coming in via Stripe
-      }, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection('admin')
+          .doc('master_wallet')
+          .set({
+            'totalRevenueHeld': FieldValue.increment(finalLineItemTotal),
+            'totalGrossRevenue': FieldValue.increment(
+              finalLineItemTotal,
+            ), // Tracks every rupee coming in via Stripe
+          }, SetOptions(merge: true));
 
       // Remove the purchased item from the user's cart
       await FirebaseFirestore.instance
@@ -222,9 +303,66 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
           .collection('cart')
           .doc(product.id)
           .delete();
+
+      // --- NEW: DECREMENT PRODUCT STOCK IN DATABASE ---
+      final productRef = FirebaseFirestore.instance
+          .collection('products')
+          .doc(product.id);
+
+      try {
+        await FirebaseFirestore.instance.runTransaction((transaction) async {
+          final snapshot = await transaction.get(productRef);
+          if (!snapshot.exists) return;
+
+          final data = snapshot.data()!;
+
+          // 1. Decrement global quantity
+          int globalQty = int.tryParse(data['quantity']?.toString() ?? '0') ?? 0;
+          globalQty = globalQty - product.quantity;
+          if (globalQty < 0) globalQty = 0;
+
+          // 2. Decrement specific variant size quantity
+          List<dynamic> variants = data['variants'] ?? [];
+          String selectedColor = product.variants.isNotEmpty
+              ? product.variants.first.colorName
+              : '';
+          String selectedSize =
+              (product.variants.isNotEmpty &&
+                  product.variants.first.sizes.isNotEmpty)
+              ? product.variants.first.sizes.first.size
+              : '';
+          bool updated = false;
+          for (var i = 0; i < variants.length; i++) {
+            if (variants[i]['colorName'] == selectedColor) {
+              List<dynamic> sizes = variants[i]['sizes'] ?? [];
+              for (var j = 0; j < sizes.length; j++) {
+                if (sizes[j]['size'] == selectedSize) {
+                  int currentQty = int.tryParse(sizes[j]['quantity']?.toString() ?? '0') ?? 0;
+                  int newQty =
+                      currentQty -
+                      product.quantity; // Decrement by purchased amount
+                  if (newQty < 0) newQty = 0;
+                  sizes[j]['quantity'] = newQty;
+                  updated = true;
+                  break;
+                }
+              }
+            }
+            if (updated) break;
+          }
+
+          // 3. Save the updated quantities back to Firestore
+          transaction.update(productRef, {
+            'quantity': globalQty,
+            'variants': variants,
+          });
+        });
+      } catch (e) {
+        print("Failed to decrement stock: $e");
+      }
+      // ------------------------------------------------
     }
   }
-
 
   Future<void> _onUpdatePaymentStatus(
     UpdatePaymentStatus event,

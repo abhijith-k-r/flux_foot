@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/widgets/custom_snackbar.dart';
 import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/cart/views/widgets/cart_quantity_button.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
@@ -26,11 +27,13 @@ class CartItemCard extends StatelessWidget {
     String variantSize = 'N/A';
     String variantColor = 'N/A';
     String? variantImage;
+    int availableStock = 999;
 
     if (product.variants.isNotEmpty) {
       final variant = product.variants.first;
       if (variant.sizes.isNotEmpty) {
         variantSize = variant.sizes.first.size;
+        availableStock = variant.sizes.first.quantity;
       }
       variantColor = variant.colorName;
       // Get image
@@ -184,9 +187,15 @@ class CartItemCard extends StatelessWidget {
                                     ),
                                   );
                                 } else {
-                                  context.read<CartBloc>().add(
-                                    RemoveFromCartEvent(product: product),
+                                  customSnackBar(
+                                    context,
+                                    'At least 1 item is required. To remove, swipe left.',
+                                    null,
+                                    AppColors.bgRed,
                                   );
+                                  // context.read<CartBloc>().add(
+                                  //   RemoveFromCartEvent(product: product),
+                                  // );
                                 }
                               },
                             ),
@@ -203,12 +212,37 @@ class CartItemCard extends StatelessWidget {
                             QuantityButton(
                               icon: Icons.add,
                               onTap: () {
-                                context.read<CartBloc>().add(
-                                  UpdateCartQuantityEvent(
-                                    product: product,
-                                    quantity: quantity + 1,
-                                  ),
-                                );
+                                // context.read<CartBloc>().add(
+                                //   UpdateCartQuantityEvent(
+                                //     product: product,
+                                //     quantity: quantity + 1,
+                                //   ),
+                                // );
+
+                                if (quantity < availableStock) {
+                                  context.read<CartBloc>().add(
+                                    UpdateCartQuantityEvent(
+                                      product: product,
+                                      quantity: quantity + 1,
+                                    ),
+                                  );
+                                } else {
+                                  // Show Snackbar if stock limit reached
+                                  customSnackBar(
+                                    context,
+                                    'Only $availableStock items available in stock!',
+                                    null,
+                                    AppColors.bgRed,
+                                  );
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     content: Text(
+                                  //       'Only $availableStock items available in stock!',
+                                  //     ),
+                                  //     duration: const Duration(seconds: 2),
+                                  //   ),
+                                  // );
+                                }
                               },
                             ),
                           ],

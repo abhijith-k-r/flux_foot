@@ -84,6 +84,26 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
+                          'Quantity: ${order.quantity}${order.size != null && order.size != 'N/A' && order.size!.isNotEmpty ? ' • Size: ${order.size}' : ''}',
+                          style: TextStyle(
+                            color: Colors.grey.shade700,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        if (order.color != null && order.color != 'N/A' && order.color!.isNotEmpty) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            "Color: ${order.color}",
+                            style: TextStyle(
+                              color: Colors.grey.shade700,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 5),
+                        Text(
                           "₹ ${order.totalAmount.toStringAsFixed(2)}",
                           style: TextStyle(
                             color: primaryColor,
@@ -150,7 +170,6 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-           
 
             // --- AUTHENTIC RETURN LIFECYCLE TRACKER ---
             if ([
@@ -266,9 +285,12 @@ class OrderDetailsScreen extends StatelessWidget {
                       child: OutlinedButton.icon(
                         icon: const Icon(Icons.support_agent),
                         onPressed: () {
-                            String chatId = "chat_${order.id}"; 
+                          String chatId = "chat_${order.id}";
 
-                          fadePush(context, ChatScreen(order: order,chatId:chatId));
+                          fadePush(
+                            context,
+                            ChatScreen(order: order, chatId: chatId),
+                          );
                         },
                         label: const Text('Help! Chat with Seller'),
                       ),

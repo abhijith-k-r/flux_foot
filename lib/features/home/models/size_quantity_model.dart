@@ -9,7 +9,7 @@ class SizeQuantityVariant {
   factory SizeQuantityVariant.fromMap(Map<String, dynamic> map) {
     return SizeQuantityVariant(
       size: map['size'] ?? '',
-      quantity: (map['quantity'] as num).toInt(),
+      quantity: int.tryParse(map['quantity']?.toString() ?? '0') ?? 0,
     );
   }
 }
