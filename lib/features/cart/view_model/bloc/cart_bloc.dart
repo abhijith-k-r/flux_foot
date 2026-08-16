@@ -99,20 +99,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     );
 
     try {
-      // 🛠️ FIX: Pass the UID to the repository method
       final List<ProductModel> products = await _repo.getProuductsByIds(
         event.cartIds,
         event.uid,
       );
 
-      final currentCartModels = products
-          .where((product) => event.cartIds.contains(product.id))
-          .toList();
-
       emit(
         state.copyWith(
           cartIds: event.cartIds,
-          cartProducts: currentCartModels,
+          cartProducts: products,
           isLoading: false,
         ),
       );
@@ -150,13 +145,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
     try {
       await _repo.updateCartQuantity(
-        event.product.id,
+        event.product.effectiveCartId,
         event.quantity,
         currentUserId,
       );
 
       final updatedProducts = state.cartProducts.map((product) {
-        if (product.id == event.product.id) {
+        if (product.effectiveCartId == event.product.effectiveCartId) {
           return product.copyWith(quantity: event.quantity);
         }
         return product;
@@ -180,11 +175,15 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
 
       // 🛠️ FIX: Eagerly update local state so the Dismissible widget gets removed synchronously!
-      final updatedProducts = state.cartProducts.where((p) => p.id != event.product.id).toList();
-      final updatedIds = state.cartIds.where((id) => id != event.product.id).toList();
+      final updatedProducts = state.cartProducts
+          .where((p) => p.effectiveCartId != event.product.effectiveCartId)
+          .toList();
+      final updatedIds = state.cartIds
+          .where((id) => id != event.product.effectiveCartId)
+          .toList();
       emit(state.copyWith(cartProducts: updatedProducts, cartIds: updatedIds));
 
-      await _repo.removeFromCart(event.product.id, currentUid);
+      await _repo.removeFromCart(event.product.effectiveCartId, currentUid);
     } catch (e) {
       emit(state.copyWith(error: 'Failed to remove item: ${e.toString()}'));
     }

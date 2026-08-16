@@ -301,7 +301,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
           .collection('users')
           .doc(userId)
           .collection('cart')
-          .doc(product.id)
+          .doc(product.effectiveCartId)
           .delete();
 
       // --- NEW: DECREMENT PRODUCT STOCK IN DATABASE ---

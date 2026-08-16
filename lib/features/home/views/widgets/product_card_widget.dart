@@ -139,8 +139,10 @@ class ProductCard extends StatelessWidget {
                           Expanded(
                             child: BlocBuilder<CartBloc, CartState>(
                               builder: (context, state) {
-                                final isCart = state.cartIds.contains(
-                                  product.id,
+                                final isCart = state.cartIds.any(
+                                  (id) =>
+                                      id == product.id ||
+                                      id.startsWith('${product.id}_'),
                                 );
                                 return Container(
                                   width: size * 0.08,

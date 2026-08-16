@@ -48,7 +48,7 @@ class CartItemCard extends StatelessWidget {
         (product.images.isNotEmpty ? product.images.first : null);
 
     return Dismissible(
-      key: Key(product.id),
+      key: Key(product.effectiveCartId),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,

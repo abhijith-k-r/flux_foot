@@ -3,6 +3,7 @@ import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
 
 class ProductModel {
   final String id;
+  final String? cartDocId;
   final String name;
   final String? description;
   final double regularPrice; 
@@ -17,8 +18,11 @@ class ProductModel {
   final Map<String, dynamic> dynammicSpecs;
   final List<ColorvariantModel> variants;
 
+  String get effectiveCartId => cartDocId ?? id;
+
   ProductModel({
     required this.id,
+    this.cartDocId,
     required this.name,
     this.description,
     required this.regularPrice,
@@ -36,6 +40,7 @@ class ProductModel {
 
   ProductModel copyWith({
     String? id,
+    String? cartDocId,
     String? name,
     String? description,
     double? regularPrice,
@@ -52,6 +57,7 @@ class ProductModel {
   }) {
     return ProductModel(
       id: id ?? this.id,
+      cartDocId: cartDocId ?? this.cartDocId,
       name: name ?? this.name,
       description: description ?? this.description,
       regularPrice: regularPrice ?? this.regularPrice,

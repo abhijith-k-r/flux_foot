@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluxfoot_user/core/constants/app_colors.dart';
+import 'package:fluxfoot_user/core/services/firebase/cart_repository.dart';
 import 'package:fluxfoot_user/core/widgets/custom_button.dart';
 import 'package:fluxfoot_user/features/cart/view_model/bloc/cart_bloc.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
@@ -14,7 +15,8 @@ Widget buildAddtoCartButton(double size, ProductModel product, {
 }) {
   return BlocBuilder<CartBloc, CartState>(
     builder: (context, state) {
-      final isCart = state.cartIds.contains(product.id);
+      final cartDocId = getCartDocId(product.id, selectedColorName, selectedSize);
+      final isCart = state.cartIds.contains(cartDocId);
       return LiquidGlassLayer(
         child: LiquidGlass(
           shape: LiquidRoundedSuperellipse(borderRadius: 15),

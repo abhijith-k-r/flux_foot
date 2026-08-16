@@ -3,6 +3,12 @@ import 'package:fluxfoot_user/features/home/models/color_variant.model.dart';
 import 'package:fluxfoot_user/features/home/models/product_model.dart';
 import 'package:fluxfoot_user/features/home/models/size_quantity_model.dart';
 
+String getCartDocId(String productId, String? color, String? size) {
+  final cleanColor = (color != null && color.trim().isNotEmpty) ? color.trim() : 'default';
+  final cleanSize = (size != null && size.trim().isNotEmpty) ? size.trim() : 'default';
+  return '${productId}_${cleanColor}_$cleanSize';
+}
+
 class CartRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -17,12 +23,20 @@ class CartRepository {
     String? selectedColorName,
     String? selectedSize,
   }) async {
-    DocumentReference cartRef = _cartCollection(uid).doc(product.id);
+    final docId = getCartDocId(product.id, selectedColorName, selectedSize);
+    DocumentReference cartRef = _cartCollection(uid).doc(docId);
 
     if (shouldRemove) {
       await cartRef.delete();
+      // Clean up legacy doc ID if present
+      final legacyRef = _cartCollection(uid).doc(product.id);
+      final legacyDoc = await legacyRef.get();
+      if (legacyDoc.exists) {
+        await legacyRef.delete();
+      }
     } else {
       await cartRef.set({
+        'productId': product.id,
         'quantity': 1,
         'addedAt': FieldValue.serverTimestamp(),
         'selectedColor': selectedColorName,
@@ -38,44 +52,19 @@ class CartRepository {
   }
 
   Future<List<ProductModel>> getProuductsByIds(
-    List<String> productIds,
+    List<String> cartDocIds,
     String uid,
   ) async {
-    if (productIds.isEmpty) return [];
-
-    const int batchSize = 10;
-    List<ProductModel> catalogProducts = [];
-
-    for (int i = 0; i < productIds.length; i += batchSize) {
-      final batch = productIds.sublist(
-        i,
-        i + batchSize > productIds.length ? productIds.length : i + batchSize,
-      );
-
-      final snapshot = await _firestore
-          .collection('products')
-          .where(FieldPath.documentId, whereIn: batch)
-          .get();
-
-      catalogProducts.addAll(
-        snapshot.docs
-            .map((doc) => ProductModel.fromFirestore(doc.data(), doc.id))
-            .toList(),
-      );
-    }
-
     final cartSnapshot = await _cartCollection(uid).get();
+    if (cartSnapshot.docs.isEmpty) return [];
 
-    // final Map<String, int> quantityMap = {};
-    // for (var doc in cartSnapshot.docs) {
-    //   final cartData = doc.data() as Map<String, dynamic>?;
-    //   final quantityString = (cartData?['quantity'] as String?) ?? '1';
-    //   quantityMap[doc.id] = int.tryParse(quantityString) ?? 1;
-    // }
+    final Set<String> uniqueProductIds = {};
+    final Map<String, Map<String, dynamic>> cartDetailsMap = {};
 
-    final Map<String, dynamic> cartDetailsMap = {};
     for (var doc in cartSnapshot.docs) {
       final cartData = doc.data() as Map<String, dynamic>?;
+      final productId = (cartData?['productId'] as String?) ?? doc.id;
+      uniqueProductIds.add(productId);
 
       int quantity;
       final rawQuantity = cartData?['quantity'];
@@ -89,25 +78,53 @@ class CartRepository {
       }
 
       cartDetailsMap[doc.id] = {
+        'productId': productId,
         'quantity': quantity,
         'selectedColor': cartData?['selectedColor'] as String? ?? 'N/A',
         'selectedSize': cartData?['selectedSize'] as String? ?? 'N/A',
       };
     }
 
-    List<ProductModel> finalCartProducts = [];
-    for (var product in catalogProducts) {
-      final details = cartDetailsMap[product.id];
+    if (uniqueProductIds.isEmpty) return [];
 
-      if (details != null) {
+    const int batchSize = 10;
+    final List<String> productIdList = uniqueProductIds.toList();
+    final Map<String, ProductModel> catalogProductsMap = {};
+
+    for (int i = 0; i < productIdList.length; i += batchSize) {
+      final batch = productIdList.sublist(
+        i,
+        i + batchSize > productIdList.length ? productIdList.length : i + batchSize,
+      );
+
+      final snapshot = await _firestore
+          .collection('products')
+          .where(FieldPath.documentId, whereIn: batch)
+          .get();
+
+      for (var doc in snapshot.docs) {
+        catalogProductsMap[doc.id] = ProductModel.fromFirestore(doc.data(), doc.id);
+      }
+    }
+
+    List<ProductModel> finalCartProducts = [];
+    for (var doc in cartSnapshot.docs) {
+      final docId = doc.id;
+      final details = cartDetailsMap[docId];
+      if (details == null) continue;
+
+      final productId = details['productId'] as String;
+      final catalogProduct = catalogProductsMap[productId];
+
+      if (catalogProduct != null) {
         final quantity = details['quantity'] as int;
         final selectedColorName = details['selectedColor'] as String;
         final selectedSize = details['selectedSize'] as String;
 
-        final selectedVariant = product.variants.firstWhere(
+        final selectedVariant = catalogProduct.variants.firstWhere(
           (variant) => variant.colorName == selectedColorName,
-          orElse: () => product.variants.isNotEmpty
-              ? product.variants.first
+          orElse: () => catalogProduct.variants.isNotEmpty
+              ? catalogProduct.variants.first
               : ColorvariantModel(colorName: selectedColorName),
         );
 
@@ -116,7 +133,8 @@ class CartRepository {
             .toList();
 
         finalCartProducts.add(
-          product.copyWith(
+          catalogProduct.copyWith(
+            cartDocId: docId,
             quantity: quantity,
             variants: [
               selectedVariant.copyWith(
@@ -127,7 +145,7 @@ class CartRepository {
             ],
             images: selectedVariant.imageUrls.isNotEmpty
                 ? selectedVariant.imageUrls
-                : product.images,
+                : catalogProduct.images,
           ),
         );
       }
@@ -137,18 +155,18 @@ class CartRepository {
   }
 
   Future<void> updateCartQuantity(
-    String productId,
+    String cartDocId,
     int quantity,
     String uid,
   ) async {
     if (quantity > 0) {
       await _cartCollection(
         uid,
-      ).doc(productId).update({'quantity': quantity.toString()});
+      ).doc(cartDocId).update({'quantity': quantity});
     }
   }
 
-  Future<void> removeFromCart(String productId, String uid) async {
-    await _cartCollection(uid).doc(productId).delete();
+  Future<void> removeFromCart(String cartDocId, String uid) async {
+    await _cartCollection(uid).doc(cartDocId).delete();
   }
 }
